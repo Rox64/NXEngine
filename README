@@ -1,0 +1,13 @@
+This is a complete open-source clone/rewrite of Doukutsu Monogatari (also known as Cave Story) originally created by rogueeve (kty@lavabit.com). You can browse the original website at http://nxengine.sourceforge.net/. It is released under the GNU General Public License 3; check the LICENSE.txt file or http://www.gnu.org/copyleft/gpl.html for more information about what you can and cannot do with this source code.
+
+This repository has been forked from the latest available version at the time I wrote this readme (NXEngine 1.0.0.4), which I think it was released around 2012-04-29. These are the official requirements as it appeared on the original website when it was forked:
+
+    · Cave Story 1.0.0.6 with Aeon Genesis English translation. Cave Story Deluxe will do nicely.
+    · SDL
+    · SDL_ttf
+    · (to run the SIFEdit sprite-properties editor) wxWidgets. SIFEdit is a little sucky under Windows, I suggest you run it under GTK instead.
+    · (to compile source under Windows) MinGW/MSYS
+
+Make sure you have patched the japanese Cave Story 1.0.0.6 release with the Aeon Genesis translation before running nx for the first time, otherwise you may have no music and no readable text and many, many bugs.
+
+The original release includes a pre-patched copy of Cave Story (which, despite being freeware, I don't include it) and a font.tff file which is in fact a copy of Courier New. This font is NOT FREE. The source code can be compiled without this font, but the final nx binary needs a font.ttf file to run. I replaced it with Liberation Mono, a GPL v2 licensed (with some exceptions) metric-compatible alternative to Courier New and I played a while and I didn't found anything wrong or ugly. Liberation Mono is available on many Linux distributions; if you aren't using a Linux distro and your operating system does not include it, you can download this font from this page: https://fedorahosted.org/liberation-fonts/

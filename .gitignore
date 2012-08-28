@@ -1,1 +1,14 @@
 *.o
+bin/debug.txt
+bin/nx
+bin/drum.pcm
+bin/font.ttf
+bin/profile.dat
+bin/settings.dat
+bin/sndcache.pcm
+bin/stage.dat
+bin/wavetable.dat
+bin/data/*
+bin/endpic/*
+bin/org/*
+bin/pxt/*

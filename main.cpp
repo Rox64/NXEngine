@@ -5,6 +5,13 @@
 #include "graphics/safemode.h"
 #include "main.fdh"
 
+#if defined (__APPLE__)
+#  include "TargetConditionals.h"
+#  if defined(TARGET_OS_IPHONE)
+#     define IPHONE
+#  endif
+#endif
+
 const char *data_dir = "data";
 const char *stage_dir = "data/Stage";
 const char *pic_dir = "endpic";
@@ -25,6 +32,15 @@ int main(int argc, char *argv[])
 bool inhibit_loadfade = false;
 bool error = false;
 bool freshstart;
+    
+#ifdef IPHONE
+    {
+        extern char const* ro_filesys_path;
+        ro_filesys_path = "./game_resources/";
+        extern char const* rw_filesys_path;
+        rw_filesys_path = "./";
+    }    
+#endif
 	
 	//SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)

@@ -162,7 +162,7 @@
 		05600E0915EEC53D00A7CCD5 /* StageSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600D1E15EEC53D00A7CCD5 /* StageSelect.cpp */; };
 		05600E0B15EEC53D00A7CCD5 /* TextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600D2115EEC53D00A7CCD5 /* TextBox.cpp */; };
 		05600E0D15EEC53D00A7CCD5 /* YesNoPrompt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600D2415EEC53D00A7CCD5 /* YesNoPrompt.cpp */; };
-		05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.cpp */; };
+		05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.h in Sources */ = {isa = PBXBuildFile; fileRef = 05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.h */; };
 		056D155915EEB8C800CFE45C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155815EEB8C800CFE45C /* UIKit.framework */; };
 		056D155B15EEB8C800CFE45C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155A15EEB8C800CFE45C /* Foundation.framework */; };
 		056D155D15EEB8C800CFE45C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155C15EEB8C800CFE45C /* CoreGraphics.framework */; };
@@ -438,7 +438,7 @@
 		05600D2315EEC53D00A7CCD5 /* TextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextBox.h; sourceTree = "<group>"; };
 		05600D2415EEC53D00A7CCD5 /* YesNoPrompt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YesNoPrompt.cpp; sourceTree = "<group>"; };
 		05600D2615EEC53D00A7CCD5 /* YesNoPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YesNoPrompt.h; sourceTree = "<group>"; };
-		05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tsc_cmdtbl.cpp; path = ../../tsc_cmdtbl.cpp; sourceTree = "<group>"; };
+		05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsc_cmdtbl.h; path = ../../tsc_cmdtbl.h; sourceTree = "<group>"; };
 		056D155415EEB8C800CFE45C /* CaveStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaveStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		056D155815EEB8C800CFE45C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		056D155A15EEB8C800CFE45C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -500,7 +500,7 @@
 				05600B8A15EEC29800A7CCD5 /* statusbar.cpp */,
 				05600B7515EEC28700A7CCD5 /* trig.cpp */,
 				05600B7915EEC28700A7CCD5 /* tsc.cpp */,
-				05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.cpp */,
+				05600E1015EEC74D00A7CCD5 /* tsc_cmdtbl.h */,
 				0560095115EEC12D00A7CCD5 /* caret.h */,
 				0560097115EEC12D00A7CCD5 /* config.h */,
 				0560097415EEC12D00A7CCD5 /* console.h */,
@@ -1241,7 +1241,7 @@
 				05600E0915EEC53D00A7CCD5 /* StageSelect.cpp in Sources */,
 				05600E0B15EEC53D00A7CCD5 /* TextBox.cpp in Sources */,
 				05600E0D15EEC53D00A7CCD5 /* YesNoPrompt.cpp in Sources */,
-				05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.cpp in Sources */,
+				05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -42,7 +42,7 @@ struct TSCCommandTable
 	const char *mnemonic;
 	int nparams;
 };
-#include "tsc_cmdtbl.cpp"
+#include "tsc_cmdtbl.h"
 
 unsigned char codealphabet[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123+-" };
 unsigned char letter_to_code[256];

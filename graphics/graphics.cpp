@@ -1,6 +1,6 @@
 
 // graphics routines
-#include <SDL/SDL.h>
+#include <SDL.h>
 #ifndef __SDLSHIM__
 	#include <SDL/SDL_getenv.h>
 #endif

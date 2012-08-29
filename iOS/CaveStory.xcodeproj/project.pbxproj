@@ -1,0 +1,342 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0560062C15EEBA9000A7CCD5 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D158715EEB9A600CFE45C /* libSDL2.a */; };
+		0560063C15EEBCF600A7CCD5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0560063B15EEBCF600A7CCD5 /* AudioToolbox.framework */; };
+		0560063E15EEBD1B00A7CCD5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0560063D15EEBD1B00A7CCD5 /* QuartzCore.framework */; };
+		056D155915EEB8C800CFE45C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155815EEB8C800CFE45C /* UIKit.framework */; };
+		056D155B15EEB8C800CFE45C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155A15EEB8C800CFE45C /* Foundation.framework */; };
+		056D155D15EEB8C800CFE45C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155C15EEB8C800CFE45C /* CoreGraphics.framework */; };
+		056D155F15EEB8C800CFE45C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155E15EEB8C800CFE45C /* GLKit.framework */; };
+		056D156115EEB8C800CFE45C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D156015EEB8C800CFE45C /* OpenGLES.framework */; };
+		056D156715EEB8C800CFE45C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 056D156515EEB8C800CFE45C /* InfoPlist.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0560063915EEBC2D00A7CCD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 056D158015EEB9A600CFE45C /* SDL.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FD6526620DE8FCCB002AD96B;
+			remoteInfo = libSDL;
+		};
+		056D158615EEB9A600CFE45C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 056D158015EEB9A600CFE45C /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD6526630DE8FCCB002AD96B;
+			remoteInfo = libSDL;
+		};
+		056D158815EEB9A600CFE45C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 056D158015EEB9A600CFE45C /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 006E982211955059001DE610;
+			remoteInfo = testsdl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0560063B15EEBCF600A7CCD5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		0560063D15EEBD1B00A7CCD5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		056D155415EEB8C800CFE45C /* CaveStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaveStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		056D155815EEB8C800CFE45C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		056D155A15EEB8C800CFE45C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		056D155C15EEB8C800CFE45C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		056D155E15EEB8C800CFE45C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		056D156015EEB8C800CFE45C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		056D156415EEB8C800CFE45C /* CaveStory-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CaveStory-Info.plist"; sourceTree = "<group>"; };
+		056D156615EEB8C800CFE45C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		056D158015EEB9A600CFE45C /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../sdl-1.3/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		056D155115EEB8C800CFE45C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0560063E15EEBD1B00A7CCD5 /* QuartzCore.framework in Frameworks */,
+				0560063C15EEBCF600A7CCD5 /* AudioToolbox.framework in Frameworks */,
+				0560062C15EEBA9000A7CCD5 /* libSDL2.a in Frameworks */,
+				056D155915EEB8C800CFE45C /* UIKit.framework in Frameworks */,
+				056D155B15EEB8C800CFE45C /* Foundation.framework in Frameworks */,
+				056D155D15EEB8C800CFE45C /* CoreGraphics.framework in Frameworks */,
+				056D155F15EEB8C800CFE45C /* GLKit.framework in Frameworks */,
+				056D156115EEB8C800CFE45C /* OpenGLES.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		056D154915EEB8C700CFE45C = {
+			isa = PBXGroup;
+			children = (
+				056D158015EEB9A600CFE45C /* SDL.xcodeproj */,
+				056D156215EEB8C800CFE45C /* CaveStory */,
+				056D155715EEB8C800CFE45C /* Frameworks */,
+				056D155515EEB8C800CFE45C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		056D155515EEB8C800CFE45C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				056D155415EEB8C800CFE45C /* CaveStory.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		056D155715EEB8C800CFE45C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0560063D15EEBD1B00A7CCD5 /* QuartzCore.framework */,
+				0560063B15EEBCF600A7CCD5 /* AudioToolbox.framework */,
+				056D155815EEB8C800CFE45C /* UIKit.framework */,
+				056D155A15EEB8C800CFE45C /* Foundation.framework */,
+				056D155C15EEB8C800CFE45C /* CoreGraphics.framework */,
+				056D155E15EEB8C800CFE45C /* GLKit.framework */,
+				056D156015EEB8C800CFE45C /* OpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		056D156215EEB8C800CFE45C /* CaveStory */ = {
+			isa = PBXGroup;
+			children = (
+				056D156315EEB8C800CFE45C /* Supporting Files */,
+			);
+			path = CaveStory;
+			sourceTree = "<group>";
+		};
+		056D156315EEB8C800CFE45C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				056D156415EEB8C800CFE45C /* CaveStory-Info.plist */,
+				056D156515EEB8C800CFE45C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		056D158115EEB9A600CFE45C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				056D158715EEB9A600CFE45C /* libSDL2.a */,
+				056D158915EEB9A600CFE45C /* testsdl.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		056D155315EEB8C800CFE45C /* CaveStory */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 056D157D15EEB8C800CFE45C /* Build configuration list for PBXNativeTarget "CaveStory" */;
+			buildPhases = (
+				056D155015EEB8C800CFE45C /* Sources */,
+				056D155115EEB8C800CFE45C /* Frameworks */,
+				056D155215EEB8C800CFE45C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0560063A15EEBC2D00A7CCD5 /* PBXTargetDependency */,
+			);
+			name = CaveStory;
+			productName = CaveStory;
+			productReference = 056D155415EEB8C800CFE45C /* CaveStory.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		056D154B15EEB8C700CFE45C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = CS;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 056D154E15EEB8C700CFE45C /* Build configuration list for PBXProject "CaveStory" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 056D154915EEB8C700CFE45C;
+			productRefGroup = 056D155515EEB8C800CFE45C /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 056D158115EEB9A600CFE45C /* Products */;
+					ProjectRef = 056D158015EEB9A600CFE45C /* SDL.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				056D155315EEB8C800CFE45C /* CaveStory */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		056D158715EEB9A600CFE45C /* libSDL2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.a;
+			remoteRef = 056D158615EEB9A600CFE45C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		056D158915EEB9A600CFE45C /* testsdl.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = testsdl.app;
+			remoteRef = 056D158815EEB9A600CFE45C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		056D155215EEB8C800CFE45C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				056D156715EEB8C800CFE45C /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		056D155015EEB8C800CFE45C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0560063A15EEBC2D00A7CCD5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libSDL;
+			targetProxy = 0560063915EEBC2D00A7CCD5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		056D156515EEB8C800CFE45C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				056D156615EEB8C800CFE45C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		056D157B15EEB8C800CFE45C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		056D157C15EEB8C800CFE45C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		056D157E15EEB8C800CFE45C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = "/Users/kernel_bug/sdl-1.3/include";
+				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		056D157F15EEB8C800CFE45C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = "/Users/kernel_bug/sdl-1.3/include";
+				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		056D154E15EEB8C700CFE45C /* Build configuration list for PBXProject "CaveStory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				056D157B15EEB8C800CFE45C /* Debug */,
+				056D157C15EEB8C800CFE45C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		056D157D15EEB8C800CFE45C /* Build configuration list for PBXNativeTarget "CaveStory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				056D157E15EEB8C800CFE45C /* Debug */,
+				056D157F15EEB8C800CFE45C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 056D154B15EEB8C700CFE45C /* Project object */;
+}

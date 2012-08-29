@@ -181,7 +181,9 @@ SDL_Surface *letter;
 			return 1;
 		}
 		
-		letters[i] = SDL_DisplayFormat(letter);
+		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
+		letters[i] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
+
 		SDL_FreeSurface(letter);
 	}
 	
@@ -221,7 +223,7 @@ SDL_Rect dstrect;
 			return 1;
 		}
 		
-		letters[i] = SDL_CreateRGBSurface(SDL_SRCCOLORKEY, top->w, top->h+SHADOW_OFFSET,
+		letters[i] = SDL_CreateRGBSurface(0, top->w, top->h+SHADOW_OFFSET,
 							format->BitsPerPixel, format->Rmask, format->Gmask,
 							format->Bmask, format->Amask);
 		if (!letters[i])
@@ -231,7 +233,7 @@ SDL_Rect dstrect;
 		}
 		
 		SDL_FillRect(letters[i], NULL, transp);
-		SDL_SetColorKey(letters[i], SDL_SRCCOLORKEY, transp);
+		SDL_SetColorKey(letters[i], SDL_TRUE, transp);
 		
 		dstrect.x = 0;
 		dstrect.y = SHADOW_OFFSET;
@@ -278,7 +280,7 @@ int x, y, i;
 		
 		// make character surface one pixel larger than the actual char so that there
 		// is some space between letters in autospaced text such as on the menus.
-		letter = SDL_CreateRGBSurface(SDL_SRCCOLORKEY, \
+		letter = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1,
 							format->BitsPerPixel, \
 							format->Rmask, format->Gmask,
@@ -303,9 +305,11 @@ int x, y, i;
 		SDL_BlitSurface(sheet, &srcrect, letter, &dstrect);
 		
 		// make background transparent and copy into final position
-		SDL_SetColorKey(letter, SDL_SRCCOLORKEY, SDL_MapRGB(format, 0, 0, 0));
+		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(format, 0, 0, 0));
+
+		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
+		letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
 		
-		letters[ch] = SDL_DisplayFormat(letter);
 		SDL_FreeSurface(letter);
 		
 		// advance to next position on sheet
@@ -341,14 +345,14 @@ SDL_Rect dstrect;
 	{
 		if (fgfont.letters[i])
 		{
-			letters[i] = SDL_CreateRGBSurface(SDL_SRCCOLORKEY, \
+			letters[i] = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1+SHADOW_OFFSET,
 							format->BitsPerPixel, \
 							format->Rmask, format->Gmask,
 							format->Bmask, format->Amask);
 			
 			SDL_FillRect(letters[i], NULL, transp);
-			SDL_SetColorKey(letters[i], SDL_SRCCOLORKEY, transp);
+			SDL_SetColorKey(letters[i], SDL_TRUE, transp);
 			
 			dstrect.x = 0;
 			dstrect.y = SHADOW_OFFSET;
@@ -377,7 +381,7 @@ void NXFont::ReplaceColor(SDL_Surface *sfc, uint32_t oldcolor, uint32_t newcolor
 		desired.g = (newcolor >> 8) & 0xff;
 		desired.b = (newcolor & 0xff);
 		
-		SDL_SetColors(sfc, &desired, oldcolor, 1);
+		SDL_SetPaletteColors(sfc->format->palette, &desired, oldcolor, 1);
 	}
 	else
 	#endif
@@ -510,7 +514,7 @@ static bool create_shade_sfc(void)
 	int ht = whitefont.letters['M']->h;
 	
 	SDL_PixelFormat *format = sdl_screen->format;
-	shadesfc = SDL_CreateRGBSurface(SDL_SRCALPHA | SDL_HWSURFACE, wd, ht,
+	shadesfc = SDL_CreateRGBSurface(0, wd, ht,
 							format->BitsPerPixel, format->Rmask, format->Gmask,
 							format->Bmask, format->Amask);
 	
@@ -521,7 +525,14 @@ static bool create_shade_sfc(void)
 	}
 	
 	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(format, 0, 0, 0));
-	SDL_SetAlpha(shadesfc, SDL_SRCALPHA, 128);
+
+	Uint8 alpha_value = 128;
+	if (shadesfc->format->Amask) {
+		alpha_value = 0xFF;
+	}
+	SDL_SetSurfaceAlphaMod(shadesfc, alpha_value);
+	SDL_SetSurfaceBlendMode(shadesfc, SDL_BLENDMODE_BLEND);
+
 	
 	return 0;
 }

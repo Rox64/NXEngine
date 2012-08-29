@@ -1,9 +1,6 @@
 
 // graphics routines
 #include <SDL.h>
-#ifndef __SDLSHIM__
-	#include <SDL/SDL_getenv.h>
-#endif
 
 #include <stdlib.h>
 #include "../config.h"
@@ -12,6 +9,10 @@
 #include "sprites.h"
 #include "../dirnames.h"
 #include "graphics.fdh"
+
+SDL_Window * window = NULL;
+SDL_Renderer * renderer = NULL;
+
 
 NXSurface *screen = NULL;				// created from SDL's screen
 static NXSurface *drawtarget = NULL;	// target of DrawRect etc; almost always screen
@@ -35,18 +36,18 @@ bool Graphics::init(int resolution)
 	{
 		screen_bpp = 16;	// the default
 		
-		#ifndef __SDLSHIM__
-		const SDL_VideoInfo *info;
+		// #ifndef __SDLSHIM__
+		// const SDL_VideoInfo *info;
 		
-		// it's faster if we create the SDL screen at the bpp of the real screen.
-		// max fps went from 120 to 160 on my X11 system this way.
-		if ((info = SDL_GetVideoInfo()))
-		{
-			stat("videoinfo: desktop bpp %d", info->vfmt->BitsPerPixel);
-			if (info->vfmt->BitsPerPixel > 8)
-				screen_bpp = info->vfmt->BitsPerPixel;
-		}
-		#endif
+		// // it's faster if we create the SDL screen at the bpp of the real screen.
+		// // max fps went from 120 to 160 on my X11 system this way.
+		// if ((info = SDL_GetVideoInfo()))
+		// {
+		// 	stat("videoinfo: desktop bpp %d", info->vfmt->BitsPerPixel);
+		// 	if (info->vfmt->BitsPerPixel > 8)
+		// 		screen_bpp = info->vfmt->BitsPerPixel;
+		// }
+		// #endif
 	}
 	
 	palette_reset();
@@ -67,6 +68,15 @@ void Graphics::close()
 {
 	stat("Graphics::Close()");
 	SDL_ShowCursor(true);
+	SDL_DestroyWindow(window); window = NULL;
+}
+
+bool Graphics::WindowVisible()
+{
+	Uint32 flags = SDL_GetWindowFlags(window);
+
+	return (flags & SDL_WINDOW_SHOWN) && !(flags & SDL_WINDOW_MINIMIZED) // SDL_APPACTIVE
+		&& (flags & SDL_WINDOW_INPUT_FOCUS);                              // SDL_APPINPUTFOCUS 
 }
 
 /*
@@ -75,33 +85,50 @@ void c------------------------------() {}
 
 bool Graphics::InitVideo()
 {
-SDL_Surface *sdl_screen;
-
 	if (drawtarget == screen) drawtarget = NULL;
 	if (screen) delete screen;
 	
-	uint32_t flags = SDL_SWSURFACE | SDL_HWPALETTE;
-	if (is_fullscreen) flags |= SDL_FULLSCREEN;
+	uint32_t window_flags = SDL_WINDOW_SHOWN;
+	if (is_fullscreen) window_flags |= SDL_WINDOW_FULLSCREEN;
 	
-	#ifndef __SDLSHIM__
-	putenv((char *)"SDL_VIDEO_CENTERED=1");
-	#endif
-	
-	stat("SDL_SetVideoMode: %dx%d @ %dbpp", SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, screen_bpp);
-	sdl_screen = SDL_SetVideoMode(SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, screen_bpp, flags);
-	if (!sdl_screen)
+	// #ifndef __SDLSHIM__
+	// putenv((char *)"SDL_VIDEO_CENTERED=1");
+	// #endif
+
+	if (window)
 	{
-		staterr("Graphics::InitVideo: error setting video mode");
+		stat("second call to Graphics::InitVideo()");
+		abort();
+	}
+
+	
+	stat("SDL_CreateWindow: %dx%d @ %dbpp", SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, screen_bpp);
+	window = SDL_CreateWindow("NXEngine", 
+		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE,
+		window_flags);
+
+	if (!window)
+	{
+		staterr("Graphics::InitVideo: error setting video mode (SDL_CreateWindow: %s)", SDL_GetError());
 		return 1;
 	}
+
+	SDL_Surface *sdl_screen = SDL_GetWindowSurface(window);
+
+	// renderer = SDL_CreateRenderer(win, -1, /*SDL_RENDERER_SOFTWARE | */SDL_RENDERER_ACCELERATED);
+	// if (!renderer)
+	// {
+	// 	staterr("Graphics::InitVideo: error setting video mode (SDL_CreateRenderer: %s)", SDL_GetError());
+	// 	return 1;	
+	// }
 	
-	if (use_palette && !(sdl_screen->flags & SDL_HWPALETTE))
-	{
-		staterr("Graphics::InitVideo: failed to obtain exclusive access to hardware palette");
-		exit(1);
-	}
+	// if (use_palette && !(sdl_screen->flags & SDL_HWPALETTE))
+	// {
+	// 	staterr("Graphics::InitVideo: failed to obtain exclusive access to hardware palette");
+	// 	exit(1);
+	// }
 	
-	SDL_WM_SetCaption("NXEngine", NULL);
 	SDL_ShowCursor(is_fullscreen == false);
 	
 	screen = new NXSurface(sdl_screen, false);

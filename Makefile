@@ -1,7 +1,10 @@
 TARGET :=bin/nx
 
-SDL_CFLAGS :=$(shell sdl-config --cflags)
-SDL_LDFAGS :=$(shell sdl-config --libs) -lSDL_ttf
+SDL2_PREFIX :=../sdl/SDL/build/root
+
+
+SDL_CFLAGS :=$(shell $(SDL2_PREFIX)/bin/sdl2-config --cflags)
+SDL_LDFAGS :=$(shell $(SDL2_PREFIX)/bin/sdl2-config --libs) -lSDL_ttf
 
 all: $(TARGET)
 

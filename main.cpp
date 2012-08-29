@@ -15,7 +15,7 @@ static int fps_so_far = 0;
 static uint32_t fpstimer = 0;
 
 #define GAME_WAIT			(1000/GAME_FPS)	// sets framerate
-#define VISFLAGS			(SDL_APPACTIVE | SDL_APPINPUTFOCUS)
+
 int framecount = 0;
 bool freezeframe = false;
 int flipacceltime = 0;
@@ -234,7 +234,7 @@ int32_t nexttick = 0;
 			nexttick = curtime + GAME_WAIT;
 			
 			// pause game if window minimized
-			if ((SDL_GetAppState() & VISFLAGS) != VISFLAGS)
+			if (!Graphics::WindowVisible())
 			{
 				AppMinimized();
 				nexttick = 0;
@@ -413,7 +413,7 @@ void AppMinimized(void)
 	
 	for(;;)
 	{
-		if ((SDL_GetAppState() & VISFLAGS) == VISFLAGS)
+		if (Graphics::WindowVisible())
 		{
 			break;
 		}

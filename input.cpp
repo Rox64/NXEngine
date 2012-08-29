@@ -2,7 +2,20 @@
 #include "nx.h"
 #include "input.fdh"
 
-uint8_t mappings[SDLK_LAST];
+#include <map>
+
+typedef std::map<SDL_Keycode, INPUTS> mappings_t;
+mappings_t mappings;
+
+INPUTS have_mapping(SDL_Keycode keycode)
+{
+	mappings_t::const_iterator it = mappings.find(keycode);
+	if (it != mappings.end())
+		return it->second;
+	else
+		return static_cast<INPUTS>(0xff);
+}
+
 
 bool inputs[INPUT_COUNT];
 bool lastinputs[INPUT_COUNT];
@@ -12,26 +25,7 @@ bool input_init(void)
 {
 	memset(inputs, 0, sizeof(inputs));
 	memset(lastinputs, 0, sizeof(lastinputs));
-	memset(mappings, 0xff, sizeof(mappings));
 	
-	// default mappings
-	#ifdef __SDLSHIM__
-	{
-		mappings[SDLK_LEFT] = LEFTKEY;
-		mappings[SDLK_RIGHT] = RIGHTKEY;
-		mappings[SDLK_UP] = UPKEY;
-		mappings[SDLK_DOWN] = DOWNKEY;
-		
-		mappings[SDLK_BTN3] = JUMPKEY;
-		mappings[SDLK_BTN4] = FIREKEY;
-		
-		mappings[SDLK_BTN1] = INVENTORYKEY;
-		mappings[SDLK_BTN2] = MAPSYSTEMKEY;
-		
-		mappings[SDLK_JOGDIAL_UP] = PREVWPNKEY;
-		mappings[SDLK_JOGDIAL_DOWN] = NEXTWPNKEY;
-	}
-	#else
 	{
 		mappings[SDLK_LEFT] = LEFTKEY;
 		mappings[SDLK_RIGHT] = RIGHTKEY;
@@ -63,7 +57,6 @@ bool input_init(void)
 		mappings[SDLK_c] = FRAME_ADVANCE_KEY;
 		mappings[SDLK_v] = DEBUG_FLY_KEY;
 	}
-	#endif
 	
 	return 0;
 }
@@ -75,20 +68,21 @@ void input_remap(int keyindex, int sdl_key)
 	stat("input_remap(%d => %d)", keyindex, sdl_key);
 	int old_mapping = input_get_mapping(keyindex);
 	if (old_mapping != -1)
-		mappings[old_mapping] = 0xff;
-	
-	mappings[sdl_key] = keyindex;
+	{
+		mappings.erase(static_cast<SDL_Keycode>(old_mapping));
+	}
+
+	mappings[static_cast<SDL_Keycode>(sdl_key)] = static_cast<INPUTS>(keyindex);
 }
 
 // get which SDL key triggers a given input
 int input_get_mapping(int keyindex)
 {
-int i;
-
-	for(i=0;i<=SDLK_LAST;i++)
+	mappings_t::const_iterator end = mappings.end();
+	for(mappings_t::const_iterator it = mappings.begin(); it != end; ++it)
 	{
-		if (mappings[i] == keyindex)
-			return i;
+		if (it->second == static_cast<INPUTS>(keyindex))
+			return it->first;
 	}
 	
 	return -1;
@@ -114,9 +108,11 @@ static const char *input_names[] =
 
 void input_set_mappings(int *array)
 {
-	memset(mappings, 0xff, sizeof(mappings));
+	mappings.clear();
 	for(int i=0;i<INPUT_COUNT;i++)
-		mappings[array[i]] = i;
+	{
+		mappings[array[i]] = static_cast<INPUTS>(i);
+	}
 }
 
 /*
@@ -178,7 +174,9 @@ int ino, key;
 				else
 				#endif	// __SDLSHIM__
 				{
-					ino = mappings[key];
+					stat("key event type = %d keycode = %d", (int)evt.type, (int)evt.key.keysym.sym);
+
+					ino = have_mapping(key);
 					if (ino != 0xff)
 						inputs[ino] = (evt.type == SDL_KEYDOWN);
 					

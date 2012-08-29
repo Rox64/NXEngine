@@ -37,7 +37,7 @@ int x, y, i;
 			return sfc;
 	}
 	
-	SDL_SetColors(screen->GetSDLSurface(), screenpal, 0, ncolors);
+	SDL_SetPaletteColors(screen->GetSDLSurface()->format->palette, screenpal, 0, ncolors);
 	return sfc;
 /*
 	// remap indexes in surface

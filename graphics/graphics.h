@@ -17,6 +17,8 @@ namespace Graphics
 {
 	bool init(int resolution);
 	void close();
+
+	bool WindowVisible();
 	
 	bool InitVideo();
 	void SetFullscreen(bool enable);

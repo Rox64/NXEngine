@@ -7,6 +7,8 @@
 #include "nxsurface.h"
 #include "nxsurface.fdh"
 
+
+
 #ifdef CONFIG_MUTABLE_SCALE
 	int SCALE = 3;
 #endif
@@ -57,7 +59,7 @@ bool NXSurface::AllocNew(int wd, int ht, NXFormat *format)
 {
 	Free();
 	
-	fSurface = SDL_CreateRGBSurface(SDL_SRCCOLORKEY, wd*SCALE, ht*SCALE, \
+	fSurface = SDL_CreateRGBSurface(0, wd*SCALE, ht*SCALE, \
 			format->BitsPerPixel, format->Rmask, format->Gmask, format->Bmask, format->Amask);
 	
 	if (!fSurface)
@@ -239,7 +241,11 @@ NXFormat *NXSurface::Format()
 
 void NXSurface::Flip()
 {
-	SDL_Flip(fSurface);
+	if (this == screen)
+	{
+		extern SDL_Window* window;
+		SDL_UpdateWindowSurface(window);
+	}
 }
 
 /*
@@ -278,7 +284,7 @@ SDL_Surface *scaled;
 	}
 	else
 	{
-		scaled = SDL_CreateRGBSurface(SDL_SRCCOLORKEY, \
+		scaled = SDL_CreateRGBSurface(0, \
 						original->w * SCALE, \
 						original->h * SCALE, \
 						original->format->BitsPerPixel, \
@@ -293,7 +299,7 @@ SDL_Surface *scaled;
 				SDL_GetRGB(i, original->format, &palette[i].r, &palette[i].g, &palette[i].b);
 			}
 			
-			SDL_SetColors(scaled, palette, 0, 256);
+			SDL_SetPaletteColors(scaled->format->palette, palette, 0, 256);
 		}
 		
 		// all the .pbm files are 8bpp, so I haven't had a reason
@@ -319,7 +325,7 @@ SDL_Surface *scaled;
 	if (use_colorkey)
 	{	// don't use SDL_RLEACCEL--it seems to actually make things a lot slower,
 		// especially on maps with motion tiles.
-		SDL_SetColorKey(scaled, SDL_SRCCOLORKEY, SDL_MapRGB(scaled->format, 0, 0, 0));
+		SDL_SetColorKey(scaled, SDL_TRUE, SDL_MapRGB(scaled->format, 0, 0, 0));
 	}
 	
 	if (use_palette)
@@ -331,7 +337,10 @@ SDL_Surface *scaled;
 	
 	if (use_display_format)
 	{
-		SDL_Surface *ret_sfc = SDL_DisplayFormat(scaled);
+		//SDL_Surface *ret_sfc = SDL_DisplayFormat(scaled);
+		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
+		SDL_Surface *ret_sfc = SDL_ConvertSurface(scaled, format, SDL_RLEACCEL);
+
 		SDL_FreeSurface(scaled);
 		
 		return ret_sfc;
@@ -373,7 +382,7 @@ void c------------------------------() {}
 
 void NXSurface::EnableColorKey()
 {
-	SDL_SetColorKey(fSurface, SDL_SRCCOLORKEY, SDL_MapRGB(fSurface->format, 0, 0, 0));
+	SDL_SetColorKey(fSurface, SDL_TRUE, SDL_MapRGB(fSurface->format, 0, 0, 0));
 }
 
 uint32_t NXSurface::MapColor(uint8_t r, uint8_t g, uint8_t b)

@@ -70,14 +70,6 @@ typedef uint32			perform_code;
 extern const char *B_EMPTY_STRING;
 #endif
 
-#define INT8_MAX	0x7f
-#define INT16_MAX	0x7fff
-#define INT32_MAX	0x7fffffff
-#define INT64_MAX	0x7fffffffffffffff
-#define UINT8_MAX	0xff
-#define UINT16_MAX	0xffff
-#define UINT32_MAX	0xffffffffffffffff
-
 /* min and max comparisons */
 #ifndef __cplusplus
 #	ifndef min

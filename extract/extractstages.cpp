@@ -12,6 +12,8 @@
 #include "../maprecord.h"
 #include "extractstages.fdh"
 
+#include "fileio.h"
+
 using safemode::moveto;
 using safemode::status;
 using safemode::print;
@@ -94,7 +96,7 @@ int i;
 	}
 	
 	// write out
-	FILE *fpo = fileopen("stage.dat", "wb");
+	FILE *fpo = fileopen("stage.dat", "wb", ro_filesys_path);
 	if (!fpo)
 	{
 		status("failed to open stage.dat for writing");

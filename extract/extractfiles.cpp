@@ -9,6 +9,8 @@
 #include "../graphics/safemode.h"
 #include "extractfiles.fdh"
 
+#include "fileio.h"
+
 #ifdef __MINGW32__
 	#include <io.h>
 #endif
@@ -202,7 +204,7 @@ bool first_crc_failure = true;
 		// write out the file
 		createdir(outfilename);
 		
-		FILE *fp = fileopen(outfilename, "wb");
+		FILE *fp = fileopen(outfilename, "wb", ro_filesys_path);
 		if (!fp)
 		{
 			status("Failed to open '%s' for writing.", outfilename);

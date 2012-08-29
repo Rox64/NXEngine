@@ -7,6 +7,8 @@
 #include "basics.h"
 #include "misc.fdh"
 
+#include "../platform.h"
+
 #define MAXBUFSIZE		1024
 char logfilename[64] = { 0 };
 void writelog(const char *buf, bool append_cr);
@@ -22,7 +24,7 @@ void writelog(const char *buf, bool append_cr)
 {
 FILE *fp;
 
-	fp = fileopen(logfilename, "a+");
+	fp = fileopenRW(logfilename, "a+");
 	if (fp)
 	{
 		fputs(buf, fp);

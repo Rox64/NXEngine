@@ -10,6 +10,8 @@
 #include "basics.h"
 #include "misc.fdh"
 
+#include "../platform.h"
+
 void stat(const char *fmt, ...);
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -219,7 +221,8 @@ bool file_exists(const char *fname)
 {
 FILE *fp;
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenRO(fname);
+	if (!fp) fp = fileopenRW(fname, "rb");
 	if (!fp) return 0;
 	fclose(fp);
 	return 1;

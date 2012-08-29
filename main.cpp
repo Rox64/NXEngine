@@ -26,7 +26,7 @@ bool inhibit_loadfade = false;
 bool error = false;
 bool freshstart;
 	
-	SetLogFilename("debug.txt");
+	//SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		staterr("ack, sdl_init failed: %s.", SDL_GetError());

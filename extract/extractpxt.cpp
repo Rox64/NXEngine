@@ -8,6 +8,8 @@
 #include "../common/basics.h"
 #include "extractpxt.fdh"
 
+#include "fileio.h"
+
 using safemode::moveto;
 using safemode::status;
 
@@ -161,7 +163,7 @@ int s, c, i;
 		status("[ %s ]", outfilename);
 		
 		mkdir("pxt", 0755);
-		FILE *fpo = fileopen(outfilename, "wb");
+		FILE *fpo = fileopen(outfilename, "wb", ro_filesys_path);
 		if (!fpo)
 		{
 			status("failed to open %s", outfilename);

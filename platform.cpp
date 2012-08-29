@@ -5,8 +5,13 @@
 #include "platform.fdh"
 
 
+#ifdef USE_RO_FILESYS
+char const* ro_filesys_path = "./ro";
+char const* rw_filesys_path = "./rw";
+#else
 char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";
+#endif
 
 #ifndef __SDLSHIM__
 

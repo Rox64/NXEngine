@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "replay.h"
 #include "settings.fdh"
+#include "platform.h"
 
 const char *setfilename = "settings.dat";
 const uint16_t SETTINGS_VERSION = 0x1602;		// serves as both a version and magic
@@ -71,7 +72,7 @@ FILE *fp;
 
 	stat("Loading settings...");
 	
-	fp = fileopen(setfilename, "rb");
+	fp = fileopenRW(setfilename, "rb");
 	if (!fp)
 	{
 		stat("Couldn't open file %s.", setfilename);
@@ -99,7 +100,7 @@ FILE *fp;
 		setfile = &normal_settings;
 	
 	stat("Writing settings...");
-	fp = fileopen(setfilename, "wb");
+	fp = fileopenRW(setfilename, "wb");
 	if (!fp)
 	{
 		stat("Couldn't open file %s.", setfilename);

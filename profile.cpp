@@ -21,7 +21,7 @@ FILE *fp;
 	stat("Loading profile from %s...", pfname);
 	memset(file, 0, sizeof(Profile));
 	
-	fp = fileopen(pfname, "rb");
+	fp = fileopenRW(pfname, "rb");
 	if (!fp)
 	{
 		staterr("profile_load: unable to open '%s'", pfname);
@@ -126,7 +126,7 @@ FILE *fp;
 int i;
 
 	//stat("Writing saved game to %s...", pfname);
-	fp = fileopen(pfname, "wb");
+	fp = fileopenRW(pfname, "wb");
 	if (!fp)
 	{
 		staterr("profile_save: unable to open %s", pfname);

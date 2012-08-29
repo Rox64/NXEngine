@@ -7,6 +7,8 @@
 #include "../graphics/safemode.h"
 #include "extract.fdh"
 
+#include "fileio.h"
+
 using safemode::print;
 using safemode::status;
 using safemode::clearstatus;
@@ -14,6 +16,7 @@ using safemode::clear;
 using safemode::moveto;
 using safemode::run_until_key;
 static const char *filename = "Doukutsu.exe";
+
 
 static int extract_do(void)
 {
@@ -23,7 +26,7 @@ FILE *fp;
 	moveto(SM_UPPER_THIRD);
 	print("= Extracting Files =");
 	
-	fp = fileopen(filename, "rb");
+	fp = fileopen(filename, "rb", ro_filesys_path);
 	if (!fp)
 	{
 		moveto(SM_CENTER);

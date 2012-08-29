@@ -1,4 +1,11 @@
+SEPARATE_FILESYS :=false
+
+ifeq ($(SEPARATE_FILESYS),true)
+TARGET :=bin_ro/nx
+CFLAGS +=-DUSE_RO_FILESYS
+else
 TARGET :=bin/nx
+endif
 
 SDL2_PREFIX :=../sdl/root
 
@@ -6,7 +13,7 @@ SDL2_PREFIX :=../sdl/root
 SDL_CFLAGS :=$(shell $(SDL2_PREFIX)/bin/sdl2-config --cflags)
 SDL_LDFAGS :=$(shell $(SDL2_PREFIX)/bin/sdl2-config --libs) 
 
-CFLAGS :=$(SDL_CFLAGS)
+CFLAGS +=$(SDL_CFLAGS)
 LDFLAGS :=$(SDL_LDFAGS) -lSDL2_ttf
 
 all: $(TARGET)
@@ -155,7 +162,7 @@ ObjManager.o:	ObjManager.cpp ObjManager.fdh nx.h config.h \
 		sound/sound.h common/llist.h
 	g++ -g -O2 -c ObjManager.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o ObjManager.o
 
-map.o:	map.cpp map.fdh nx.h config.h \
+map.o:	map.cpp map.fdh nx.h platform.h config.h \
 		common/basics.h common/BList.h common/SupportDefs.h \
 		common/StringList.h common/DBuffer.h common/DString.h \
 		common/InitList.h graphics/graphics.h graphics/nxsurface.h \
@@ -269,7 +276,7 @@ TextBox/SaveSelect.o:	TextBox/SaveSelect.cpp TextBox/SaveSelect.fdh nx.h config.
 		sound/sound.h profile.h inventory.h
 	g++ -g -O2 -c TextBox/SaveSelect.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o TextBox/SaveSelect.o
 
-profile.o:	profile.cpp profile.fdh nx.h config.h \
+profile.o:	profile.cpp profile.fdh nx.h config.h platform.h\
 		common/basics.h common/BList.h common/SupportDefs.h \
 		common/StringList.h common/DBuffer.h common/DString.h \
 		common/InitList.h graphics/graphics.h graphics/nxsurface.h \
@@ -288,7 +295,7 @@ profile.o:	profile.cpp profile.fdh nx.h config.h \
 		sound/sound.h profile.h
 	g++ -g -O2 -c profile.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o profile.o
 
-settings.o:	settings.cpp settings.fdh settings.h input.h \
+settings.o:	settings.cpp settings.fdh settings.h input.h platform.h \
 		replay.h common/FileBuffer.h common/DBuffer.h \
 		common/basics.h
 	g++ -g -O2 -c settings.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o settings.o
@@ -413,7 +420,7 @@ statusbar.o:	statusbar.cpp statusbar.fdh nx.h config.h \
 		sound/sound.h
 	g++ -g -O2 -c statusbar.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o statusbar.o
 
-tsc.o:	tsc.cpp tsc.fdh nx.h config.h \
+tsc.o:	tsc.cpp tsc.fdh nx.h config.h platform.h \
 		common/basics.h common/BList.h common/SupportDefs.h \
 		common/StringList.h common/DBuffer.h common/DString.h \
 		common/InitList.h graphics/graphics.h graphics/nxsurface.h \
@@ -489,7 +496,7 @@ input.o:	input.cpp input.fdh nx.h config.h \
 		sound/sound.h
 	g++ -g -O2 -c input.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o input.o
 
-replay.o:	replay.cpp replay.fdh nx.h config.h \
+replay.o:	replay.cpp replay.fdh nx.h config.h platform.h \
 		common/basics.h common/BList.h common/SupportDefs.h \
 		common/StringList.h common/DBuffer.h common/DString.h \
 		common/InitList.h graphics/graphics.h graphics/nxsurface.h \
@@ -603,7 +610,7 @@ console.o:	console.cpp console.fdh nx.h config.h \
 		sound/sound.h
 	g++ -g -O2 -c console.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o console.o
 
-niku.o:	niku.cpp niku.fdh
+niku.o:	niku.cpp niku.fdh platform.h
 	g++ -g -O2 -c niku.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o niku.o
 
 ai/ai.o:	ai/ai.cpp ai/ai.fdh ai/stdai.h nx.h \
@@ -2177,11 +2184,11 @@ sound/sslib.o:	sound/sslib.cpp sound/sslib.fdh common/basics.h sound/sslib.h
 	g++ -g -O2 -c sound/sslib.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o sound/sslib.o
 
 sound/org.o:	sound/org.cpp sound/org.fdh common/basics.h sound/org.h \
-		sound/pxt.h sound/sslib.h
+		sound/pxt.h sound/sslib.h platform.h
 	g++ -g -O2 -c sound/org.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o sound/org.o
 
 sound/pxt.o:	sound/pxt.cpp sound/pxt.fdh config.h sound/pxt.h \
-		common/basics.h sound/sslib.h
+		common/basics.h sound/sslib.h platform.h
 	g++ -g -O2 -c sound/pxt.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o sound/pxt.o
 
 siflib/sif.o:	siflib/sif.cpp siflib/sif.fdh siflib/sif.h siflib/sifloader.h \
@@ -2190,7 +2197,7 @@ siflib/sif.o:	siflib/sif.cpp siflib/sif.fdh siflib/sif.h siflib/sifloader.h \
 	g++ -g -O2 -c siflib/sif.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o siflib/sif.o
 
 siflib/sifloader.o:	siflib/sifloader.cpp siflib/sifloader.fdh siflib/sifloader.h common/BList.h \
-		common/SupportDefs.h
+		common/SupportDefs.h platform.h
 	g++ -g -O2 -c siflib/sifloader.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o siflib/sifloader.o
 
 siflib/sectSprites.o:	siflib/sectSprites.cpp siflib/sectSprites.fdh common/DBuffer.h common/basics.h \
@@ -2202,18 +2209,18 @@ siflib/sectStringArray.o:	siflib/sectStringArray.cpp siflib/sectStringArray.fdh 
 		common/BList.h common/SupportDefs.h siflib/sectStringArray.h
 	g++ -g -O2 -c siflib/sectStringArray.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o siflib/sectStringArray.o
 
-extract/extract.o:	extract/extract.cpp extract/extract.fdh graphics/safemode.h
+extract/extract.o:	extract/extract.cpp extract/extract.fdh graphics/safemode.h extract/fileio.h
 	g++ -g -O2 -c extract/extract.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o extract/extract.o
 
-extract/extractpxt.o:	extract/extractpxt.cpp extract/extractpxt.fdh graphics/safemode.h common/basics.h
+extract/extractpxt.o:	extract/extractpxt.cpp extract/extractpxt.fdh graphics/safemode.h common/basics.h extract/fileio.h
 	g++ -g -O2 -c extract/extractpxt.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o extract/extractpxt.o
 
-extract/extractfiles.o:	extract/extractfiles.cpp extract/extractfiles.fdh common/basics.h graphics/safemode.h
+extract/extractfiles.o:	extract/extractfiles.cpp extract/extractfiles.fdh common/basics.h graphics/safemode.h extract/fileio.h
 	g++ -g -O2 -c extract/extractfiles.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o extract/extractfiles.o
 
 extract/extractstages.o:	extract/extractstages.cpp extract/extractstages.fdh graphics/safemode.h common/StringList.h \
 		common/BList.h common/SupportDefs.h common/basics.h \
-		stagedata.h maprecord.h
+		stagedata.h maprecord.h extract/fileio.h
 	g++ -g -O2 -c extract/extractstages.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o extract/extractstages.o
 
 extract/crc.o:	extract/crc.cpp extract/crc.fdh
@@ -2268,10 +2275,10 @@ common/DString.o:	common/DString.cpp common/DString.fdh common/DString.h common/
 common/bufio.o:	common/bufio.cpp common/bufio.fdh common/DBuffer.h common/basics.h
 	g++ -g -O2 -c common/bufio.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o common/bufio.o
 
-common/stat.o:	common/stat.cpp common/stat.fdh common/basics.h
+common/stat.o:	common/stat.cpp common/stat.fdh common/basics.h platform.h
 	g++ -g -O2 -c common/stat.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o common/stat.o
 
-common/misc.o:	common/misc.cpp common/misc.fdh common/basics.h
+common/misc.o:	common/misc.cpp common/misc.fdh common/basics.h platform.h
 	g++ -g -O2 -c common/misc.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o common/misc.o
 
 

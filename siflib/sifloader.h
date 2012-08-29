@@ -67,14 +67,14 @@ public:
 //  from using the "Load" object; because the changes are finalized to disk
 //  until you call EndSave().
 
-	// allocate memory etc to save a new file from provided data.
-	bool BeginSave();
+	// // allocate memory etc to save a new file from provided data.
+	// bool BeginSave();
 	
-	// add a section to the SIF of the given type, containing the given data.
-	bool AddSection(int type, uint8_t *data, int datalen);
+	// // add a section to the SIF of the given type, containing the given data.
+	// bool AddSection(int type, uint8_t *data, int datalen);
 	
-	// finalize the changes and write them to disk in the given file.
-	bool EndSave(const char *filename);
+	// // finalize the changes and write them to disk in the given file.
+	// bool EndSave(const char *filename);
 	
 //	---------------------------------------
 

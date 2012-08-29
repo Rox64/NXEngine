@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <endian.h>
 
 #include "../common/basics.h"
 #include "org.h"
@@ -13,6 +12,7 @@
 #include "org.fdh"
 
 #include "../platform.h"
+#include "../common/endian.h"
 
 //#define QUIET
 #define DRUM_PXT

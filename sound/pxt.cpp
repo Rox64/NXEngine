@@ -6,13 +6,16 @@
 #include <math.h>			// for sin()
 #include <stdlib.h>
 #include <string.h>
-#include <endian.h>
+
+
+
 
 #include "../config.h"
 #include "pxt.h"
 #include "sslib.h"
 
 #include "../platform.h"
+#include "../common/endian.h"
 
 #include "pxt.fdh"
 

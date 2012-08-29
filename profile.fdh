@@ -14,7 +14,7 @@ bool AnyProfileExists();
 /* located in platform.cpp */
 
 //--------------------[referenced from profile.cpp]------------------//
-FILE *fileopen(const char *fname, const char *mode);
+//FILE *fileopen(const char *fname, const char *mode);
 
 
 /* located in tsc.cpp */

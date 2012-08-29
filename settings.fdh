@@ -12,7 +12,7 @@ bool settings_save(Settings *setfile);
 /* located in platform.cpp */
 
 //-------------------[referenced from settings.cpp]------------------//
-FILE *fileopen(const char *fname, const char *mode);
+//FILE *fileopen(const char *fname, const char *mode);
 
 
 /* located in input.cpp */

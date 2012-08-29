@@ -12,3 +12,4 @@ bin/data/*
 bin/endpic/*
 bin/org/*
 bin/pxt/*
+bin_ro/*

@@ -1,6 +1,7 @@
 
 #include "../config.h"
 #include <SDL.h>
+#include <SDL_rwops.h>
 
 #ifdef CONFIG_ENABLE_TTF
 	#include <SDL/SDL_ttf.h>
@@ -63,7 +64,7 @@ bool error = false;
 	{
 		stat("fonts: using bitmapped from %s", bmpfontfile);
 		
-		SDL_Surface *sheet = SDL_LoadBMP(bmpfontfile);
+		SDL_Surface *sheet = SDL_LoadBMP_RW(SDL_RWFromFP(fileopenRO(bmpfontfile), SDL_TRUE), 1);
 		if (!sheet)
 		{
 			staterr("Couldn't open bitmap font file: '%s'", bmpfontfile);
@@ -89,7 +90,7 @@ bool error = false;
 			return 1;
 		}
 		
-		TTF_Font *font = TTF_OpenFont(ttffontfile, pointsize[SCALE]);
+		TTF_Font *font = TTF_OpenFontRW(SDL_RWFromFP(fileopenRO(ttffontfile), SDL_TRUE), 1, pointsize[SCALE]);
 		if (!font)
 		{
 			staterr("Couldn't open font: '%s'", ttffontfile);

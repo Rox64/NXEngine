@@ -6,7 +6,7 @@
 #include "graphics.h"
 #include "nxsurface.h"
 #include "nxsurface.fdh"
-
+#include "../platform.h"
 
 
 #ifdef CONFIG_MUTABLE_SCALE
@@ -84,7 +84,7 @@ SDL_Surface *image;
 		use_display_format = settings->displayformat;
 	}
 	
-	image = SDL_LoadBMP(pbm_name);
+	image = SDL_LoadBMP_RW(SDL_RWFromFP(fileopenRO(pbm_name), SDL_TRUE), 1);
 	if (!image)
 	{
 		staterr("NXSurface::LoadImage: load failed of '%s'!", pbm_name);

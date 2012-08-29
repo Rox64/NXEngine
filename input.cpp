@@ -1,8 +1,9 @@
+#include <map>
+
 
 #include "nx.h"
 #include "input.fdh"
 
-#include <map>
 
 typedef std::map<SDL_Keycode, INPUTS> mappings_t;
 mappings_t mappings;

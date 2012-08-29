@@ -18,7 +18,7 @@ LDFLAGS :=$(SDL_LDFAGS) -lSDL2_ttf
 
 all: $(TARGET)
 
-bin:
+$(dir $(TARGET)):
 	mkdir -p $@
 
 $(TARGET):  main.o game.o object.o ObjManager.o \
@@ -50,7 +50,7 @@ $(TARGET):  main.o game.o object.o ObjManager.o \
 	 autogen/objnames.o stagedata.o common/FileBuffer.o common/InitList.o common/BList.o \
 	 common/StringList.o common/DBuffer.o common/DString.o common/bufio.o common/stat.o \
 	 common/misc.o \
-	 bin
+	 $(dir $(TARGET))
 	g++ -o $(TARGET) \
 	 main.o game.o object.o ObjManager.o \
 	 map.o TextBox/TextBox.o TextBox/YesNoPrompt.o TextBox/ItemImage.o TextBox/StageSelect.o \

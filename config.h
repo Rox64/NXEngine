@@ -16,4 +16,7 @@
 // do image scaling in hardware via OpenGL
 //#define CONFIG_OPENGL
 
+// show virtual joystick
+#define CONFIG_USE_VJOY
+
 #endif

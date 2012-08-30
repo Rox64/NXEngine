@@ -27,7 +27,7 @@ $(TARGET):  main.o game.o object.o ObjManager.o \
 	 caret.o slope.o player.o playerstats.o p_arms.o \
 	 statusbar.o tsc.o screeneffect.o floattext.o input.o \
 	 replay.o trig.o inventory.o map_system.o debug.o \
-	 console.o niku.o ai/ai.o ai/first_cave/first_cave.o ai/village/village.o \
+	 console.o niku.o vjoy.o ai/ai.o ai/first_cave/first_cave.o ai/village/village.o \
 	 ai/village/balrog_boss_running.o ai/village/ma_pignon.o ai/egg/egg.o ai/egg/igor.o ai/egg/egg2.o \
 	 ai/weed/weed.o ai/weed/balrog_boss_flying.o ai/weed/frenzied_mimiga.o ai/sand/sand.o ai/sand/puppy.o \
 	 ai/sand/curly_boss.o ai/sand/toroko_frenzied.o ai/maze/maze.o ai/maze/critter_purple.o ai/maze/gaudi.o \
@@ -58,7 +58,7 @@ $(TARGET):  main.o game.o object.o ObjManager.o \
 	 caret.o slope.o player.o playerstats.o p_arms.o \
 	 statusbar.o tsc.o screeneffect.o floattext.o input.o \
 	 replay.o trig.o inventory.o map_system.o debug.o \
-	 console.o niku.o ai/ai.o ai/first_cave/first_cave.o ai/village/village.o \
+	 console.o niku.o vjoy.o ai/ai.o ai/first_cave/first_cave.o ai/village/village.o \
 	 ai/village/balrog_boss_running.o ai/village/ma_pignon.o ai/egg/egg.o ai/egg/igor.o ai/egg/egg2.o \
 	 ai/weed/weed.o ai/weed/balrog_boss_flying.o ai/weed/frenzied_mimiga.o ai/sand/sand.o ai/sand/puppy.o \
 	 ai/sand/curly_boss.o ai/sand/toroko_frenzied.o ai/maze/maze.o ai/maze/critter_purple.o ai/maze/gaudi.o \
@@ -99,7 +99,8 @@ main.o:	main.cpp main.fdh nx.h config.h \
 		screeneffect.h settings.h slope.h \
 		player.h p_arms.h ai/weapons/whimstar.h \
 		replay.h common/FileBuffer.h platform.h \
-		sound/sound.h graphics/safemode.h
+		sound/sound.h graphics/safemode.h \
+		vjoy.h
 	g++ -g -O2 -c main.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o main.o
 
 game.o:	game.cpp game.fdh nx.h config.h \
@@ -612,6 +613,9 @@ console.o:	console.cpp console.fdh nx.h config.h \
 
 niku.o:	niku.cpp niku.fdh platform.h
 	g++ -g -O2 -c niku.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o niku.o
+
+vjoy.o: vjoy.cpp vjoy.h input.h graphics/graphics.h
+	g++ -g -O2 -c vjoy.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o vjoy.o
 
 ai/ai.o:	ai/ai.cpp ai/ai.fdh ai/stdai.h nx.h \
 		config.h common/basics.h common/BList.h \

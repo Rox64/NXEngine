@@ -26,13 +26,13 @@ bool settings_load(Settings *setfile)
 		stat("No saved settings; using defaults.");
 		
 		memset(setfile, 0, sizeof(Settings));
-		setfile->resolution = 2;		// 640x480 Windowed, should be safe value
+		setfile->resolution = 3;		// 640x480 Windowed, should be safe value
 		setfile->last_save_slot = 0;
 		setfile->multisave = true;
 		
 		setfile->enable_debug_keys = false;
-		setfile->sound_enabled = true;
-		setfile->music_enabled = 1;	// both Boss and Regular music
+		setfile->sound_enabled = false;
+		setfile->music_enabled = 0;	// both Boss and Regular music
 		
 		setfile->instant_quit = false;
 		setfile->emulate_bugs = false;
@@ -46,6 +46,8 @@ bool settings_load(Settings *setfile)
 		// down. This goes against established wisdom so if you want it back on,
 		// run "displayformat 1" in the console and restart.
 		setfile->displayformat = false;
+        
+        setfile->show_fps = true;
 		
 		return 1;
 	}

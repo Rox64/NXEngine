@@ -106,9 +106,9 @@ void VJoy::ProcessInput(SDL_Event const & evt)
       if (vkeys[i].x < 0)
          continue;
 
-      if (vkeys[i].point_in(x, y))
-      {
-         inputs[i] = (evt.type == SDL_FINGERDOWN || evt.type == SDL_FINGERMOTION);
-      }
+
+      inputs[i] = vkeys[i].point_in(x, y) &&
+         (evt.type == SDL_FINGERDOWN || evt.type == SDL_FINGERMOTION);
+
    }
 }

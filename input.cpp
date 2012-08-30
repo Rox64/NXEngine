@@ -4,6 +4,8 @@
 
 #include <map>
 
+#include "vjoy.h"
+
 typedef std::map<SDL_Keycode, INPUTS> mappings_t;
 mappings_t mappings;
 
@@ -208,6 +210,14 @@ int ino, key;
 				}
 			}
 			break;
+
+			case SDL_FINGERUP:
+			case SDL_FINGERDOWN:
+			case SDL_FINGERMOTION:
+			{
+				VJoy::ProcessInput(evt);
+			}
+			break;
 			
 			case SDL_QUIT:
 			{
@@ -215,6 +225,7 @@ int ino, key;
 				game.running = false;
 			}
 			break;
+
 		}
 	}
 }

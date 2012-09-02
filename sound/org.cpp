@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <endian.h>
+
+#if !defined(WIN32)
+# include <endian.h>
+#endif
 
 #include "../common/basics.h"
 #include "org.h"

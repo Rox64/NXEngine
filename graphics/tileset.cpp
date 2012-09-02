@@ -1,5 +1,7 @@
 
 // manages the tileset
+#include <cstdio>
+
 #include "graphics.h"
 #include "tileset.h"
 #include "tileset.fdh"

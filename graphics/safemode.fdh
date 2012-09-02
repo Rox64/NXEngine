@@ -4,7 +4,6 @@
 /* located in main.cpp */
 
 //---------------[referenced from graphics/safemode.cpp]-------------//
-void SDL_Delay(int ms);
 
 
 /* located in input.cpp */

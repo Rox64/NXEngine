@@ -6,7 +6,7 @@
 #include "options.h"
 namespace Options {
 
-class ODItem;
+struct ODItem;
 
 enum OD_TYPES
 {

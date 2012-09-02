@@ -12,6 +12,8 @@
 #include "../maprecord.h"
 #include "extractstages.fdh"
 
+#include "../platform.h"
+
 #include "fileio.h"
 
 using safemode::moveto;

@@ -5,7 +5,6 @@
 #include <time.h>
 
 #include "basics.h"
-#include "misc.fdh"
 
 #include "../platform.h"
 
@@ -16,7 +15,7 @@ void writelog(const char *buf, bool append_cr);
 
 void SetLogFilename(const char *fname)
 {
-	maxcpy(logfilename, fname, sizeof(logfilename));
+	strncpy(logfilename, fname, sizeof(logfilename));
 	remove(logfilename);
 }
 

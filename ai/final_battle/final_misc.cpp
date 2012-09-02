@@ -1,6 +1,10 @@
 
 #include "../stdai.h"
-#include "final_misc.fdh"
+
+void ai_mimiga_caged(Object *o);
+void ai_doctor_ghost(Object *o);
+void ai_red_energy(Object *o);
+
 
 INITFUNC(AIRoutines)
 {

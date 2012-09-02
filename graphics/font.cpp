@@ -64,12 +64,12 @@ bool error = false;
 	{
 		stat("fonts: using bitmapped from %s", bmpfontfile);
 		
-		SDL_Surface *sheet = SDL_LoadBMP_RW(SDL_RWFromFP(fileopenRO(bmpfontfile), SDL_TRUE), 1);
-		if (!sheet)
-		{
-			staterr("Couldn't open bitmap font file: '%s'", bmpfontfile);
-			return 1;
-		}
+		FILE* fp = fileopenRO(bmpfontfile);
+		if (!fp) { staterr("Couldn't open bitmap font file: '%s'", bmpfontfile); return 1; }
+		SDL_RWops* rwops = SDL_RWFromFP(fp, SDL_TRUE);
+		if (!rwops) { staterr("Couldn't open bitmap font file: SDL_RWFromFP: %s", SDL_GetError()); return 1; }
+		SDL_Surface *sheet = SDL_LoadBMP_RW(rwops, 1);
+		if (!sheet) { staterr("Couldn't open bitmap font file: SDL_LoadBMP_RW: %s", SDL_GetError()); return 1; }
 		
 		uint32_t fgindex = SDL_MapRGB(sheet->format, 255, 255, 255);
 		

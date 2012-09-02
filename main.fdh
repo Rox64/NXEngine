@@ -15,7 +15,6 @@ void visible_warning(const char *fmt, ...);
 void speed_test(void);
 void speed_test(void);
 void org_test_miniloop(void);
-void SDL_Delay(int ms);
 
 
 /* located in game.cpp */

@@ -7,7 +7,7 @@
 
 // SDL_ttf support. if turned off SDL_ttf will not be required but only
 // bitmap fonts will be supported.
-#define CONFIG_ENABLE_TTF
+//#define CONFIG_ENABLE_TTF
 
 // include the Doukutsu data-file extractor in the build
 // (it's needed only the first time the program is run).

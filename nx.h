@@ -36,7 +36,7 @@ class Object;
 
 // don't use this, use fileopen() instead.
 // some platforms are retarded and need special workarounds (read: WinCE)
-#pragma	GCC poison		fopen
+//#pragma	GCC poison		fopen
 // FILE *fileopen(const char *fname, const char *mode);
 FILE *fileopenRO(const char *fname);
 FILE *fileopenRW(const char *fname, const char *mode);

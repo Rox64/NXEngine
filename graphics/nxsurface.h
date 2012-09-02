@@ -12,7 +12,7 @@
 	#define SCALE		1
 #endif
 
-struct NXSurface;
+class NXSurface;
 extern NXSurface *screen;
 
 struct NXColor

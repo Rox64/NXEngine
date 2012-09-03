@@ -44,7 +44,7 @@ bool freshstart;
 	settings_load();
 	
 	if (Graphics::init(settings->resolution)) { staterr("Failed to initialize graphics."); return 1; }
-	//if (font_init()) { staterr("Failed to load font."); return 1; }
+	if (font_init()) { staterr("Failed to load font."); return 1; }
 	
 	//speed_test();
 	//return 1;

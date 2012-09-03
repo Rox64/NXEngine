@@ -30,7 +30,9 @@ const char *bmpfontfile = "smalfont.bmp";
 const char *ttffontfile = "font.ttf";
 
 //static SDL_Surface *sdl_screen = NULL;
-static SDL_Surface *shadesfc = NULL;
+//static SDL_Surface *shadesfc = NULL;
+static SDL_Texture* tshadesfc = NULL;
+static int shadesfc_h = 0;
 
 static bool initilized = false;
 static bool rendering = true;
@@ -44,6 +46,8 @@ NXFont shadowfont;		// white letters w/ drop shadow
 
 // point sizes for each valid scaling factor
 int pointsize[] = { -1,  8, 17, 26 };
+
+extern SDL_Renderer * renderer;
 
 /*
 void c------------------------------() {}
@@ -105,6 +109,11 @@ bool error = false;
 		TTF_CloseFont(font);
 	}
 	#endif
+
+	error |= whitefont.InitTextures();
+	error |= greenfont.InitTextures();
+	error |= bluefont.InitTextures();
+	error |= shadowfont.InitTextures();
 	
 	error |= create_shade_sfc();
 	if (error) return 1;
@@ -138,6 +147,7 @@ void c------------------------------() {}
 NXFont::NXFont()
 {
 	memset(letters, 0, sizeof(letters));
+	memset(tletters, 0, sizeof(tletters));
 }
 
 NXFont::~NXFont()
@@ -151,6 +161,8 @@ void NXFont::free()
 	{
 		if (letters[i]) SDL_FreeSurface(letters[i]);
 		letters[i] = NULL;
+		if (tletters[i]) SDL_DestroyTexture(tletters[i]);
+		tletters[i] = NULL;
 	}
 }
 
@@ -260,7 +272,7 @@ void c------------------------------() {}
 // color: the color you want the letters to be.
 bool NXFont::InitBitmapChars(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color)
 {
-SDL_PixelFormat *format = screen->Format();
+SDL_PixelFormat *format = sheet->format;
 SDL_Rect srcrect, dstrect;
 SDL_Surface *letter;
 int x, y, i;
@@ -308,10 +320,11 @@ int x, y, i;
 		// make background transparent and copy into final position
 		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(format, 0, 0, 0));
 
-		SDL_PixelFormat * format = screen->Format();
-		letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
-		
-		SDL_FreeSurface(letter);
+		//SDL_PixelFormat * format = screen->Format();
+		//letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
+		//
+		//SDL_FreeSurface(letter);
+		letters[ch] = letter;
 		
 		// advance to next position on sheet
 		x += BITMAP_SPAC_WIDTH;
@@ -329,7 +342,7 @@ int x, y, i;
 bool NXFont::InitBitmapCharsShadowed(SDL_Surface *sheet, uint32_t fgcolor, \
 									uint32_t color, uint32_t shadowcolor)
 {
-SDL_PixelFormat *format = screen->Format();
+SDL_PixelFormat *format = sheet->format;
 NXFont fgfont, shadowfont;
 SDL_Rect dstrect;
 
@@ -368,6 +381,24 @@ SDL_Rect dstrect;
 	return 0;
 }
 
+
+bool NXFont::InitTextures()
+{
+	for (int i = 0; i < NUM_FONT_LETTERS; ++i)
+	{
+		if (!letters[i])
+			continue;
+
+		tletters[i] = SDL_CreateTextureFromSurface(renderer, letters[i]);
+		if (!tletters[i])
+		{
+			staterr("NXFont::InitTextures() SDL_CreateTextureFromSurface failed: %s", SDL_GetError());
+			return true;
+		}
+	}
+
+	return false;
+}
 
 // if sfc is an 8bpp paletted surface, change color index 'oldcolor' to be newcolor.
 // if sfc is a 16bpp surface, replace all instances of color 'oldcolor' with 'newcolor'
@@ -434,7 +465,8 @@ SDL_Rect dstrect;
 	for(i=0;text[i];i++)
 	{
 		uint8_t ch = text[i];
-		SDL_Surface *letter = font->letters[ch];
+		SDL_Surface* letter = font->letters[ch];
+		SDL_Texture* tletter = font->tletters[ch];
 		
 		if (ch == '=' && game.mode != GM_CREDITS)
 		{
@@ -444,15 +476,18 @@ SDL_Rect dstrect;
 				draw_sprite((x/SCALE), (y/SCALE)+yadj, SPR_TEXTBULLET);
 			}
 		}
-		else if (rendering && ch != ' ' && letter)
+		else if (rendering && ch != ' ' && tletter)
 		{
 			// must set this every time, because SDL_BlitSurface overwrites
 			// dstrect with final clipping rectangle.
 			dstrect.x = x;
 			dstrect.y = y;
+			dstrect.w = letter->w;
+			dstrect.h = letter->h;
 			
 			// TODO FONT
 			//SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
+			SDL_RenderCopy(renderer, tletter, NULL, &dstrect);
 		}
 		
 		if (spacing != 0)
@@ -510,18 +545,17 @@ void c------------------------------() {}
 // with 50% per-surface alpha applied, that we can use to darken the background.
 static bool create_shade_sfc(void)
 {
-	// FOMT TODO
-	return 0;
-
-
-	if (shadesfc)
-		SDL_FreeSurface(shadesfc);
+	if (tshadesfc)
+	{
+		SDL_DestroyTexture(tshadesfc);
+		tshadesfc = NULL;
+	}
 	
 	int wd = (SCREEN_WIDTH * SCALE);
 	int ht = whitefont.letters['M']->h;
 	
-	SDL_PixelFormat *format = screen->Format();
-	shadesfc = SDL_CreateRGBSurface(0, wd, ht,
+	SDL_PixelFormat *format = whitefont.letters['M']->format;
+	SDL_Surface* shadesfc = SDL_CreateRGBSurface(0, wd, ht,
 							format->BitsPerPixel, format->Rmask, format->Gmask,
 							format->Bmask, format->Amask);
 	
@@ -541,7 +575,17 @@ static bool create_shade_sfc(void)
 	SDL_SetSurfaceBlendMode(shadesfc, SDL_BLENDMODE_BLEND);
 
 	
-	return 0;
+	tshadesfc = SDL_CreateTextureFromSurface(renderer, shadesfc);
+	if (!shadesfc)
+	{
+		staterr("create_shade_sfc: failed to create surface");
+		return 1;
+	}
+
+	SDL_FreeSurface(shadesfc);
+	shadesfc_h = ht;
+
+	return tshadesfc == NULL;
 }
 
 
@@ -557,7 +601,6 @@ int font_draw(int x, int y, const char *text, int spacing, NXFont *font)
 // draw a text string with a 50% dark border around it
 int font_draw_shaded(int x, int y, const char *text, int spacing, NXFont *font)
 {
-	return 1;
 SDL_Rect srcrect, dstrect;
 int wd;
 
@@ -571,7 +614,7 @@ int wd;
 	
 	srcrect.x = 0;
 	srcrect.y = 0;
-	srcrect.h = shadesfc->h;
+	srcrect.h = shadesfc_h;
 	srcrect.w = text_draw(0, 0, text, spacing, font);
 	
 	rendering = true;
@@ -579,9 +622,13 @@ int wd;
 	// shade
 	dstrect.x = x;
 	dstrect.y = y;
+	dstrect.w = srcrect.w;
+	dstrect.h = srcrect.h;
 	
 	// TODO FONT
 	//SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
+
+	SDL_RenderCopy(renderer, tshadesfc, &srcrect, &dstrect);
 	
 	// draw the text on top as normal
 	wd = text_draw(x, y, text, spacing, font);

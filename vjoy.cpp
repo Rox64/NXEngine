@@ -31,8 +31,8 @@ const Rect vkeys[INPUT_COUNT] =
    {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
    {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
 
-   {0.4f, 0.0f, 0.1f, 0.1f}, // ESCKEY
-   {-1.f, -1.f, -1.f, -1.f}, // F1KEY
+   {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
+   {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
    {-1.f, -1.f, -1.f, -1.f}, // F2KEY
    {-1.f, -1.f, -1.f, -1.f}, // F3KEY
    {-1.f, -1.f, -1.f, -1.f}, // F4KEY

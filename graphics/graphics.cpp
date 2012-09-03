@@ -88,7 +88,7 @@ bool Graphics::InitVideo()
 	if (drawtarget == screen) drawtarget = NULL;
 	if (screen) delete screen;
 	
-	uint32_t window_flags = SDL_WINDOW_SHOWN;
+	uint32_t window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
 	if (is_fullscreen) window_flags |= SDL_WINDOW_FULLSCREEN;
 	
 	// #ifndef __SDLSHIM__

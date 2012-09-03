@@ -29,7 +29,7 @@ static const char bitmap_map[] = {		// letter order of bitmap font sheet
 const char *bmpfontfile = "smalfont.bmp";
 const char *ttffontfile = "font.ttf";
 
-static SDL_Surface *sdl_screen = NULL;
+//static SDL_Surface *sdl_screen = NULL;
 static SDL_Surface *shadesfc = NULL;
 
 static bool initilized = false;
@@ -55,7 +55,7 @@ bool error = false;
 
 	// we'll be bypassing the NXSurface automatic scaling features
 	// and drawing at the real resolution so we can get better-looking fonts.
-	sdl_screen = screen->GetSDLSurface();
+//	sdl_screen = screen->GetSDLSurface();
 	
 	// at 320x240 switch to bitmap fonts for better appearance
 	#ifdef CONFIG_ENABLE_TTF
@@ -182,7 +182,7 @@ SDL_Surface *letter;
 			return 1;
 		}
 		
-		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
+		SDL_PixelFormat * format = screen->Format();
 		letters[i] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
 
 		SDL_FreeSurface(letter);
@@ -209,7 +209,7 @@ SDL_Rect dstrect;
 	char str[2];
 	str[1] = 0;
 	
-	SDL_PixelFormat *format = sdl_screen->format;
+	SDL_PixelFormat *format = screen->Format();
 	uint32_t transp = SDL_MapRGB(format, 255, 0, 255);
 	
 	for(int i=1;i<NUM_LETTERS_RENDERED;i++)
@@ -260,7 +260,7 @@ void c------------------------------() {}
 // color: the color you want the letters to be.
 bool NXFont::InitBitmapChars(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color)
 {
-SDL_PixelFormat *format = sdl_screen->format;
+SDL_PixelFormat *format = screen->Format();
 SDL_Rect srcrect, dstrect;
 SDL_Surface *letter;
 int x, y, i;
@@ -308,7 +308,7 @@ int x, y, i;
 		// make background transparent and copy into final position
 		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(format, 0, 0, 0));
 
-		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
+		SDL_PixelFormat * format = screen->Format();
 		letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
 		
 		SDL_FreeSurface(letter);
@@ -329,7 +329,7 @@ int x, y, i;
 bool NXFont::InitBitmapCharsShadowed(SDL_Surface *sheet, uint32_t fgcolor, \
 									uint32_t color, uint32_t shadowcolor)
 {
-SDL_PixelFormat *format = sdl_screen->format;
+SDL_PixelFormat *format = screen->Format();
 NXFont fgfont, shadowfont;
 SDL_Rect dstrect;
 
@@ -450,7 +450,9 @@ SDL_Rect dstrect;
 			// dstrect with final clipping rectangle.
 			dstrect.x = x;
 			dstrect.y = y;
-			SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
+			
+			// TODO FONT
+			//SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
 		}
 		
 		if (spacing != 0)
@@ -508,13 +510,17 @@ void c------------------------------() {}
 // with 50% per-surface alpha applied, that we can use to darken the background.
 static bool create_shade_sfc(void)
 {
+	// FOMT TODO
+	return 0;
+
+
 	if (shadesfc)
 		SDL_FreeSurface(shadesfc);
 	
 	int wd = (SCREEN_WIDTH * SCALE);
 	int ht = whitefont.letters['M']->h;
 	
-	SDL_PixelFormat *format = sdl_screen->format;
+	SDL_PixelFormat *format = screen->Format();
 	shadesfc = SDL_CreateRGBSurface(0, wd, ht,
 							format->BitsPerPixel, format->Rmask, format->Gmask,
 							format->Bmask, format->Amask);
@@ -551,6 +557,7 @@ int font_draw(int x, int y, const char *text, int spacing, NXFont *font)
 // draw a text string with a 50% dark border around it
 int font_draw_shaded(int x, int y, const char *text, int spacing, NXFont *font)
 {
+	return 1;
 SDL_Rect srcrect, dstrect;
 int wd;
 
@@ -572,7 +579,9 @@ int wd;
 	// shade
 	dstrect.x = x;
 	dstrect.y = y;
-	SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
+	
+	// TODO FONT
+	//SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
 	
 	// draw the text on top as normal
 	wd = text_draw(x, y, text, spacing, font);

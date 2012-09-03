@@ -272,10 +272,17 @@ void c------------------------------() {}
 // color: the color you want the letters to be.
 bool NXFont::InitBitmapChars(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color)
 {
-SDL_PixelFormat *format = sheet->format;
+Uint32 format = screen->Format()->format;
 SDL_Rect srcrect, dstrect;
 SDL_Surface *letter;
 int x, y, i;
+
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
 
 	// NULL out letters we don't have a character for
 	memset(this->letters, 0, sizeof(this->letters));
@@ -295,16 +302,17 @@ int x, y, i;
 		// is some space between letters in autospaced text such as on the menus.
 		letter = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1,
-							format->BitsPerPixel, \
-							format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, \
+							pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 		if (!letter)
 		{
 			staterr("InitBitmapChars: failed to create surface for character %d/%d", i, ch);
+			SDL_FreeFormat(pxformat);
 			return 1;
 		}
 		
-		SDL_FillRect(letter, NULL, SDL_MapRGB(format, 0, 0, 0));
+		SDL_FillRect(letter, NULL, SDL_MapRGB(pxformat, 0, 0, 0));
 		
 		// copy letter off of sheet
 		srcrect.x = x;
@@ -318,13 +326,13 @@ int x, y, i;
 		SDL_BlitSurface(sheet, &srcrect, letter, &dstrect);
 		
 		// make background transparent and copy into final position
-		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(format, 0, 0, 0));
+		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(pxformat, 0, 0, 0));
 
-		//SDL_PixelFormat * format = screen->Format();
-		//letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
-		//
-		//SDL_FreeSurface(letter);
-		letters[ch] = letter;
+		SDL_PixelFormat * format = screen->Format();
+		letters[ch] = SDL_ConvertSurfaceFormat(letter, format->format, 0);
+		
+		SDL_FreeSurface(letter);
+		// letters[ch] = letter;
 		
 		// advance to next position on sheet
 		x += BITMAP_SPAC_WIDTH;
@@ -334,6 +342,8 @@ int x, y, i;
 			y += BITMAP_SPAC_HEIGHT;
 		}
 	}
+
+	SDL_FreeFormat(pxformat);
 	
 	return 0;
 }
@@ -342,9 +352,11 @@ int x, y, i;
 bool NXFont::InitBitmapCharsShadowed(SDL_Surface *sheet, uint32_t fgcolor, \
 									uint32_t color, uint32_t shadowcolor)
 {
-SDL_PixelFormat *format = sheet->format;
+Uint32 format = screen->Format()->format;
 NXFont fgfont, shadowfont;
 SDL_Rect dstrect;
+
+
 
 	// create temporary fonts in the fg and shadow color
 	if (fgfont.InitBitmapChars(sheet, fgcolor, color))
@@ -352,18 +364,25 @@ SDL_Rect dstrect;
 	
 	if (shadowfont.InitBitmapChars(sheet, fgcolor, shadowcolor))
 		return 1;
+
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
 	
 	// now combine the two fonts
-	uint32_t transp = SDL_MapRGB(format, 0, 0, 0);
+	uint32_t transp = SDL_MapRGB(pxformat, 0, 0, 0);
 	for(int i=0;i<NUM_FONT_LETTERS;i++)
 	{
 		if (fgfont.letters[i])
 		{
 			letters[i] = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1+SHADOW_OFFSET,
-							format->BitsPerPixel, \
-							format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, \
+							pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 			
 			SDL_FillRect(letters[i], NULL, transp);
 			SDL_SetColorKey(letters[i], SDL_TRUE, transp);
@@ -377,6 +396,8 @@ SDL_Rect dstrect;
 			SDL_BlitSurface(fgfont.letters[i], NULL, letters[i], &dstrect);
 		}
 	}
+
+	SDL_FreeFormat(pxformat);
 	
 	return 0;
 }

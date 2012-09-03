@@ -6,6 +6,8 @@
 
 #ifdef __clang__
 	#define MAXPATHLEN	256
+#elif WIN32
+	#define MAXPATHLEN	1024
 #else
 	#include <sys/param.h>	// MAXPATHLEN
 #endif

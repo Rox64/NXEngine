@@ -7,8 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
+#if !defined(WIN32)
+# include <endian.h>
+#endif
 
 #include "../config.h"
 #include "pxt.h"

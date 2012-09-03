@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7000E689-AF6D-4D55-98D2-6FB6E7F43702}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>msvs</RootNamespace>
+    <ProjectName>NXEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="sdl.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="sdl.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>USE_RO_FILESYS;WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>USE_RO_FILESYS;WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ai\ai.h" />
+    <ClInclude Include="..\ai\almond\almond.h" />
+    <ClInclude Include="..\ai\balrog_common.h" />
+    <ClInclude Include="..\ai\boss\balfrog.h" />
+    <ClInclude Include="..\ai\boss\ballos.h" />
+    <ClInclude Include="..\ai\boss\core.h" />
+    <ClInclude Include="..\ai\boss\heavypress.h" />
+    <ClInclude Include="..\ai\boss\ironhead.h" />
+    <ClInclude Include="..\ai\boss\omega.h" />
+    <ClInclude Include="..\ai\boss\sisters.h" />
+    <ClInclude Include="..\ai\boss\undead_core.h" />
+    <ClInclude Include="..\ai\boss\x.h" />
+    <ClInclude Include="..\ai\final_battle\doctor.h" />
+    <ClInclude Include="..\ai\IrregularBBox.h" />
+    <ClInclude Include="..\ai\stdai.h" />
+    <ClInclude Include="..\ai\weapons\weapons.h" />
+    <ClInclude Include="..\ai\weapons\whimstar.h" />
+    <ClInclude Include="..\autogen\asdefs.h" />
+    <ClInclude Include="..\autogen\sprites.h" />
+    <ClInclude Include="..\caret.h" />
+    <ClInclude Include="..\common\basics.h" />
+    <ClInclude Include="..\common\BList.h" />
+    <ClInclude Include="..\common\bufio.h" />
+    <ClInclude Include="..\common\DBuffer.h" />
+    <ClInclude Include="..\common\DString.h" />
+    <ClInclude Include="..\common\FileBuffer.h" />
+    <ClInclude Include="..\common\InitList.h" />
+    <ClInclude Include="..\common\llist.h" />
+    <ClInclude Include="..\common\misc.h" />
+    <ClInclude Include="..\common\StringList.h" />
+    <ClInclude Include="..\common\SupportDefs.h" />
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\console.h" />
+    <ClInclude Include="..\debug.h" />
+    <ClInclude Include="..\dirnames.h" />
+    <ClInclude Include="..\endgame\credits.h" />
+    <ClInclude Include="..\endgame\CredReader.h" />
+    <ClInclude Include="..\endgame\island.h" />
+    <ClInclude Include="..\extract\fileio.h" />
+    <ClInclude Include="..\floattext.h" />
+    <ClInclude Include="..\game.h" />
+    <ClInclude Include="..\graphics\font.h" />
+    <ClInclude Include="..\graphics\graphics.h" />
+    <ClInclude Include="..\graphics\nxsurface.h" />
+    <ClInclude Include="..\graphics\palette.h" />
+    <ClInclude Include="..\graphics\safemode.h" />
+    <ClInclude Include="..\graphics\sprites.h" />
+    <ClInclude Include="..\graphics\tileset.h" />
+    <ClInclude Include="..\input.h" />
+    <ClInclude Include="..\intro\intro.h" />
+    <ClInclude Include="..\intro\title.h" />
+    <ClInclude Include="..\inventory.h" />
+    <ClInclude Include="..\map.h" />
+    <ClInclude Include="..\maprecord.h" />
+    <ClInclude Include="..\map_system.h" />
+    <ClInclude Include="..\nx.h" />
+    <ClInclude Include="..\object.h" />
+    <ClInclude Include="..\ObjManager.h" />
+    <ClInclude Include="..\pause\dialog.h" />
+    <ClInclude Include="..\pause\message.h" />
+    <ClInclude Include="..\pause\options.h" />
+    <ClInclude Include="..\pause\pause.h" />
+    <ClInclude Include="..\platform.h" />
+    <ClInclude Include="..\player.h" />
+    <ClInclude Include="..\profile.h" />
+    <ClInclude Include="..\p_arms.h" />
+    <ClInclude Include="..\replay.h" />
+    <ClInclude Include="..\screeneffect.h" />
+    <ClInclude Include="..\settings.h" />
+    <ClInclude Include="..\siflib\sectSprites.h" />
+    <ClInclude Include="..\siflib\sectStringArray.h" />
+    <ClInclude Include="..\siflib\sif.h" />
+    <ClInclude Include="..\siflib\sifloader.h" />
+    <ClInclude Include="..\slope.h" />
+    <ClInclude Include="..\sound\org.h" />
+    <ClInclude Include="..\sound\pxt.h" />
+    <ClInclude Include="..\sound\sound.h" />
+    <ClInclude Include="..\sound\sslib.h" />
+    <ClInclude Include="..\stageboss.h" />
+    <ClInclude Include="..\stagedata.h" />
+    <ClInclude Include="..\statusbar.h" />
+    <ClInclude Include="..\TextBox\ItemImage.h" />
+    <ClInclude Include="..\TextBox\SaveSelect.h" />
+    <ClInclude Include="..\TextBox\StageSelect.h" />
+    <ClInclude Include="..\TextBox\TextBox.h" />
+    <ClInclude Include="..\TextBox\YesNoPrompt.h" />
+    <ClInclude Include="..\trig.h" />
+    <ClInclude Include="..\tsc.h" />
+    <ClInclude Include="..\vararray.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\ai\ai.cpp" />
+    <ClCompile Include="..\ai\almond\almond.cpp" />
+    <ClCompile Include="..\ai\balrog_common.cpp" />
+    <ClCompile Include="..\ai\boss\balfrog.cpp" />
+    <ClCompile Include="..\ai\boss\ballos.cpp" />
+    <ClCompile Include="..\ai\boss\core.cpp" />
+    <ClCompile Include="..\ai\boss\heavypress.cpp" />
+    <ClCompile Include="..\ai\boss\ironhead.cpp" />
+    <ClCompile Include="..\ai\boss\omega.cpp" />
+    <ClCompile Include="..\ai\boss\sisters.cpp" />
+    <ClCompile Include="..\ai\boss\undead_core.cpp" />
+    <ClCompile Include="..\ai\boss\x.cpp" />
+    <ClCompile Include="..\ai\egg\egg.cpp" />
+    <ClCompile Include="..\ai\egg\egg2.cpp" />
+    <ClCompile Include="..\ai\egg\igor.cpp" />
+    <ClCompile Include="..\ai\final_battle\balcony.cpp" />
+    <ClCompile Include="..\ai\final_battle\doctor.cpp" />
+    <ClCompile Include="..\ai\final_battle\doctor_common.cpp" />
+    <ClCompile Include="..\ai\final_battle\doctor_frenzied.cpp" />
+    <ClCompile Include="..\ai\final_battle\final_misc.cpp" />
+    <ClCompile Include="..\ai\final_battle\misery.cpp" />
+    <ClCompile Include="..\ai\final_battle\sidekicks.cpp" />
+    <ClCompile Include="..\ai\first_cave\first_cave.cpp" />
+    <ClCompile Include="..\ai\hell\ballos_misc.cpp" />
+    <ClCompile Include="..\ai\hell\ballos_priest.cpp" />
+    <ClCompile Include="..\ai\hell\hell.cpp" />
+    <ClCompile Include="..\ai\IrregularBBox.cpp" />
+    <ClCompile Include="..\ai\last_cave\last_cave.cpp" />
+    <ClCompile Include="..\ai\maze\balrog_boss_missiles.cpp" />
+    <ClCompile Include="..\ai\maze\critter_purple.cpp" />
+    <ClCompile Include="..\ai\maze\gaudi.cpp" />
+    <ClCompile Include="..\ai\maze\labyrinth_m.cpp" />
+    <ClCompile Include="..\ai\maze\maze.cpp" />
+    <ClCompile Include="..\ai\maze\pooh_black.cpp" />
+    <ClCompile Include="..\ai\npc\balrog.cpp" />
+    <ClCompile Include="..\ai\npc\curly.cpp" />
+    <ClCompile Include="..\ai\npc\curly_ai.cpp" />
+    <ClCompile Include="..\ai\npc\misery.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)/ai/npc</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)/ai/npc</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\npcguest.cpp" />
+    <ClCompile Include="..\ai\npc\npcplayer.cpp" />
+    <ClCompile Include="..\ai\npc\npcregu.cpp" />
+    <ClCompile Include="..\ai\oside\oside.cpp" />
+    <ClCompile Include="..\ai\plantation\plantation.cpp" />
+    <ClCompile Include="..\ai\sand\curly_boss.cpp" />
+    <ClCompile Include="..\ai\sand\puppy.cpp" />
+    <ClCompile Include="..\ai\sand\sand.cpp" />
+    <ClCompile Include="..\ai\sand\toroko_frenzied.cpp" />
+    <ClCompile Include="..\ai\sym\smoke.cpp" />
+    <ClCompile Include="..\ai\sym\sym.cpp" />
+    <ClCompile Include="..\ai\village\balrog_boss_running.cpp" />
+    <ClCompile Include="..\ai\village\ma_pignon.cpp" />
+    <ClCompile Include="..\ai\village\village.cpp" />
+    <ClCompile Include="..\ai\weapons\blade.cpp" />
+    <ClCompile Include="..\ai\weapons\bubbler.cpp" />
+    <ClCompile Include="..\ai\weapons\fireball.cpp" />
+    <ClCompile Include="..\ai\weapons\missile.cpp" />
+    <ClCompile Include="..\ai\weapons\nemesis.cpp" />
+    <ClCompile Include="..\ai\weapons\polar_mgun.cpp" />
+    <ClCompile Include="..\ai\weapons\snake.cpp" />
+    <ClCompile Include="..\ai\weapons\spur.cpp" />
+    <ClCompile Include="..\ai\weapons\weapons.cpp" />
+    <ClCompile Include="..\ai\weapons\whimstar.cpp" />
+    <ClCompile Include="..\ai\weed\balrog_boss_flying.cpp" />
+    <ClCompile Include="..\ai\weed\frenzied_mimiga.cpp" />
+    <ClCompile Include="..\ai\weed\weed.cpp" />
+    <ClCompile Include="..\autogen\AssignSprites.cpp" />
+    <ClCompile Include="..\autogen\objnames.cpp" />
+    <ClCompile Include="..\caret.cpp" />
+    <ClCompile Include="..\common\BList.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\bufio.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\DBuffer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\DString.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\FileBuffer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\InitList.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\misc.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)/common</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)/common</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\stat.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\common\StringList.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\console.cpp" />
+    <ClCompile Include="..\debug.cpp" />
+    <ClCompile Include="..\endgame\credits.cpp" />
+    <ClCompile Include="..\endgame\CredReader.cpp" />
+    <ClCompile Include="..\endgame\island.cpp" />
+    <ClCompile Include="..\endgame\misc.cpp" />
+    <ClCompile Include="..\extract\crc.cpp" />
+    <ClCompile Include="..\extract\extract.cpp" />
+    <ClCompile Include="..\extract\extractfiles.cpp" />
+    <ClCompile Include="..\extract\extractpxt.cpp" />
+    <ClCompile Include="..\extract\extractstages.cpp" />
+    <ClCompile Include="..\floattext.cpp" />
+    <ClCompile Include="..\game.cpp" />
+    <ClCompile Include="..\graphics\font.cpp" />
+    <ClCompile Include="..\graphics\graphics.cpp" />
+    <ClCompile Include="..\graphics\nxsurface.cpp" />
+    <ClCompile Include="..\graphics\palette.cpp" />
+    <ClCompile Include="..\graphics\safemode.cpp" />
+    <ClCompile Include="..\graphics\sprites.cpp" />
+    <ClCompile Include="..\graphics\tileset.cpp" />
+    <ClCompile Include="..\input.cpp" />
+    <ClCompile Include="..\intro\intro.cpp" />
+    <ClCompile Include="..\intro\title.cpp" />
+    <ClCompile Include="..\inventory.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\map.cpp" />
+    <ClCompile Include="..\map_system.cpp" />
+    <ClCompile Include="..\niku.cpp" />
+    <ClCompile Include="..\object.cpp" />
+    <ClCompile Include="..\ObjManager.cpp" />
+    <ClCompile Include="..\pause\dialog.cpp" />
+    <ClCompile Include="..\pause\message.cpp" />
+    <ClCompile Include="..\pause\objects.cpp" />
+    <ClCompile Include="..\pause\options.cpp" />
+    <ClCompile Include="..\pause\pause.cpp" />
+    <ClCompile Include="..\platform.cpp" />
+    <ClCompile Include="..\player.cpp" />
+    <ClCompile Include="..\playerstats.cpp" />
+    <ClCompile Include="..\profile.cpp" />
+    <ClCompile Include="..\p_arms.cpp" />
+    <ClCompile Include="..\replay.cpp" />
+    <ClCompile Include="..\screeneffect.cpp" />
+    <ClCompile Include="..\settings.cpp" />
+    <ClCompile Include="..\siflib\sectSprites.cpp" />
+    <ClCompile Include="..\siflib\sectStringArray.cpp" />
+    <ClCompile Include="..\siflib\sif.cpp" />
+    <ClCompile Include="..\siflib\sifloader.cpp" />
+    <ClCompile Include="..\siflib\sifupgrade.cpp" />
+    <ClCompile Include="..\slope.cpp" />
+    <ClCompile Include="..\sound\org.cpp" />
+    <ClCompile Include="..\sound\pxt.cpp" />
+    <ClCompile Include="..\sound\sound.cpp" />
+    <ClCompile Include="..\sound\sslib.cpp" />
+    <ClCompile Include="..\stageboss.cpp" />
+    <ClCompile Include="..\stagedata.cpp" />
+    <ClCompile Include="..\statusbar.cpp" />
+    <ClCompile Include="..\TextBox\ItemImage.cpp" />
+    <ClCompile Include="..\TextBox\SaveSelect.cpp" />
+    <ClCompile Include="..\TextBox\StageSelect.cpp" />
+    <ClCompile Include="..\TextBox\TextBox.cpp" />
+    <ClCompile Include="..\TextBox\YesNoPrompt.cpp" />
+    <ClCompile Include="..\trig.cpp" />
+    <ClCompile Include="..\tsc.cpp" />
+    <ClInclude Include="..\tsc_cmdtbl.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

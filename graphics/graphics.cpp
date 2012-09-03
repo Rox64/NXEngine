@@ -1,4 +1,4 @@
-
+#include <cassert>
 // graphics routines
 #include <SDL.h>
 
@@ -114,24 +114,53 @@ bool Graphics::InitVideo()
 		return 1;
 	}
 
-	SDL_Surface *sdl_screen = SDL_GetWindowSurface(window);
+	int drv_index = -1;
+#if 0
+	{
+		int drivers = SDL_GetNumRenderDrivers();
+		SDL_RendererInfo info;
+		for (int i = 0; i < drivers; ++i)
+		{
+			if (SDL_GetRenderDriverInfo(i, &info))
+			{
+				staterr("Graphics::InitVideo: SDL_GetRenderDriverInfo() failed: %s", SDL_GetError());
+			}
 
-	// renderer = SDL_CreateRenderer(win, -1, /*SDL_RENDERER_SOFTWARE | */SDL_RENDERER_ACCELERATED);
-	// if (!renderer)
-	// {
-	// 	staterr("Graphics::InitVideo: error setting video mode (SDL_CreateRenderer: %s)", SDL_GetError());
-	// 	return 1;	
-	// }
+			if (strcmp("opengl", info.name) == 0)
+			{
+				drv_index = i;
+				break;
+			}
+		}
+	}
+#endif
 	
-	// if (use_palette && !(sdl_screen->flags & SDL_HWPALETTE))
-	// {
-	// 	staterr("Graphics::InitVideo: failed to obtain exclusive access to hardware palette");
-	// 	exit(1);
-	// }
+	renderer = SDL_CreateRenderer(window, drv_index, /*SDL_RENDERER_SOFTWARE | */SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+	if (!renderer)
+	{
+		staterr("Graphics::InitVideo: error setting video mode (SDL_CreateRenderer: %s)", SDL_GetError());
+		return 1;
+	}
+
+	SDL_RendererInfo info;
+	if (SDL_GetRendererInfo(renderer, &info))
+	{
+		staterr("Graphics::InitVideo: SDL_GetRendererInfo failed: %s", SDL_GetError());
+		return 1;
+	}
+
+	if (!(info.flags & SDL_RENDERER_TARGETTEXTURE))
+	{
+		staterr("Graphics::InitVideo: SDL_RENDERER_TARGETTEXTURE is not supported");
+		return 1;
+	}
+
 	
 	SDL_ShowCursor(is_fullscreen == false);
+
 	
-	screen = new NXSurface(sdl_screen, false);
+	screen = new NXSurface(/*renderer*/);
+	screen->setPixelFormat(info.texture_formats[0]);
 	if (!drawtarget) drawtarget = screen;
 	return 0;
 }
@@ -380,6 +409,7 @@ void c------------------------------() {}
 // other than the screen.
 void Graphics::SetDrawTarget(NXSurface *surface)
 {
+	surface->SetAsTarget(surface != screen);
 	drawtarget = surface;
 }
 

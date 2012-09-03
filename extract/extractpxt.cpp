@@ -10,6 +10,10 @@
 
 #include "fileio.h"
 
+#if defined(WIN32)
+#include <direct.h>
+#endif
+
 using safemode::moveto;
 using safemode::status;
 
@@ -162,7 +166,11 @@ int s, c, i;
 		sprintf(outfilename, "pxt/fx%02x.pxt", snd[s].id);
 		status("[ %s ]", outfilename);
 		
+#if defined(WIN32)
+		_mkdir("pxt");
+#else
 		mkdir("pxt", 0755);
+#endif
 		FILE *fpo = fileopen(outfilename, "wb", ro_filesys_path);
 		if (!fpo)
 		{

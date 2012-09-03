@@ -195,7 +195,7 @@ void debug_clear()
 void c------------------------------() {}
 */
 
-extern char *object_names[];	// from autogen'd objnames.cpp
+extern const char *object_names[];	// from autogen'd objnames.cpp
 
 // given an object type returns the name of the object e.g. "OBJ_TOROKO"
 const char *DescribeObjectType(int type)

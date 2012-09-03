@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <cstdio>
 #include "config.h"
-#include "platform.fdh"
+#include "platform.h"
 #include "common/basics.h"
 
 
@@ -18,7 +18,7 @@ char const* rw_filesys_path = "./";
 
 FILE *fileopen(char const* fname, char const* mode, char const* filesys_path)
 {
-   stat("fileopen %s %s %s", fname, mode, filesys_path);
+   //stat("fileopen %s %s %s", fname, mode, filesys_path);
 
    const size_t buf_size = 1024;
    static char buffer[buf_size];

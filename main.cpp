@@ -1,7 +1,9 @@
 
 #include "nx.h"
 #include <stdarg.h>
+#if !defined(WIN32)
 #include <unistd.h>
+#endif
 #include "graphics/safemode.h"
 #include "main.fdh"
 #include "vjoy.h"
@@ -43,7 +45,7 @@ bool freshstart;
     }    
 #endif
 	
-	//SetLogFilename("debug.txt");
+	SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		staterr("ack, sdl_init failed: %s.", SDL_GetError());
@@ -59,7 +61,7 @@ bool freshstart;
 	settings_load();
 	
 	if (Graphics::init(settings->resolution)) { staterr("Failed to initialize graphics."); return 1; }
-	if (font_init()) { staterr("Failed to load font."); return 1; }
+	//if (font_init()) { staterr("Failed to load font."); return 1; }
 	
 	//speed_test();
 	//return 1;
@@ -555,34 +557,34 @@ void speed_test(void)
 
 void speed_test(void)
 {
-	SDL_Rect textrect;
-	SDL_Surface *vram = screen->GetSDLSurface();
-	int click = 0;
+// 	SDL_Rect textrect;
+// 	SDL_Surface *vram = screen->GetSDLSurface();
+// 	int click = 0;
 	
-	uint32_t end = 0;
-	fps = 0;
+// 	uint32_t end = 0;
+// 	fps = 0;
 	
-	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
-	int c = 0;
+// 	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
+// 	int c = 0;
 	
-	game.running = true;
-	while(game.running)
-	{
-		//SDL_FillRect(vram, NULL, c ^= 255);
+// 	game.running = true;
+// 	while(game.running)
+// 	{
+// 		//SDL_FillRect(vram, NULL, c ^= 255);
 		
-		if (SDL_GetTicks() >= end)
-		{
-			stat("%d fps", fps);
-			fps = 0;
-			end = SDL_GetTicks() + 1000;
+// 		if (SDL_GetTicks() >= end)
+// 		{
+// 			stat("%d fps", fps);
+// 			fps = 0;
+// 			end = SDL_GetTicks() + 1000;
 			
-			if (++click > 3)
-				break;
-		}
+// 			if (++click > 3)
+// 				break;
+// 		}
 		
-		screen->Flip();
-		fps++;
-	}
+// 		screen->Flip();
+// 		fps++;
+// 	}
 }
 
 #endif
@@ -627,7 +629,9 @@ uint32_t counter;
 	}
 }
 
+#if !defined(WIN32)
 void SDL_Delay(int ms)
 {
 	usleep(ms * 1000);
 }
+#endif

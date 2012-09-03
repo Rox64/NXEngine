@@ -184,14 +184,14 @@ NXSurface *Sprites::get_spritesheet(int sheetno)
 }
 
 // create an empty spritesheet of the given size and return it's index.
-int Sprites::create_spritesheet(int wd, int ht)
-{
-	if (num_spritesheets >= MAX_SPRITESHEETS)
-		return -1;
+// int Sprites::create_spritesheet(int wd, int ht)
+// {
+// 	if (num_spritesheets >= MAX_SPRITESHEETS)
+// 		return -1;
 	
-	spritesheet[num_spritesheets] = new NXSurface(wd, ht);
-	return num_spritesheets++;
-}
+// 	spritesheet[num_spritesheets] = new NXSurface(wd, ht);
+// 	return num_spritesheets++;
+// }
 
 // draw a sprite onto some surface other than the screen
 void Sprites::draw_sprite_to_surface(NXSurface *dst, int x, int y, int s, int frame, uint8_t dir)

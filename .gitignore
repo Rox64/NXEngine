@@ -13,3 +13,12 @@ bin/endpic/*
 bin/org/*
 bin/pxt/*
 bin_ro/*
+
+msvs/bin/*
+msvs/Debug/*
+msvs/Release/*
+msvs/ipch/*
+msvs/*.opensdf
+msvs/*.sdf
+msvs/*.suo
+msvs/*.user

@@ -5,6 +5,10 @@
 #include <string.h>
 #include <math.h>
 
+#if !defined(WIN32)
+# include <endian.h>
+#endif
+
 #include "../common/basics.h"
 #include "org.h"
 #include "pxt.h"			// for loading drums
@@ -622,9 +626,9 @@ signed short *final;
 // to be filled
 static void queue_final_buffer(void)
 {
-	/*SSEnqueueChunk(ORG_CHANNEL, final_buffer[current_buffer].samples, buffer_samples,
+	SSEnqueueChunk(ORG_CHANNEL, final_buffer[current_buffer].samples, buffer_samples,
 						current_buffer, OrgBufferFinished);
-	*/
+	
 	current_buffer ^= 1;
 }
 

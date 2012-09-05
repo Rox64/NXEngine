@@ -194,8 +194,8 @@ SDL_Surface *letter;
 			return 1;
 		}
 		
-		SDL_PixelFormat * format = screen->Format();
-		letters[i] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
+		Uint32 format = screen->Format()->format;
+		letters[i] = SDL_ConvertSurfaceFormat(letter, format, SDL_RLEACCEL);
 
 		SDL_FreeSurface(letter);
 	}
@@ -221,8 +221,13 @@ SDL_Rect dstrect;
 	char str[2];
 	str[1] = 0;
 	
-	SDL_PixelFormat *format = screen->Format();
-	uint32_t transp = SDL_MapRGB(format, 255, 0, 255);
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(screen->Format()->format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
+	uint32_t transp = SDL_MapRGB(pxformat, 255, 0, 255);
 	
 	for(int i=1;i<NUM_LETTERS_RENDERED;i++)
 	{
@@ -233,15 +238,21 @@ SDL_Rect dstrect;
 		if (!top || !bottom)
 		{
 			staterr("InitCharsShadowed: failed to render character %d: %s", i, TTF_GetError());
+			SDL_FreeFormat(pxformat);
+			SDL_FreeSurface(top);
+			SDL_FreeSurface(bottom);
 			return 1;
 		}
 		
 		letters[i] = SDL_CreateRGBSurface(0, top->w, top->h+SHADOW_OFFSET,
-							format->BitsPerPixel, format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 		if (!letters[i])
 		{
 			staterr("InitCharsShadowed: failed to create surface for character %d: %s", i, SDL_GetError());
+			SDL_FreeFormat(pxformat);
+			SDL_FreeSurface(top);
+			SDL_FreeSurface(bottom);
 			return 1;
 		}
 		
@@ -255,6 +266,9 @@ SDL_Rect dstrect;
 		dstrect.x = 0;
 		dstrect.y = 0;
 		SDL_BlitSurface(top, NULL, letters[i], &dstrect);
+
+		SDL_FreeSurface(top);
+		SDL_FreeSurface(bottom);
 	}
 	
 	return 0;
@@ -343,8 +357,6 @@ int x, y, i;
 		}
 	}
 
-	SDL_FreeFormat(pxformat);
-	
 	return 0;
 }
 
@@ -575,18 +587,24 @@ static bool create_shade_sfc(void)
 	int wd = (SCREEN_WIDTH * SCALE);
 	int ht = whitefont.letters['M']->h;
 	
-	SDL_PixelFormat *format = whitefont.letters['M']->format;
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(screen->Format()->format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
 	SDL_Surface* shadesfc = SDL_CreateRGBSurface(0, wd, ht,
-							format->BitsPerPixel, format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 	
 	if (!shadesfc)
 	{
-		staterr("create_shade_sfc: failed to create surface");
+		staterr("create_shade_sfc: failed to create surface: %s", SDL_GetError());
+		SDL_FreeFormat(pxformat);
 		return 1;
 	}
 	
-	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(format, 0, 0, 0));
+	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(pxformat, 0, 0, 0));
 
 	Uint8 alpha_value = 128;
 	if (shadesfc->format->Amask) {
@@ -599,7 +617,8 @@ static bool create_shade_sfc(void)
 	tshadesfc = SDL_CreateTextureFromSurface(renderer, shadesfc);
 	if (!shadesfc)
 	{
-		staterr("create_shade_sfc: failed to create surface");
+		staterr("create_shade_sfc: failed to create surface: %s", SDL_GetError());
+		SDL_FreeSurface(shadesfc);
 		return 1;
 	}
 

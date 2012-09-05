@@ -27,9 +27,12 @@ public:
 	bool InitBitmapChars(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color);
 	bool InitBitmapCharsShadowed(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color, uint32_t shadowcolor);
 	
+	bool InitTextures();
+
 	void free();
 	
 	SDL_Surface *letters[NUM_FONT_LETTERS];
+	SDL_Texture *tletters[NUM_FONT_LETTERS];
 
 private:
 	void ReplaceColor(SDL_Surface *sfc, uint32_t oldcolor, uint32_t newcolor);

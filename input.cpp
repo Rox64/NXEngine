@@ -216,7 +216,7 @@ int ino, key;
 			case SDL_FINGERDOWN:
 			case SDL_FINGERMOTION:
 			{
-				VJoy::ProcessInput(evt);
+				VJoy::InjectInputEvent(evt);
 			}
 			break;
 			
@@ -229,6 +229,8 @@ int ino, key;
 
 		}
 	}
+
+	VJoy::ProcessInput();
 }
 
 // keys that we don't want to send to the console

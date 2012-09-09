@@ -4,6 +4,8 @@
 
 #include <map>
 
+#include "vjoy.h"
+
 typedef std::map<SDL_Keycode, INPUTS> mappings_t;
 mappings_t mappings;
 
@@ -208,6 +210,14 @@ int ino, key;
 				}
 			}
 			break;
+
+			case SDL_FINGERUP:
+			case SDL_FINGERDOWN:
+			case SDL_FINGERMOTION:
+			{
+				VJoy::InjectInputEvent(evt);
+			}
+			break;
 			
 			case SDL_QUIT:
 			{
@@ -215,8 +225,11 @@ int ino, key;
 				game.running = false;
 			}
 			break;
+
 		}
 	}
+
+	VJoy::ProcessInput();
 }
 
 // keys that we don't want to send to the console

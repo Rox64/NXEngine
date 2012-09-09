@@ -6,6 +6,7 @@
 #endif
 #include "graphics/safemode.h"
 #include "main.fdh"
+#include "vjoy.h"
 
 const char *data_dir = "data";
 const char *stage_dir = "data/Stage";
@@ -79,6 +80,10 @@ bool freshstart;
 	if (textbox.Init()) { fatal("Failed to initialize textboxes."); return 1; }
 	if (Carets::init()) { fatal("Failed to initialize carets."); return 1; }
 	
+#ifdef CONFIG_USE_VJOY
+	VJoy::Init();
+#endif
+
 	if (game.init()) return 1;
 	game.setmode(GM_NORMAL);
 	// set null stage just to have something to do while we go to intro
@@ -330,6 +335,8 @@ static int frameskip = 0;
 		{
 			update_fps();
 		}
+
+		VJoy::DrawAll();
 		
 		if (!flipacceltime)
 		{

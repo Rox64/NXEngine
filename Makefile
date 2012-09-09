@@ -437,7 +437,7 @@ tsc.o:	tsc.cpp tsc.fdh nx.h config.h platform.h \
 		screeneffect.h settings.h slope.h \
 		player.h p_arms.h ai/weapons/whimstar.h \
 		replay.h common/FileBuffer.h platform.h \
-		sound/sound.h vararray.h tsc_cmdtbl.cpp
+		sound/sound.h vararray.h tsc_cmdtbl.h
 	g++ -g -O2 -c tsc.cpp -D DEBUG $(CFLAGS) -Wreturn-type -Wformat -Wno-multichar -o tsc.o
 
 screeneffect.o:	screeneffect.cpp screeneffect.fdh nx.h config.h \

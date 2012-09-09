@@ -1,19 +1,35 @@
+#include <map>
+#include <vector>
 #include <SDL.h>
 
 #include "vjoy.h"
 #include "input.h"
 #include "graphics/graphics.h"
 
+struct Point
+{
+   float x, y;
+   Point(float x, float y) : x(x), y(y) {}
+   Point() : x(0), y(0) {}
+};
+
 struct Rect
 {
    float x, y;
    float w, h;
+
+   bool point_in(Point const& p) const
+   {
+      return point_in(p.x, p.y);
+   }
 
    bool point_in(float px, float py) const
    {
       return !(px < x || x + w < px || py < y || y + h < py);
    }
 };
+
+
 
 const Rect vkeys[INPUT_COUNT] = 
 {
@@ -54,6 +70,12 @@ const Rect vkeys[INPUT_COUNT] =
 bool vjoy_enabled = true;
 bool vjoy_visible = true;
 
+float xres = -1.0f;
+float yres = -1.0f;
+
+typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
+lastFingerPos_t lastFingerPos;
+
 bool  VJoy::Init()
 {
    vjoy_enabled = true;
@@ -92,23 +114,66 @@ void VJoy::DrawAll()
    }
 }
 
-void VJoy::ProcessInput(SDL_Event const & evt)
+void VJoy::InjectInputEvent(SDL_Event const & evt)
 {
    if (!vjoy_enabled)
       return;
 
-   SDL_Touch const * const state = SDL_GetTouch(evt.tfinger.touchId);
-   float x = (float)evt.tfinger.x / state->xres;
-   float y = (float)evt.tfinger.y / state->yres;
+   if (xres < 0)
+   {
+      SDL_Touch const * const state = SDL_GetTouch(evt.tfinger.touchId);
+      if (state)
+      {
+         xres = state->xres;
+         yres = state->yres;
+      }
+      else
+      {
+         return;
+      }
+   }
 
+   Point p((float)evt.tfinger.x / xres, (float)evt.tfinger.y / yres);
+
+
+   if (evt.type == SDL_FINGERUP)
+   {
+      lastFingerPos_t::iterator it = lastFingerPos.find(evt.tfinger.fingerId);
+      if (it != lastFingerPos.end())
+      {
+         lastFingerPos.erase(it);
+      }
+   }
+   else
+   {
+      lastFingerPos[evt.tfinger.fingerId] = p;
+   }
+
+
+}
+
+void updateButtons(Point const& p, bool state)
+{
    for (int i = 0; i < INPUT_COUNT; ++i)
    {
       if (vkeys[i].x < 0)
          continue;
 
-      if (vkeys[i].point_in(x, y))
-      {
-         inputs[i] = (evt.type == SDL_FINGERDOWN || evt.type == SDL_FINGERMOTION);
-      }
+      if (vkeys[i].point_in(p))
+         inputs[i] = state;
+   }
+}
+
+void VJoy::ProcessInput()
+{
+   if (!vjoy_enabled)
+      return;
+
+   memset(inputs, 0, sizeof(inputs));
+
+   for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
+   {
+      Point const& p = it->second;
+      updateButtons(p, true);
    }
 }

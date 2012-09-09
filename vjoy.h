@@ -10,7 +10,8 @@ namespace VJoy
 bool Init();
 void Destroy();
 void DrawAll();
-void ProcessInput(SDL_Event const & event);
+void InjectInputEvent(SDL_Event const & event);
+void ProcessInput();
 
 } // namespace VJoy
 

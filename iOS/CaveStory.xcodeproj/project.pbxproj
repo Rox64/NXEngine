@@ -445,7 +445,7 @@
 		056D156015EEB8C800CFE45C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		056D156415EEB8C800CFE45C /* CaveStory-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CaveStory-Info.plist"; sourceTree = "<group>"; };
 		056D156615EEB8C800CFE45C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		056D158015EEB9A600CFE45C /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../sdl-1.3/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
+		056D158015EEB9A600CFE45C /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../SDL/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		058E85F915EECD95007F72C2 /* endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = endian.h; sourceTree = "<group>"; };
 		058E85FB15EED58E007F72C2 /* game_resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = game_resources; path = ../../game_resources; sourceTree = "<group>"; };
 		058E860615EEF910007F72C2 /* vjoy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vjoy.cpp; path = ../../vjoy.cpp; sourceTree = "<group>"; };
@@ -1330,7 +1330,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				HEADER_SEARCH_PATHS = "/Users/kernel_bug/sdl-1.3/include";
+				HEADER_SEARCH_PATHS = /Users/kernel_bug/SDL/include;
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1343,7 +1343,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				HEADER_SEARCH_PATHS = "/Users/kernel_bug/sdl-1.3/include";
+				HEADER_SEARCH_PATHS = /Users/kernel_bug/SDL/include;
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

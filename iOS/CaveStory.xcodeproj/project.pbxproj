@@ -167,6 +167,8 @@
 		056D155F15EEB8C800CFE45C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D155E15EEB8C800CFE45C /* GLKit.framework */; };
 		056D156115EEB8C800CFE45C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 056D156015EEB8C800CFE45C /* OpenGLES.framework */; };
 		056D156715EEB8C800CFE45C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 056D156515EEB8C800CFE45C /* InfoPlist.strings */; };
+		057DA63D15FC27230048DA50 /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05C7AE8E15FC241700F03DD9 /* libFreetype2.a */; };
+		05819F2915FC1E4E0013D501 /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05819F2815FC1E300013D501 /* libSDL2_ttf.a */; };
 		058E85FC15EED58E007F72C2 /* game_resources in Resources */ = {isa = PBXBuildFile; fileRef = 058E85FB15EED58E007F72C2 /* game_resources */; };
 		058E860815EEF911007F72C2 /* vjoy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 058E860615EEF910007F72C2 /* vjoy.cpp */; };
 /* End PBXBuildFile section */
@@ -192,6 +194,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 006E982211955059001DE610;
 			remoteInfo = testsdl;
+		};
+		05819F2715FC1E300013D501 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05819F2015FC1E300013D501 /* SDL_ttf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE48FD6E07AFA17000BB41DA;
+			remoteInfo = "Static Library";
+		};
+		05C7AE8D15FC241700F03DD9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05C7AE8615FC241700F03DD9 /* freetype2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6382B1B10FB0FC5100ECAC02;
+			remoteInfo = Freetype2;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -446,10 +462,12 @@
 		056D156415EEB8C800CFE45C /* CaveStory-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CaveStory-Info.plist"; sourceTree = "<group>"; };
 		056D156615EEB8C800CFE45C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		056D158015EEB9A600CFE45C /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../SDL/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
+		05819F2015FC1E300013D501 /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "../../SDL_ttf/Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
 		058E85F915EECD95007F72C2 /* endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = endian.h; sourceTree = "<group>"; };
 		058E85FB15EED58E007F72C2 /* game_resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = game_resources; path = ../../game_resources; sourceTree = "<group>"; };
 		058E860615EEF910007F72C2 /* vjoy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vjoy.cpp; path = ../../vjoy.cpp; sourceTree = "<group>"; };
 		058E860715EEF910007F72C2 /* vjoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vjoy.h; path = ../../vjoy.h; sourceTree = "<group>"; };
+		05C7AE8615FC241700F03DD9 /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = ../../libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -457,6 +475,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				057DA63D15FC27230048DA50 /* libFreetype2.a in Frameworks */,
+				05819F2915FC1E4E0013D501 /* libSDL2_ttf.a in Frameworks */,
 				0560063E15EEBD1B00A7CCD5 /* QuartzCore.framework in Frameworks */,
 				0560063C15EEBCF600A7CCD5 /* AudioToolbox.framework in Frameworks */,
 				0560062C15EEBA9000A7CCD5 /* libSDL2.a in Frameworks */,
@@ -950,6 +970,8 @@
 		056D154915EEB8C700CFE45C = {
 			isa = PBXGroup;
 			children = (
+				05C7AE8615FC241700F03DD9 /* freetype2.xcodeproj */,
+				05819F2015FC1E300013D501 /* SDL_ttf.xcodeproj */,
 				056D158015EEB9A600CFE45C /* SDL.xcodeproj */,
 				056D156215EEB8C800CFE45C /* CaveStory */,
 				056D155715EEB8C800CFE45C /* Frameworks */,
@@ -1007,12 +1029,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		05819F2115FC1E300013D501 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				05819F2815FC1E300013D501 /* libSDL2_ttf.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		058E85FA15EED55B007F72C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				058E85FB15EED58E007F72C2 /* game_resources */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		05C7AE8715FC241700F03DD9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				05C7AE8E15FC241700F03DD9 /* libFreetype2.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1057,8 +1095,16 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 05C7AE8715FC241700F03DD9 /* Products */;
+					ProjectRef = 05C7AE8615FC241700F03DD9 /* freetype2.xcodeproj */;
+				},
+				{
 					ProductGroup = 056D158115EEB9A600CFE45C /* Products */;
 					ProjectRef = 056D158015EEB9A600CFE45C /* SDL.xcodeproj */;
+				},
+				{
+					ProductGroup = 05819F2115FC1E300013D501 /* Products */;
+					ProjectRef = 05819F2015FC1E300013D501 /* SDL_ttf.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1081,6 +1127,20 @@
 			fileType = wrapper.application;
 			path = testsdl.app;
 			remoteRef = 056D158815EEB9A600CFE45C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		05819F2815FC1E300013D501 /* libSDL2_ttf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2_ttf.a;
+			remoteRef = 05819F2715FC1E300013D501 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		05C7AE8E15FC241700F03DD9 /* libFreetype2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFreetype2.a;
+			remoteRef = 05C7AE8D15FC241700F03DD9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1332,7 +1392,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				HEADER_SEARCH_PATHS = /Users/kernel_bug/SDL/include;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../SDL/include",
+					"$(SRCROOT)/../../SDL_ttf",
+				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1345,7 +1408,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				HEADER_SEARCH_PATHS = /Users/kernel_bug/SDL/include;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../SDL/include",
+					"$(SRCROOT)/../../SDL_ttf",
+				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

@@ -129,7 +129,7 @@ uint16_t version;
 	#else
 		
 		// try and load the drums from cache instead of synthing them
-		fp = fileopenRW(drum_cache, "rb");
+		fp = fileopenCache(drum_cache, "rb");
 		if (fp)
 		{
 			// this also checks for correct endianness
@@ -166,7 +166,7 @@ uint16_t version;
 		}
 		
 		// cache the drums for next time
-		fp = fileopenRW(drum_cache, "wb");
+		fp = fileopenCache(drum_cache, "wb");
 		if (fp)
 		{
 			version = DRUM_VERSION;

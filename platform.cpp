@@ -5,16 +5,9 @@
 #include "platform.h"
 #include "common/basics.h"
 
-
-#ifdef USE_RO_FILESYS
-char const* ro_filesys_path = "./ro/";
-char const* rw_filesys_path = "./rw/";
-#else
 char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";
-#endif
-
-#ifndef __SDLSHIM__
+char const* ca_filesys_path = "./";
 
 FILE *fileopen(char const* fname, char const* mode, char const* filesys_path)
 {
@@ -40,12 +33,22 @@ FILE *fileopenRW(const char *fname, const char *mode)
 	return fileopen(fname, mode, rw_filesys_path);
 }
 
-#else
+FILE *fileopenCache(const char *fname, const char *mode)
+{
+    
+	return fileopen(fname, mode, ca_filesys_path);
+}
 
-// FILE *fileopen(const char *fname, const char *mode)
-// {
-// 	return SDLS_fopen(fname, mode);
-// }
-
+void setup_path()
+{
+#ifdef IPHONE
+    ro_filesys_path = "./game_resources/";
+    rw_filesys_path = "../Documents/";
+    ca_filesys_path = "../Library/Caches/";
+#elif USE_RO_FILESYS
+    ro_filesys_path = "./ro/";
+    rw_filesys_path = "./rw/";
+    ca_filesys_path = "./rw/";
 #endif
+}
 

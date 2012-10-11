@@ -842,7 +842,7 @@ FILE *fp = NULL;
 			return 0;
 		}
 		
-		fp = fileopenRW(cache_name, "wb");
+		fp = fileopenCache(cache_name, "wb");
 		if (!fp)
 		{
 			staterr("LoadSoundFX: failed open: '%s'", cache_name);
@@ -904,7 +904,7 @@ int slot;
 uint32_t magick;
 stPXSound snd;
 
-	fp = fileopenRW(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		stat("LoadFXCache: audio cache %s not exist", fname);
@@ -1169,7 +1169,7 @@ uchar ch;
 // FILE *fp;
 // int i, j;
 
-// 	fp = fileopenRW(fname, "wb");
+// 	fp = fileopenCache(fname, "wb");
 // 	if (!fp)
 // 	{
 // 		stat("save_pxt: unable to open '%s'", fname);

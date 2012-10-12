@@ -79,7 +79,7 @@ void TB_StageSelect::Draw(void)
 	int nslots = CountActiveSlots();
 	int total_spacing = ((nslots - 1) * LOCS_SPACING);
 	int total_width = total_spacing + (nslots * sprites[SPR_STAGEIMAGE].w);
-	int x = (SCREEN_WIDTH / 2) - (total_width / 2);
+	int x = (Graphics::SCREEN_WIDTH / 2) - (total_width / 2);
 	
 	for(int i=0;i<nslots;i++)
 	{

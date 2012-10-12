@@ -9,9 +9,13 @@
 #include "sprites.h"
 #include "../dirnames.h"
 #include "graphics.fdh"
+#include "../platform.h"
 
 SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
+
+int Graphics::SCREEN_WIDTH = 320;
+int Graphics::SCREEN_HEIGHT = 240;
 
 
 NXSurface *screen = NULL;				// created from SDL's screen
@@ -91,21 +95,16 @@ bool Graphics::InitVideo()
 	uint32_t window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
 	if (is_fullscreen) window_flags |= SDL_WINDOW_FULLSCREEN;
 	
-	// #ifndef __SDLSHIM__
-	// putenv((char *)"SDL_VIDEO_CENTERED=1");
-	// #endif
-
 	if (window)
 	{
 		stat("second call to Graphics::InitVideo()");
 		abort();
 	}
-
 	
-	stat("SDL_CreateWindow: %dx%d @ %dbpp", SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, screen_bpp);
+	stat("SDL_CreateWindow: %dx%d @ %dbpp", Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE, screen_bpp);
 	window = SDL_CreateWindow("NXEngine", 
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE,
+		Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE,
 		window_flags);
 
 	if (!window)
@@ -290,8 +289,8 @@ char fname[MAXPATHLEN];
 	if (loading.LoadImage(fname))
 		return;
 	
-	int x = (SCREEN_WIDTH / 2) - (loading.Width() / 2);
-	int y = (SCREEN_HEIGHT / 2) - loading.Height();
+	int x = (Graphics::SCREEN_WIDTH / 2) - (loading.Width() / 2);
+	int y = (Graphics::SCREEN_HEIGHT / 2) - loading.Height();
 	
 	ClearScreen(BLACK);
 	DrawSurface(&loading, x, y);

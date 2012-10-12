@@ -242,7 +242,7 @@ void TextBox::DrawTextBox()
 	
 	// set clipping region to inside of frame, so that text cannot
 	// overflow during scrolling, etc.
-	set_clip_rect(CONTENT_X, text_top, SCREEN_WIDTH, 48);
+	set_clip_rect(CONTENT_X, text_top, Graphics::SCREEN_WIDTH, 48);
 	
 	//SDL_FillRect(screen, &cliprect, SDL_MapRGB(screen->format,0,0,255));
 	

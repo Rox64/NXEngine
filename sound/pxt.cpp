@@ -274,7 +274,7 @@ char buf[80];
 	yratio = (double)ysize / (double)(127+127);
 	//lprintf("ratio = %.2f yratio = %.2f\n", ratio, yratio);
 	
-	DrawSDLLine(SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT, 18,18,18);
+	DrawSDLLine(Graphics::SCREEN_WIDTH/2, 0, Graphics::SCREEN_WIDTH/2, Graphics::SCREEN_HEIGHT, 18,18,18);
 	DrawSDLLine(xoff, centerline, xoff+wd, centerline, 255,0,0);
 	y = scale_sample(TOPAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);
 	y = scale_sample(BTMAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);

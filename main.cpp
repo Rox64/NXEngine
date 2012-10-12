@@ -326,7 +326,7 @@ static int frameskip = 0;
 		{
 			char buf[1024];
 			sprintf(buf, "[] Tick %d", framecount++);
-			font_draw_shaded(4, (SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
+			font_draw_shaded(4, (Graphics::SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
 			can_tick = false;
 		}
 		else
@@ -383,7 +383,7 @@ void update_fps()
 	char fpstext[64];
 	sprintf(fpstext, "%d fps", fps);
 	
-	int x = (SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
+	int x = (Graphics::SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
 	font_draw_shaded(x, 4, fpstext, 0, &greenfont);
 }
 

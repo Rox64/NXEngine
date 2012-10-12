@@ -88,7 +88,7 @@ void c------------------------------() {}
 
 void ai_igor_balcony(Object *o)
 {
-	if (!pdistlx(SCREEN_WIDTH<<CSF) && !pdistly(SCREEN_HEIGHT<<CSF))
+	if (!pdistlx(Graphics::SCREEN_WIDTH<<CSF) && !pdistly(Graphics::SCREEN_HEIGHT<<CSF))
 	{
 		o->state = 1;
 	}

@@ -6,8 +6,8 @@ using namespace Options;
 extern FocusStack optionstack;
 extern int last_sdl_key;	// from inputs.cpp
 
-#define MESSAGE_X		((SCREEN_WIDTH / 2) - 112)
-#define MESSAGE_Y		((SCREEN_HEIGHT / 2) - 30)
+#define MESSAGE_X		((Graphics::SCREEN_WIDTH / 2) - 112)
+#define MESSAGE_Y		((Graphics::SCREEN_HEIGHT / 2) - 30)
 #define MESSAGE_W		244
 #define MESSAGE_H		48
 

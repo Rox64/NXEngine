@@ -321,7 +321,7 @@ void ai_giant_beetle(Object *o)
 			
 			// if player runs too far away from us reset to our
 			// waiting state and original position.
-			if (!pdistlx((SCREEN_WIDTH + 80) << CSF))
+			if (!pdistlx((Graphics::SCREEN_WIDTH + 80) << CSF))
 			{
 				o->state = 0;
 				o->xinertia = 0;

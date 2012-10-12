@@ -103,10 +103,10 @@ void VJoy::DrawAll()
       if (vkey.x < 0)
          continue;
 
-      int x1 = SCREEN_WIDTH  *  vkey.x;
-      int y1 = SCREEN_HEIGHT *  vkey.y;
-      int x2 = SCREEN_WIDTH  * (vkey.x + vkey.w);
-      int y2 = SCREEN_HEIGHT * (vkey.y + vkey.h);
+      int x1 = Graphics::SCREEN_WIDTH  *  vkey.x;
+      int y1 = Graphics::SCREEN_HEIGHT *  vkey.y;
+      int x2 = Graphics::SCREEN_WIDTH  * (vkey.x + vkey.w);
+      int y2 = Graphics::SCREEN_HEIGHT * (vkey.y + vkey.h);
 
       NXColor const& c = inputs[i] ? pressed : released; 
 

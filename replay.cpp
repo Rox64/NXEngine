@@ -336,7 +336,7 @@ int tapepos;
 			play.termtimer--;
 			const char *str = ((play.termtimer % 40) >= 20) ? "> PLAYBACK TERMINATED <":">                     <";
 			
-			int y = (SCREEN_HEIGHT - 3) - (GetFontHeight() * 2);
+			int y = (Graphics::SCREEN_HEIGHT - 3) - (GetFontHeight() * 2);
 			font_draw_shaded(x, y, str, 0, &greenfont);
 		}
 		
@@ -355,7 +355,7 @@ int tapepos;
 	memset(&buf[1], ' ', TAPE_CHARS);
 	memset(&buf[1], '>', tapepos);
 	
-	int y = (SCREEN_HEIGHT - 3) - GetFontHeight();
+	int y = (Graphics::SCREEN_HEIGHT - 3) - GetFontHeight();
 	font_draw_shaded(x, y, buf, 0, &greenfont);
 	
 	const char *mode = ((play.elapsed_frames % 40) < 20) ? "PLAY" : "    ";

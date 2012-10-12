@@ -111,8 +111,8 @@ int x, y;
 	
 	fclose(fp);
 	
-	map.maxxscroll = (((map.xsize * TILE_W) - SCREEN_WIDTH) - 8) << CSF;
-	map.maxyscroll = (((map.ysize * TILE_H) - SCREEN_HEIGHT) - 8) << CSF;
+	map.maxxscroll = (((map.xsize * TILE_W) - Graphics::SCREEN_WIDTH) - 8) << CSF;
+	map.maxyscroll = (((map.ysize * TILE_H) - Graphics::SCREEN_HEIGHT) - 8) << CSF;
 	
 	stat("load_map: '%s' loaded OK! - %dx%d", fname, map.xsize, map.ysize);
 	return 0;
@@ -399,9 +399,9 @@ int x, y;
 	int w = backdrop[map.backdrop]->Width();
 	int h = backdrop[map.backdrop]->Height();
 	
-	for(y=0;y<SCREEN_HEIGHT+map.parscroll_y; y+=h)
+	for(y=0;y<Graphics::SCREEN_HEIGHT+map.parscroll_y; y+=h)
 	{
-		for(x=0;x<SCREEN_WIDTH+map.parscroll_x; x+=w)
+		for(x=0;x<Graphics::SCREEN_WIDTH+map.parscroll_x; x+=w)
 		{
 			DrawSurface(backdrop[map.backdrop], x - map.parscroll_x, y - map.parscroll_y);
 		}
@@ -417,7 +417,7 @@ int nlayers = 6;
 int y1, y2;
 int i, x;
 
-	if (--map.parscroll_x <= -(SCREEN_WIDTH*2))
+	if (--map.parscroll_x <= -(Graphics::SCREEN_WIDTH*2))
 		map.parscroll_x = 0;
 	
 	y1 = x = 0;
@@ -428,7 +428,7 @@ int i, x;
 		if (i)	// not the static moon layer?
 		{
 			x = (map.parscroll_x * move_spd[i]) >> 1;
-			x %= SCREEN_WIDTH;
+			x %= Graphics::SCREEN_WIDTH;
 		}
 		
 		BlitPatternAcross(backdrop[map.backdrop], x, y1, y1, (y2-y1)+1);
@@ -498,7 +498,7 @@ int water_x, water_y;
 		return;
 	
 	water_x = -(map.displayed_xscroll >> CSF);
-	water_x %= SCREEN_WIDTH;
+	water_x %= Graphics::SCREEN_WIDTH;
 	
 	water_y = (map.waterlevelobject->y >> CSF) - (map.displayed_yscroll >> CSF);
 	
@@ -510,7 +510,7 @@ int water_x, water_y;
 	water_y += 16;
 	
 	// draw the rest of the pattern all the way down
-	while(water_y < (SCREEN_HEIGHT-1))
+	while(water_y < (Graphics::SCREEN_HEIGHT-1))
 	{
 		BlitPatternAcross(backdrop[map.backdrop], water_x, water_y, 16, 32);
 		water_y += 32;
@@ -539,11 +539,11 @@ int scroll_x, scroll_y;
 	
 	// MAP_DRAW_EXTRA_Y etc is 1 if resolution is changed to
 	// something not a multiple of TILE_H.
-	for(y=0; y <= (SCREEN_HEIGHT / TILE_H)+MAP_DRAW_EXTRA_Y; y++)
+	for(y=0; y <= (Graphics::SCREEN_HEIGHT / TILE_H)+MAP_DRAW_EXTRA_Y; y++)
 	{
 		blit_x = blit_x_start;
 		
-		for(x=0; x <= (SCREEN_WIDTH / TILE_W)+MAP_DRAW_EXTRA_X; x++)
+		for(x=0; x <= (Graphics::SCREEN_WIDTH / TILE_W)+MAP_DRAW_EXTRA_X; x++)
 		{
 			int t = map.tiles[mapx+x][mapy+y];
 			if ((tileattr[t] & TA_FOREGROUND) == foreground)
@@ -585,7 +585,7 @@ const int scroll_adj_rate = (0x2000 / map.scrollspeed);
 	}
 	
 	// compute where the map "wants" to be
-	map.target_x = (player->CenterX() + map.scrollcenter_x) - ((SCREEN_WIDTH / 2) << CSF);
+	map.target_x = (player->CenterX() + map.scrollcenter_x) - ((Graphics::SCREEN_WIDTH / 2) << CSF);
 	
 	// Y scrolling
 	if (player->lookscroll == UP)
@@ -610,7 +610,7 @@ const int scroll_adj_rate = (0x2000 / map.scrollspeed);
 		}
 	}
 	
-	map.target_y = (player->CenterY() + map.scrollcenter_y) - ((SCREEN_HEIGHT / 2) << CSF);
+	map.target_y = (player->CenterY() + map.scrollcenter_y) - ((Graphics::SCREEN_HEIGHT / 2) << CSF);
 }
 
 void map_scroll_do(void)
@@ -635,13 +635,13 @@ void map_scroll_do(void)
 				// the center ourselves.
 				if (sprites[t->sprite].frame[t->frame].dir[t->dir].drawpoint.equ(0, 0))
 				{
-					map.target_x = map.focus.target->CenterX() - ((SCREEN_WIDTH / 2) << CSF);
-					map.target_y = map.focus.target->CenterY() - ((SCREEN_HEIGHT / 2) << CSF);
+					map.target_x = map.focus.target->CenterX() - ((Graphics::SCREEN_WIDTH / 2) << CSF);
+					map.target_y = map.focus.target->CenterY() - ((Graphics::SCREEN_HEIGHT / 2) << CSF);
 				}
 				else
 				{
-					map.target_x = map.focus.target->x - ((SCREEN_WIDTH / 2) << CSF);
-					map.target_y = map.focus.target->y - ((SCREEN_HEIGHT / 2) << CSF);
+					map.target_x = map.focus.target->x - ((Graphics::SCREEN_WIDTH / 2) << CSF);
+					map.target_y = map.focus.target->y - ((Graphics::SCREEN_HEIGHT / 2) << CSF);
 				}
 			}
 		}
@@ -791,8 +791,8 @@ void map_sanitycheck(void)
 
 void map_scroll_jump(int x, int y)
 {
-	map.target_x = x - ((SCREEN_WIDTH / 2) << CSF);
-	map.target_y = y - ((SCREEN_HEIGHT / 2) << CSF);
+	map.target_x = x - ((Graphics::SCREEN_WIDTH / 2) << CSF);
+	map.target_y = y - ((Graphics::SCREEN_HEIGHT / 2) << CSF);
 	map.real_xscroll = map.target_x;
 	map.real_yscroll = map.target_y;
 	
@@ -862,7 +862,7 @@ const char *map_get_stage_name(int mapno)
 // show map name for "ticks" ticks
 void map_show_map_name()
 {
-	game.mapname_x = (SCREEN_WIDTH / 2) - (GetFontWidth(map_get_stage_name(game.curmap), 0) / 2);
+	game.mapname_x = (Graphics::SCREEN_WIDTH / 2) - (GetFontWidth(map_get_stage_name(game.curmap), 0) / 2);
 	game.showmapnametime = 120;
 }
 

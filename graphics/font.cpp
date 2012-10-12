@@ -584,7 +584,7 @@ static bool create_shade_sfc(void)
 		tshadesfc = NULL;
 	}
 	
-	int wd = (SCREEN_WIDTH * SCALE);
+	int wd = (Graphics::SCREEN_WIDTH * SCALE);
 	int ht = whitefont.letters['M']->h;
 	
 	SDL_PixelFormat* pxformat = SDL_AllocFormat(screen->Format()->format);

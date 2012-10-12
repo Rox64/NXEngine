@@ -5,8 +5,8 @@
 using namespace Options;
 extern FocusStack optionstack;
 
-#define DLG_X		((SCREEN_WIDTH / 2) - 88)
-#define DLG_Y		((SCREEN_HEIGHT / 2) - 90)
+#define DLG_X		((Graphics::SCREEN_WIDTH / 2) - 88)
+#define DLG_Y		((Graphics::SCREEN_HEIGHT / 2) - 90)
 #define DLG_W		190
 #define DLG_H		180
 
@@ -138,7 +138,7 @@ char text[132];
 		
 		// ... ellipses if too long
 		int maxx = (rx - 4);
-		//FillRect(maxx, 0, maxx, SCREEN_HEIGHT, 0,255,0);
+		//FillRect(maxx, 0, maxx, Graphics::SCREEN_HEIGHT, 0,255,0);
 		for(;;)
 		{
 			int wd = GetFontWidth(text, 0);

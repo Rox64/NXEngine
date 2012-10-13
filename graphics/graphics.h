@@ -3,12 +3,6 @@
 #define _GRAPHICS_H
 
 #include "nxsurface.h"
-// (unscaled) screen size/video mode
-//#define Graphics::SCREEN_WIDTH		320
-//#define Graphics::SCREEN_HEIGHT		213
-//#define Graphics::SCREEN_WIDTH		340
-//#define Graphics::SCREEN_HEIGHT		256
-
 
 extern NXSurface *screen;
 extern const NXColor DK_BLUE;
@@ -27,6 +21,7 @@ namespace Graphics
 	bool WindowVisible();
 	
 	bool InitVideo();
+	bool SelectResolution();
 	void SetFullscreen(bool enable);
 	bool SetResolution(int factor, bool restoreOnFailure=true);
 	const char **GetResolutions();

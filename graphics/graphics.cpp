@@ -1,4 +1,5 @@
 #include <cassert>
+#include <algorithm>
 // graphics routines
 #include <SDL.h>
 
@@ -14,6 +15,8 @@
 SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
 
+
+// (unscaled) screen size/video mode
 int Graphics::SCREEN_WIDTH = 320;
 int Graphics::SCREEN_HEIGHT = 240;
 
@@ -86,6 +89,59 @@ bool Graphics::WindowVisible()
 /*
 void c------------------------------() {}
 */
+
+bool Graphics::SelectResolution()
+{
+	SDL_DisplayMode curr, close;
+
+	curr.w = 320;
+	curr.h = 240;
+	curr.driverdata = NULL;
+	curr.refresh_rate = 0;
+	curr.format = 0;
+
+	if (!SDL_GetClosestDisplayMode(0, &curr, &close))
+	{
+		staterr("SDL_GetCurrentDisplayMode %s", SDL_GetError());
+		return true;
+	}
+	
+	if (close.w < close.h)
+		std::swap(close.w, close.h);
+
+	stat("closest w = %d, h = %d, dm = %u", close.w, close.h, close.format);	
+
+	// Scale will be set by the width. Width will be changed to be best possible
+	// Height will be set by scale.
+	// Both width and height will be made even.
+
+	// iPad 1/2
+	// 1024/320 = 3.2 = 3; 1024/3 = 341.3 = 341 = 340
+	// 768/3 = 256
+
+	// iPad 3
+	// 2048/320 = 6.4 = 6; 2048/6 = 341.3 = 341 = 340
+	// 1536/6 = 256
+
+	// iPhone 4/4s
+	// 960/320 = 3; 960 / 3 = 320
+	// 640/3 = 213.3 = 213 = 212
+
+	// iPhone 5
+	// 1136/320 = 3.55 = 3; 1136/3 = 378.6 = 378
+	// 640/3 = 213.3 = 213 = 212
+
+	// TODO something with former versions of iPhone. 
+	// Scale factor must be 1.5 on them.
+
+	int wf = close.w / 320;
+	Graphics::SCREEN_WIDTH = int((close.w / wf) & 0xfffffffe);
+	Graphics::SCREEN_HEIGHT = int((close.h / wf) & 0xfffffffe);
+
+	NXSurface::SetScale(wf);
+    
+    return false;
+}
 
 bool Graphics::InitVideo()
 {
@@ -196,6 +252,19 @@ bool Graphics::SetResolution(int r, bool restoreOnFailure)
 		return 0;
 	
 	int old_res = current_res;
+
+#ifdef IPHONE
+	
+	restoreOnFailure = false;
+	
+	if (SelectResolution())
+	{
+		staterr("SelectResolution() failed!");
+		return 1;
+	}
+
+#else
+
 	int factor;
 	
 	if (r == 0)
@@ -211,7 +280,8 @@ bool Graphics::SetResolution(int r, bool restoreOnFailure)
 	
 	stat("Setting scaling %d and fullscreen=%s", factor, is_fullscreen ? "yes":"no");
 	NXSurface::SetScale(factor);
-	
+#endif
+
 	if (Graphics::InitVideo())
 	{
 		staterr("Switch to resolution %d failed!", r);

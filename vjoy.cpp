@@ -1,3 +1,4 @@
+#include <cmath>
 #include <map>
 #include <vector>
 #include <SDL.h>
@@ -11,6 +12,16 @@ struct Point
    float x, y;
    Point(float x, float y) : x(x), y(y) {}
    Point() : x(0), y(0) {}
+
+   Point operator+(Point const& r)
+   {
+      return Point(x + r.x, y + r.y);
+   }   
+
+   Point operator-(Point const& r)
+   {
+      return Point(x - r.x, y - r.y);
+   }
 };
 
 struct Rect
@@ -27,16 +38,24 @@ struct Rect
    {
       return !(px < x || x + w < px || py < y || y + h < py);
    }
+
+   void to_screen_coord(int& x1, int& y1, int& x2, int& y2) const
+   {
+      x1 = Graphics::SCREEN_WIDTH  *  x;
+      y1 = Graphics::SCREEN_HEIGHT *  y;
+      x2 = Graphics::SCREEN_WIDTH  * (x + w);
+      y2 = Graphics::SCREEN_HEIGHT * (y + h);
+   }
 };
 
 
 
 const Rect vkeys[INPUT_COUNT] = 
 {
-   {0.7f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
-   {0.9f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
-   {0.8f, 0.7f, 0.1f, 0.1f}, // UPKEY
-   {0.8f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
+   {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
+   {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
+   {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
+   {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
 
    {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
    {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
@@ -76,6 +95,91 @@ float yres = -1.0f;
 typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
 lastFingerPos_t lastFingerPos;
 
+namespace Pad
+{
+   bool enabled = false;
+   SDL_FingerID finger;
+   Point origin;
+   Point current;
+
+   const float border = 0.65f;
+   const float max_r2 = 0.2*0.2;
+   const float min_r2 = 0.02*0.02;
+
+   void insert_event(SDL_Event const& evt, Point const& p)
+   {
+      if (evt.type == SDL_FINGERUP && Pad::enabled && evt.tfinger.fingerId == finger)
+      {
+         if (enabled && evt.tfinger.fingerId == Pad::finger)
+         {
+            enabled = false;
+         }
+      }
+      else
+      {
+         if (!enabled && evt.type == SDL_FINGERDOWN && p.x > border)
+         {
+            enabled = true;
+            origin = p;
+            finger = evt.tfinger.fingerId;
+         }
+
+         if (enabled && evt.tfinger.fingerId == finger)
+         {
+            current = p;
+         }
+      }
+   }
+
+   void process()
+   {
+      if (!enabled)
+         return;
+
+      Point vec = current - origin;
+      float r2 = vec.x * vec.x + vec.y * vec.y;
+      if (r2 < min_r2)
+         return;
+      // if (r2 > max_r2)
+      //    r2 = max_r2;
+
+      float t = atan2(vec.y, vec.x);
+
+#define P(a) (float(double(a) * M_PI / 8.0))
+#define RANGE(a, b) (P(a) <= t && t <= P(b))
+
+      inputs[0] = (RANGE(-8, -5) || RANGE(5, 8));  // left
+      inputs[1] = (RANGE(-3, 0) || RANGE(0, 3));   // rigth
+      inputs[2] = (RANGE(-7, -1));                 // up
+      inputs[3] = (RANGE(1, 7));                   // down
+
+#undef RANGE
+#undef P
+
+   }
+
+   void draw()
+   {
+      if (!enabled)
+         return;
+
+      const NXColor origin_color(0xff, 0xcf, 0x33);
+      const NXColor current_color(0x89, 0xf5, 0x25);
+
+      const float size = 0.05f;
+
+      int x1, y1, x2, y2;
+      Rect o = {origin.x - size / 2, origin.y - size/2, size, size};
+      Rect c = {current.x - size / 2, current.y - size/2, size, size};
+      
+      o.to_screen_coord(x1, y1, x2, y2);
+      Graphics::FillRect(x1, y1, x2, y2, origin_color);
+
+      c.to_screen_coord(x1, y1, x2, y2);
+      Graphics::FillRect(x1, y1, x2, y2, current_color);
+   }
+};
+
 bool  VJoy::Init()
 {
    vjoy_enabled = true;
@@ -103,15 +207,15 @@ void VJoy::DrawAll()
       if (vkey.x < 0)
          continue;
 
-      int x1 = Graphics::SCREEN_WIDTH  *  vkey.x;
-      int y1 = Graphics::SCREEN_HEIGHT *  vkey.y;
-      int x2 = Graphics::SCREEN_WIDTH  * (vkey.x + vkey.w);
-      int y2 = Graphics::SCREEN_HEIGHT * (vkey.y + vkey.h);
+      int x1, y1, x2, y2;
+      vkey.to_screen_coord(x1, y1, x2, y2);
 
       NXColor const& c = inputs[i] ? pressed : released; 
 
       Graphics::FillRect(x1, y1, x2, y2, c);
    }
+
+   Pad::draw();
 }
 
 void VJoy::InjectInputEvent(SDL_Event const & evt)
@@ -149,7 +253,7 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
       lastFingerPos[evt.tfinger.fingerId] = p;
    }
 
-
+   Pad::insert_event(evt, p);
 }
 
 void updateButtons(Point const& p, bool state)
@@ -164,6 +268,8 @@ void updateButtons(Point const& p, bool state)
    }
 }
 
+
+
 void VJoy::ProcessInput()
 {
    if (!vjoy_enabled)
@@ -176,4 +282,6 @@ void VJoy::ProcessInput()
       Point const& p = it->second;
       updateButtons(p, true);
    }
+
+   Pad::process();
 }

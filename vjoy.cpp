@@ -13,14 +13,19 @@ struct Point
    Point(float x, float y) : x(x), y(y) {}
    Point() : x(0), y(0) {}
 
-   Point operator+(Point const& r)
+   Point operator+(Point const& r) const
    {
       return Point(x + r.x, y + r.y);
    }   
 
-   Point operator-(Point const& r)
+   Point operator-(Point const& r) const
    {
       return Point(x - r.x, y - r.y);
+   }
+
+   Point operator*(float k) const
+   {
+      return Point(k * x, k * y);
    }
 };
 
@@ -28,6 +33,12 @@ struct Rect
 {
    float x, y;
    float w, h;
+
+   static Rect centred(Point const& p, float w, float h)
+   {
+      Rect r = {p.x - w/2, p.y - h/2, w, h};
+      return r;
+   }
 
    bool point_in(Point const& p) const
    {
@@ -45,6 +56,13 @@ struct Rect
       y1 = Graphics::SCREEN_HEIGHT *  y;
       x2 = Graphics::SCREEN_WIDTH  * (x + w);
       y2 = Graphics::SCREEN_HEIGHT * (y + h);
+   }
+
+   void draw_fill_rect(NXColor const& c) const
+   {
+      int x1, y1, x2, y2;
+      to_screen_coord(x1, y1, x2, y2);
+      Graphics::FillRect(x1, y1, x2, y2, c);
    }
 };
 
@@ -106,29 +124,93 @@ namespace Pad
    const float max_r2 = 0.2*0.2;
    const float min_r2 = 0.02*0.02;
 
+   struct Tri
+   {
+      Point a;
+      Point b, c;
+
+      Tri(Point a, float size, float rb, float rc)
+      {
+         #define P(a) (double(a) * M_PI / 8.0)
+         b = Point(cos(P(rb)), sin(P(rb))) * size + a;
+         c = Point(cos(P(rc)), sin(P(rc))) * size + a;
+         #undef P
+      }
+
+      static float sign(Point const& p1, Point const& p2, Point const& p3)
+      {
+         return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+      }
+
+      bool in(Point const& pt) const
+      {
+         bool b1, b2, b3;
+
+         b1 = sign(pt, a, b) < 0.0f;
+         b2 = sign(pt, b, c) < 0.0f;
+         b3 = sign(pt, c, a) < 0.0f;
+
+         return ((b1 == b2) && (b2 == b3));
+      }
+   };
+
+   const float seg_size = 0.2f;
+   const Point seg_center(0.75f, 0.75f);
+
+   const size_t seg_count = 8;
+   Tri segments[seg_count] = {
+      Tri(seg_center, seg_size, -1, 1),
+      Tri(seg_center, seg_size, 1, 3),
+      Tri(seg_center, seg_size, 3, 5),
+      Tri(seg_center, seg_size, 5, 7),
+      Tri(seg_center, seg_size, 7, -7),
+      Tri(seg_center, seg_size, -7, -5),
+      Tri(seg_center, seg_size, -5, -3),
+      Tri(seg_center, seg_size, -3, -1)
+   };
+
+   bool pressed[seg_count];
+
    void insert_event(SDL_Event const& evt, Point const& p)
    {
-      if (evt.type == SDL_FINGERUP && Pad::enabled && evt.tfinger.fingerId == finger)
-      {
-         if (enabled && evt.tfinger.fingerId == Pad::finger)
-         {
-            enabled = false;
-         }
-      }
-      else
-      {
-         if (!enabled && evt.type == SDL_FINGERDOWN && p.x > border)
-         {
-            enabled = true;
-            origin = p;
-            finger = evt.tfinger.fingerId;
-         }
+      // if (evt.type == SDL_FINGERUP && Pad::enabled && evt.tfinger.fingerId == finger)
+      // {
+      //    if (enabled && evt.tfinger.fingerId == Pad::finger)
+      //    {
+      //       enabled = false;
+      //    }
+      // }
+      // else
+      // {
+      //    if (!enabled && evt.type == SDL_FINGERDOWN && p.x > border)
+      //    {
+      //       enabled = true;
+      //       origin = p;
+      //       finger = evt.tfinger.fingerId;
+      //    }
 
-         if (enabled && evt.tfinger.fingerId == finger)
-         {
-            current = p;
-         }
-      }
+      //    if (enabled && evt.tfinger.fingerId == finger)
+      //    {
+      //       current = p;
+      //    }
+      // }
+   }
+
+   void update_buttons(Point const& p)
+   {
+      Point vec = p - seg_center;
+      float r2 = vec.x * vec.x + vec.y * vec.y;
+      if (r2 > seg_size*seg_size)
+         return;
+
+      // left
+      inputs[0] = segments[0].in(p) || segments[1].in(p) || segments[7].in(p);
+      // right
+      inputs[1] = segments[3].in(p) || segments[4].in(p) || segments[5].in(p);
+      // up
+      inputs[2] = segments[1].in(p) || segments[2].in(p) || segments[3].in(p);
+      // down
+      inputs[3] = segments[5].in(p) || segments[6].in(p) || segments[7].in(p);
    }
 
    void process()
@@ -160,23 +242,36 @@ namespace Pad
 
    void draw()
    {
-      if (!enabled)
-         return;
+      const NXColor col(0xff, 0xcf, 0x33);
+      Point const& a = seg_center;
+      for (size_t i = 0; i < seg_count; ++i)
+      {
+         Point const& b = segments[i].b;
+         Point const& c = segments[i].c;
 
-      const NXColor origin_color(0xff, 0xcf, 0x33);
-      const NXColor current_color(0x89, 0xf5, 0x25);
+         Graphics::DrawLine(a.x * Graphics::SCREEN_WIDTH, a.y * Graphics::SCREEN_HEIGHT,
+            b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, col);
+         Graphics::DrawLine(b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, 
+            c.x * Graphics::SCREEN_WIDTH, c.y * Graphics::SCREEN_HEIGHT, col);
+      }
 
-      const float size = 0.05f;
+      // if (!enabled)
+      //    return;
 
-      int x1, y1, x2, y2;
-      Rect o = {origin.x - size / 2, origin.y - size/2, size, size};
-      Rect c = {current.x - size / 2, current.y - size/2, size, size};
+      // const NXColor origin_color(0xff, 0xcf, 0x33);
+      // const NXColor current_color(0x89, 0xf5, 0x25);
+
+      // const float size = 0.05f;
+
+      // int x1, y1, x2, y2;
+      // Rect o = {origin.x - size / 2, origin.y - size/2, size, size};
+      // Rect c = {current.x - size / 2, current.y - size/2, size, size};
       
-      o.to_screen_coord(x1, y1, x2, y2);
-      Graphics::FillRect(x1, y1, x2, y2, origin_color);
+      // o.to_screen_coord(x1, y1, x2, y2);
+      // Graphics::FillRect(x1, y1, x2, y2, origin_color);
 
-      c.to_screen_coord(x1, y1, x2, y2);
-      Graphics::FillRect(x1, y1, x2, y2, current_color);
+      // c.to_screen_coord(x1, y1, x2, y2);
+      // Graphics::FillRect(x1, y1, x2, y2, current_color);
    }
 };
 
@@ -190,6 +285,8 @@ void VJoy::Destroy()
 {
    vjoy_enabled = false;
 }
+
+
 
 void VJoy::DrawAll()
 {
@@ -207,15 +304,20 @@ void VJoy::DrawAll()
       if (vkey.x < 0)
          continue;
 
-      int x1, y1, x2, y2;
-      vkey.to_screen_coord(x1, y1, x2, y2);
-
       NXColor const& c = inputs[i] ? pressed : released; 
-
-      Graphics::FillRect(x1, y1, x2, y2, c);
+      vkey.draw_fill_rect(c);
    }
 
    Pad::draw();
+
+   for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
+   {
+      Point const& p = it->second;
+      Rect r = Rect::centred(p, 0.04f, 0.04f);
+
+      const NXColor col(0xff, 0xcf, 0x33);
+      r.draw_fill_rect(col);
+   }
 }
 
 void VJoy::InjectInputEvent(SDL_Event const & evt)
@@ -281,6 +383,7 @@ void VJoy::ProcessInput()
    {
       Point const& p = it->second;
       updateButtons(p, true);
+      Pad::update_buttons(p);
    }
 
    Pad::process();

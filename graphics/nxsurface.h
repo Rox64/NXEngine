@@ -74,6 +74,8 @@ public:
 	void BlitPatternAcross(NXSurface *src, int x_dst, int y_dst, int y_src, int height);
 	
 	// graphics primitives
+	void DrawLine(int x1, int y1, int x2, int y2, NXColor color);
+
 	void DrawRect(int x1, int y1, int x2, int y2, uint8_t r, uint8_t g, uint8_t b);
 	void DrawRect(int x1, int y1, int x2, int y2, NXColor color);
 	void DrawRect(NXRect *rect, uint8_t r, uint8_t g, uint8_t b);

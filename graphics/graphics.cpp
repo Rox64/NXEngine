@@ -407,6 +407,11 @@ void Graphics::BlitPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src
 void c------------------------------() {}
 */
 
+void Graphics::DrawLine(int x1, int y1, int x2, int y2, NXColor color)
+{
+	drawtarget->DrawLine(x1, y1, x2, y2, color);
+}
+
 void Graphics::DrawRect(int x1, int y1, int x2, int y2, NXColor color)
 {
 	drawtarget->DrawRect(x1, y1, x2, y2, color);

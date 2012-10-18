@@ -243,6 +243,17 @@ void NXSurface::BlitPatternAcross(NXSurface *src,
 void c------------------------------() {}
 */
 
+void NXSurface::DrawLine(int x1, int y1, int x2, int y2, NXColor color)
+{
+	if (this != screen)
+		SetAsTarget(true);
+
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawLine(renderer, x1 * SCALE, y1 * SCALE, x2 * SCALE, y2 * SCALE);
+
+	if (this != screen)
+		SetAsTarget(false);	
+}
 
 void NXSurface::DrawRect(int x1, int y1, int x2, int y2, uint8_t r, uint8_t g, uint8_t b)
 {

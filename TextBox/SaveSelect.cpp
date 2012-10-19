@@ -169,7 +169,7 @@ int x, y, s;
 	if (fPicXOffset < 0)
 	{
 		fPicXOffset += 8;
-		set_clip_rect(MSG_X+4, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		set_clip_rect(MSG_X+4, 0, Graphics::SCREEN_WIDTH, Graphics::SCREEN_HEIGHT);
 	}
 	
 	// player pic

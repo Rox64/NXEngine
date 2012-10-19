@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
 bool inhibit_loadfade = false;
 bool error = false;
 bool freshstart;
+    
+    
+    setup_path();
 	
 	SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -323,7 +326,7 @@ static int frameskip = 0;
 		{
 			char buf[1024];
 			sprintf(buf, "[] Tick %d", framecount++);
-			font_draw_shaded(4, (SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
+			font_draw_shaded(4, (Graphics::SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
 			can_tick = false;
 		}
 		else
@@ -380,7 +383,7 @@ void update_fps()
 	char fpstext[64];
 	sprintf(fpstext, "%d fps", fps);
 	
-	int x = (SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
+	int x = (Graphics::SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
 	font_draw_shaded(x, 4, fpstext, 0, &greenfont);
 }
 
@@ -541,34 +544,34 @@ void speed_test(void)
 
 void speed_test(void)
 {
-	SDL_Rect textrect;
-	SDL_Surface *vram = screen->GetSDLSurface();
-	int click = 0;
+// 	SDL_Rect textrect;
+// 	SDL_Surface *vram = screen->GetSDLSurface();
+// 	int click = 0;
 	
-	uint32_t end = 0;
-	fps = 0;
+// 	uint32_t end = 0;
+// 	fps = 0;
 	
-	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
-	int c = 0;
+// 	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
+// 	int c = 0;
 	
-	game.running = true;
-	while(game.running)
-	{
-		//SDL_FillRect(vram, NULL, c ^= 255);
+// 	game.running = true;
+// 	while(game.running)
+// 	{
+// 		//SDL_FillRect(vram, NULL, c ^= 255);
 		
-		if (SDL_GetTicks() >= end)
-		{
-			stat("%d fps", fps);
-			fps = 0;
-			end = SDL_GetTicks() + 1000;
+// 		if (SDL_GetTicks() >= end)
+// 		{
+// 			stat("%d fps", fps);
+// 			fps = 0;
+// 			end = SDL_GetTicks() + 1000;
 			
-			if (++click > 3)
-				break;
-		}
+// 			if (++click > 3)
+// 				break;
+// 		}
 		
-		screen->Flip();
-		fps++;
-	}
+// 		screen->Flip();
+// 		fps++;
+// 	}
 }
 
 #endif

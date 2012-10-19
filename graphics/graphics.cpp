@@ -1,4 +1,5 @@
-
+#include <cassert>
+#include <algorithm>
 // graphics routines
 #include <SDL.h>
 
@@ -9,9 +10,15 @@
 #include "sprites.h"
 #include "../dirnames.h"
 #include "graphics.fdh"
+#include "../platform.h"
 
 SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
+
+
+// (unscaled) screen size/video mode
+int Graphics::SCREEN_WIDTH = 320;
+int Graphics::SCREEN_HEIGHT = 240;
 
 
 NXSurface *screen = NULL;				// created from SDL's screen
@@ -83,29 +90,77 @@ bool Graphics::WindowVisible()
 void c------------------------------() {}
 */
 
+bool Graphics::SelectResolution()
+{
+	SDL_DisplayMode curr, close;
+
+	curr.w = 320;
+	curr.h = 240;
+	curr.driverdata = NULL;
+	curr.refresh_rate = 0;
+	curr.format = 0;
+
+	if (!SDL_GetClosestDisplayMode(0, &curr, &close))
+	{
+		staterr("SDL_GetCurrentDisplayMode %s", SDL_GetError());
+		return true;
+	}
+	
+	if (close.w < close.h)
+		std::swap(close.w, close.h);
+
+	stat("closest w = %d, h = %d, dm = %u", close.w, close.h, close.format);	
+
+	// Scale will be set by the width. Width will be changed to be best possible
+	// Height will be set by scale.
+	// Both width and height will be made even.
+
+	// iPad 1/2
+	// 1024/320 = 3.2 = 3; 1024/3 = 341.3 = 341 = 340
+	// 768/3 = 256
+
+	// iPad 3
+	// 2048/320 = 6.4 = 6; 2048/6 = 341.3 = 341 = 340
+	// 1536/6 = 256
+
+	// iPhone 4/4s
+	// 960/320 = 3; 960 / 3 = 320
+	// 640/3 = 213.3 = 213 = 212
+
+	// iPhone 5
+	// 1136/320 = 3.55 = 3; 1136/3 = 378.6 = 378
+	// 640/3 = 213.3 = 213 = 212
+
+	// TODO something with former versions of iPhone. 
+	// Scale factor must be 1.5 on them.
+
+	int wf = close.w / 320;
+	Graphics::SCREEN_WIDTH = int((close.w / wf) & 0xfffffffe);
+	Graphics::SCREEN_HEIGHT = int((close.h / wf) & 0xfffffffe);
+
+	NXSurface::SetScale(wf);
+    
+    return false;
+}
+
 bool Graphics::InitVideo()
 {
 	if (drawtarget == screen) drawtarget = NULL;
 	if (screen) delete screen;
 	
-	uint32_t window_flags = SDL_WINDOW_SHOWN;
+	uint32_t window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
 	if (is_fullscreen) window_flags |= SDL_WINDOW_FULLSCREEN;
 	
-	// #ifndef __SDLSHIM__
-	// putenv((char *)"SDL_VIDEO_CENTERED=1");
-	// #endif
-
 	if (window)
 	{
 		stat("second call to Graphics::InitVideo()");
 		abort();
 	}
-
 	
-	stat("SDL_CreateWindow: %dx%d @ %dbpp", SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, screen_bpp);
+	stat("SDL_CreateWindow: %dx%d @ %dbpp", Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE, screen_bpp);
 	window = SDL_CreateWindow("NXEngine", 
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE,
+		Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE,
 		window_flags);
 
 	if (!window)
@@ -114,24 +169,53 @@ bool Graphics::InitVideo()
 		return 1;
 	}
 
-	SDL_Surface *sdl_screen = SDL_GetWindowSurface(window);
+	int drv_index = -1;
+#if 0
+	{
+		int drivers = SDL_GetNumRenderDrivers();
+		SDL_RendererInfo info;
+		for (int i = 0; i < drivers; ++i)
+		{
+			if (SDL_GetRenderDriverInfo(i, &info))
+			{
+				staterr("Graphics::InitVideo: SDL_GetRenderDriverInfo() failed: %s", SDL_GetError());
+			}
 
-	// renderer = SDL_CreateRenderer(win, -1, /*SDL_RENDERER_SOFTWARE | */SDL_RENDERER_ACCELERATED);
-	// if (!renderer)
-	// {
-	// 	staterr("Graphics::InitVideo: error setting video mode (SDL_CreateRenderer: %s)", SDL_GetError());
-	// 	return 1;	
-	// }
+			if (strcmp("opengl", info.name) == 0)
+			{
+				drv_index = i;
+				break;
+			}
+		}
+	}
+#endif
 	
-	// if (use_palette && !(sdl_screen->flags & SDL_HWPALETTE))
-	// {
-	// 	staterr("Graphics::InitVideo: failed to obtain exclusive access to hardware palette");
-	// 	exit(1);
-	// }
+	renderer = SDL_CreateRenderer(window, drv_index, /*SDL_RENDERER_SOFTWARE | */SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+	if (!renderer)
+	{
+		staterr("Graphics::InitVideo: error setting video mode (SDL_CreateRenderer: %s)", SDL_GetError());
+		return 1;
+	}
+
+	SDL_RendererInfo info;
+	if (SDL_GetRendererInfo(renderer, &info))
+	{
+		staterr("Graphics::InitVideo: SDL_GetRendererInfo failed: %s", SDL_GetError());
+		return 1;
+	}
+
+	if (!(info.flags & SDL_RENDERER_TARGETTEXTURE))
+	{
+		staterr("Graphics::InitVideo: SDL_RENDERER_TARGETTEXTURE is not supported");
+		return 1;
+	}
+
 	
 	SDL_ShowCursor(is_fullscreen == false);
+
 	
-	screen = new NXSurface(sdl_screen, false);
+	screen = new NXSurface(/*renderer*/);
+	screen->setPixelFormat(info.texture_formats[0]);
 	if (!drawtarget) drawtarget = screen;
 	return 0;
 }
@@ -168,6 +252,19 @@ bool Graphics::SetResolution(int r, bool restoreOnFailure)
 		return 0;
 	
 	int old_res = current_res;
+
+#ifdef IPHONE
+	
+	restoreOnFailure = false;
+	
+	if (SelectResolution())
+	{
+		staterr("SelectResolution() failed!");
+		return 1;
+	}
+
+#else
+
 	int factor;
 	
 	if (r == 0)
@@ -183,7 +280,8 @@ bool Graphics::SetResolution(int r, bool restoreOnFailure)
 	
 	stat("Setting scaling %d and fullscreen=%s", factor, is_fullscreen ? "yes":"no");
 	NXSurface::SetScale(factor);
-	
+#endif
+
 	if (Graphics::InitVideo())
 	{
 		staterr("Switch to resolution %d failed!", r);
@@ -261,8 +359,8 @@ char fname[MAXPATHLEN];
 	if (loading.LoadImage(fname))
 		return;
 	
-	int x = (SCREEN_WIDTH / 2) - (loading.Width() / 2);
-	int y = (SCREEN_HEIGHT / 2) - loading.Height();
+	int x = (Graphics::SCREEN_WIDTH / 2) - (loading.Width() / 2);
+	int y = (Graphics::SCREEN_HEIGHT / 2) - loading.Height();
 	
 	ClearScreen(BLACK);
 	DrawSurface(&loading, x, y);
@@ -308,6 +406,11 @@ void Graphics::BlitPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src
 /*
 void c------------------------------() {}
 */
+
+void Graphics::DrawLine(int x1, int y1, int x2, int y2, NXColor color)
+{
+	drawtarget->DrawLine(x1, y1, x2, y2, color);
+}
 
 void Graphics::DrawRect(int x1, int y1, int x2, int y2, NXColor color)
 {
@@ -380,6 +483,7 @@ void c------------------------------() {}
 // other than the screen.
 void Graphics::SetDrawTarget(NXSurface *surface)
 {
+	surface->SetAsTarget(surface != screen);
 	drawtarget = surface;
 }
 

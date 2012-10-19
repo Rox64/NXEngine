@@ -230,7 +230,7 @@ void DebugConsole::Draw()
 
 void DebugConsole::DrawText(const char *text)
 {
-	font_draw_shaded(4, (SCREEN_HEIGHT - 16), text);
+	font_draw_shaded(4, (Graphics::SCREEN_HEIGHT - 16), text);
 }
 
 /*

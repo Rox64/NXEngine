@@ -23,7 +23,7 @@ void writelog(const char *buf, bool append_cr)
 {
 FILE *fp;
 
-	fp = fileopenRW(logfilename, "a+");
+	fp = fileopenCache(logfilename, "a+");
 	if (fp)
 	{
 		fputs(buf, fp);

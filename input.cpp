@@ -1,8 +1,9 @@
+#include <map>
+
 
 #include "nx.h"
 #include "input.fdh"
 
-#include <map>
 
 #include "vjoy.h"
 

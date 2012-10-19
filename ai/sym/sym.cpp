@@ -222,7 +222,7 @@ void ai_xp(Object *o)
 		{
 			if (o->blockl)
 			{
-				if (o->onscreen || pdistly((SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)) << CSF))
+				if (o->onscreen || pdistly((Graphics::SCREEN_HEIGHT - (Graphics::SCREEN_HEIGHT / 3)) << CSF))
 					sound(SND_XP_BOUNCE);
 				
 				o->xinertia = 0x100;
@@ -248,7 +248,7 @@ void ai_xp(Object *o)
 				return;
 			}
 			
-			if (o->onscreen || pdistlx((SCREEN_WIDTH - (SCREEN_WIDTH / 3)) << CSF))
+			if (o->onscreen || pdistlx((Graphics::SCREEN_WIDTH - (Graphics::SCREEN_WIDTH / 3)) << CSF))
 				sound(SND_XP_BOUNCE);
 			
 			o->yinertia = -0x280;
@@ -761,7 +761,7 @@ void ai_fan_vert(Object *o)
 	ANIMATE(0, 0, 2);
 	
 	// spawn droplet effects
-	if (pdistlx(SCREEN_WIDTH << CSF) && pdistly(SCREEN_HEIGHT << CSF))
+	if (pdistlx(Graphics::SCREEN_WIDTH << CSF) && pdistly(Graphics::SCREEN_HEIGHT << CSF))
 	{
 		if (!random(0, 5))
 		{
@@ -796,7 +796,7 @@ void ai_fan_hoz(Object *o)
 	ANIMATE(0, 0, 2);
 	
 	// spawn droplet effects
-	if (pdistlx(SCREEN_WIDTH << CSF) && pdistly(SCREEN_HEIGHT << CSF))
+	if (pdistlx(Graphics::SCREEN_WIDTH << CSF) && pdistly(Graphics::SCREEN_HEIGHT << CSF))
 	{
 		if (!random(0, 5))
 		{
@@ -879,7 +879,7 @@ void ai_sprinkler(Object *o)
 // generates small splash water droplets
 void ai_droplet_spawner(Object *o)
 {
-	if (pdistlx(SCREEN_WIDTH << CSF) && pdistly(SCREEN_HEIGHT << CSF))
+	if (pdistlx(Graphics::SCREEN_WIDTH << CSF) && pdistly(Graphics::SCREEN_HEIGHT << CSF))
 	{
 		if (!random(0, 80))
 		{

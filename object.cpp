@@ -621,7 +621,7 @@ Object * const &o = this;
 	o->flags &= ~FLAG_IGNORE_SOLID;
 	
 	UpdateBlockStates(DOWNMASK);
-	apply_yinertia(SCREEN_HEIGHT << CSF);
+	apply_yinertia(Graphics::SCREEN_HEIGHT << CSF);
 	
 	o->flags = flags;
 	o->blockd = true;

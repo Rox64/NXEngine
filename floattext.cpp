@@ -145,9 +145,9 @@ int x, y, i;
 	{
 		// this formula is confusing until you realize that FT_Y_HOLD is a negative number
 		int y = ((ft->objY - (map.displayed_yscroll >> CSF)) + FT_Y_HOLD);
-		int h = (SCREEN_HEIGHT - y);
+		int h = (Graphics::SCREEN_HEIGHT - y);
 		
-		set_clip_rect(0, y, SCREEN_WIDTH, h);
+		set_clip_rect(0, y, Graphics::SCREEN_WIDTH, h);
 	}
 	
 	// render the damage amount into a string

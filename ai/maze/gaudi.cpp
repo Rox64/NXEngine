@@ -6,7 +6,7 @@
 #define GAUDI_FLYING_HP		15
 #define GAUDI_ARMORED_HP	15
 
-#define PLAYER_NEAR_ENOUGH()	(pdistlx(SCREEN_WIDTH << CSF) && pdistly(SCREEN_HEIGHT << CSF))
+#define PLAYER_NEAR_ENOUGH()	(pdistlx(Graphics::SCREEN_WIDTH << CSF) && pdistly(Graphics::SCREEN_HEIGHT << CSF))
 
 INITFUNC(AIRoutines)
 {

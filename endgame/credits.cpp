@@ -19,7 +19,7 @@ bool Credits::Init()
 	if (bigimage.Init()) return 1;
 	Replay::end_record();
 	
-	spawn_y = (SCREEN_HEIGHT + 8);
+	spawn_y = (Graphics::SCREEN_HEIGHT + 8);
 	scroll_y = 0 << CSF;
 	
 	xoffset = 0;
@@ -47,18 +47,18 @@ void Credits::Tick()
 	/*debug("scroll_y: %d", scroll_y>>CSF);
 	debug("spawn_y: %d", spawn_y);
 	debug("scr_spawn_y: %d", SCREEN_Y(spawn_y));
-	debug("trigger: %d", SCREEN_HEIGHT+MARGIN);
+	debug("trigger: %d", Graphics::SCREEN_HEIGHT+MARGIN);
 	debug("");*/
 	/*debug("imgno: %d", bigimage.imgno);
 	debug("state: %d", bigimage.state);
 	debug("imagex: %d", bigimage.imagex);*/
 	
-	if (roll_running || SCREEN_Y(spawn_y) >= (SCREEN_HEIGHT + 8))
+	if (roll_running || SCREEN_Y(spawn_y) >= (Graphics::SCREEN_HEIGHT + 8))
 	{
 		scroll_y += 0x100;
 	}
 	
-	while(roll_running && SCREEN_Y(spawn_y) < (SCREEN_HEIGHT + MARGIN))
+	while(roll_running && SCREEN_Y(spawn_y) < (Graphics::SCREEN_HEIGHT + MARGIN))
 	{
 		RunNextCommand();
 	}
@@ -103,7 +103,7 @@ CredCommand cmd;
 			// varying font sizes can lead to it being a little bit off
 			if (strstr(line->text, "The End"))
 			{
-				line->x = (SCREEN_WIDTH / 2) - (GetFontWidth(line->text, TEXT_SPACING) / 2);
+				line->x = (Graphics::SCREEN_WIDTH / 2) - (GetFontWidth(line->text, TEXT_SPACING) / 2);
 			}
 			
 			spawn_y += 1;
@@ -354,7 +354,7 @@ void BigImage::Draw()
 	
 	// take up any unused space with blue
 	if (state != BI_HOLD)
-		FillRect(0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT, DK_BLUE);
+		FillRect(0, 0, Graphics::SCREEN_WIDTH/2, Graphics::SCREEN_HEIGHT, DK_BLUE);
 	
 	if (state != BI_CLEAR)
 		DrawSurface(images[imgno], imagex, 0);

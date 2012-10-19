@@ -373,7 +373,7 @@ extern int flipacceltime;
 		
 		// don't draw objects that are completely offscreen
 		// (+26 so floattext won't suddenly disappear on object near bottom of screen)
-		if (scr_x <= SCREEN_WIDTH && scr_y <= SCREEN_HEIGHT+26 && \
+		if (scr_x <= Graphics::SCREEN_WIDTH && scr_y <= Graphics::SCREEN_HEIGHT+26 && \
 			scr_x >= -sprites[o->sprite].w && scr_y >= -sprites[o->sprite].h)
 		{
 			if (nOnscreenObjects < MAX_OBJECTS-1)

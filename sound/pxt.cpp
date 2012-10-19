@@ -16,6 +16,7 @@
 #include "sslib.h"
 
 #include "../platform.h"
+#include "../common/endian.h"
 
 #include "pxt.fdh"
 
@@ -273,7 +274,7 @@ char buf[80];
 	yratio = (double)ysize / (double)(127+127);
 	//lprintf("ratio = %.2f yratio = %.2f\n", ratio, yratio);
 	
-	DrawSDLLine(SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT, 18,18,18);
+	DrawSDLLine(Graphics::SCREEN_WIDTH/2, 0, Graphics::SCREEN_WIDTH/2, Graphics::SCREEN_HEIGHT, 18,18,18);
 	DrawSDLLine(xoff, centerline, xoff+wd, centerline, 255,0,0);
 	y = scale_sample(TOPAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);
 	y = scale_sample(BTMAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);
@@ -841,7 +842,7 @@ FILE *fp = NULL;
 			return 0;
 		}
 		
-		fp = fileopenRW(cache_name, "wb");
+		fp = fileopenCache(cache_name, "wb");
 		if (!fp)
 		{
 			staterr("LoadSoundFX: failed open: '%s'", cache_name);
@@ -903,7 +904,7 @@ int slot;
 uint32_t magick;
 stPXSound snd;
 
-	fp = fileopenRW(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		stat("LoadFXCache: audio cache %s not exist", fname);
@@ -1168,7 +1169,7 @@ uchar ch;
 // FILE *fp;
 // int i, j;
 
-// 	fp = fileopenRW(fname, "wb");
+// 	fp = fileopenCache(fname, "wb");
 // 	if (!fp)
 // 	{
 // 		stat("save_pxt: unable to open '%s'", fname);

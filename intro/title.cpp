@@ -214,12 +214,12 @@ static void draw_title()
 	ClearScreen(0x20, 0x20, 0x20);
 	
 	// top logo
-	int tx = (SCREEN_WIDTH / 2) - (sprites[SPR_TITLE].w / 2) - 2;
+	int tx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_TITLE].w / 2) - 2;
 	draw_sprite(tx, 40, SPR_TITLE);
 	
 	// draw menu
-	int cx = (SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
-	int cy = (SCREEN_HEIGHT / 2) + 8;
+	int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
+	int cy = (Graphics::SCREEN_HEIGHT / 2) + 8;
 	for(int i=0;i<sprites[SPR_MENU].nframes;i++)
 	{
 		draw_sprite(cx, cy, SPR_MENU, i);
@@ -240,15 +240,15 @@ static void draw_title()
 	}
 	
 	// accreditation
-	cx = (SCREEN_WIDTH / 2) - (sprites[SPR_PIXEL_FOREVER].w / 2);
-	int acc_y = SCREEN_HEIGHT - 48;
+	cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_PIXEL_FOREVER].w / 2);
+	int acc_y = Graphics::SCREEN_HEIGHT - 48;
 	draw_sprite(cx, acc_y, SPR_PIXEL_FOREVER);
 	
 	// version
 	static const char *VERSION = "NXEngine v. 1.0.0.4";
 	static const int SPACING = 5;
 	int wd = GetFontWidth(VERSION, SPACING);
-	cx = (SCREEN_WIDTH / 2) - (wd / 2);
+	cx = (Graphics::SCREEN_WIDTH / 2) - (wd / 2);
 	font_draw(cx, acc_y + sprites[SPR_PIXEL_FOREVER].h + 4, VERSION, SPACING);
 	
 	// draw Nikumaru display

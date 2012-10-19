@@ -9,7 +9,7 @@
 #ifdef CONFIG_MUTABLE_SCALE
 	extern int SCALE;
 #else
-	#define SCALE		1
+	#define SCALE		3
 #endif
 
 class NXSurface;
@@ -60,7 +60,8 @@ class NXSurface
 public:
 	NXSurface();
 	NXSurface(int wd, int ht, NXFormat *format = screen->Format());
-	NXSurface(SDL_Surface *from_sfc, bool freesurface=true);
+	//NXSurface(SDL_Surface *from_sfc, bool freesurface=true);
+	// NXSurface(SDL_Renderer *renderer);
 	~NXSurface();
 	
 	bool AllocNew(int wd, int ht, NXFormat *format = screen->Format());
@@ -73,6 +74,8 @@ public:
 	void BlitPatternAcross(NXSurface *src, int x_dst, int y_dst, int y_src, int height);
 	
 	// graphics primitives
+	void DrawLine(int x1, int y1, int x2, int y2, NXColor color);
+
 	void DrawRect(int x1, int y1, int x2, int y2, uint8_t r, uint8_t g, uint8_t b);
 	void DrawRect(int x1, int y1, int x2, int y2, NXColor color);
 	void DrawRect(NXRect *rect, uint8_t r, uint8_t g, uint8_t b);
@@ -94,23 +97,34 @@ public:
 	
 	int Width();
 	int Height();
-	void EnableColorKey();
+	// void EnableColorKey();
 	NXFormat *Format();
 	
 	void Flip();
-	SDL_Surface *GetSDLSurface() { return fSurface; }
+	// SDL_Surface *GetSDLSurface() { return fSurface; }
 	
 	static void SetScale(int factor);
+
+	void SetAsTarget(bool enable);
+
+	void setFormat(NXFormat const* format);
+	void setPixelFormat(Uint32 format);
+
 	
 private:
 	static SDL_Surface *Scale(SDL_Surface *original, int factor, bool use_colorkey, bool free_original, bool use_display_format);
 	static void Scale8(SDL_Surface *src, SDL_Surface *dst, int factor);
 	
-	inline uint32_t MapColor(uint8_t r, uint8_t g, uint8_t b);
+	// inline uint32_t MapColor(uint8_t r, uint8_t g, uint8_t b);
 	void Free();
 	
-	SDL_Surface *fSurface;
-	bool fFreeSurface;
+	//SDL_Surface *fSurface;
+	// SDL_Renderer * fRenderer;
+	SDL_Texture * fTexture;
+	int tex_w;
+	int tex_h;
+	NXFormat tex_format;
+	//bool fFreeSurface;
 };
 
 void inline

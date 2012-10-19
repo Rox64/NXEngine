@@ -127,13 +127,13 @@ static void ai_oc_controller(Object *o)
 			/*if (o->timer < 175)
 			{
 				if ((o->timer % 6) == 1)
-					create_object(-16<<CSF, random(-16, SCREEN_HEIGHT) << CSF, OC_CURRENT);
+					create_object(-16<<CSF, random(-16, Graphics::SCREEN_HEIGHT) << CSF, OC_CURRENT);
 			}*/
 			
 			if (o->timer <= 150)
 			{
 				if ((o->timer % 10) == 1)
-					create_object(-16<<CSF, random(-16, SCREEN_HEIGHT) << CSF, OC_IKACHAN);
+					create_object(-16<<CSF, random(-16, Graphics::SCREEN_HEIGHT) << CSF, OC_IKACHAN);
 			}
 			
 			if (o->timer > 300)
@@ -152,11 +152,11 @@ static void ai_oc_quote(Object *o)
 	{
 		case 0:
 		{
-			o->xmark  = (SCREEN_WIDTH - 50) << CSF;
-			o->xmark2 = (SCREEN_WIDTH + 10) << CSF;
+			o->xmark  = (Graphics::SCREEN_WIDTH - 50) << CSF;
+			o->xmark2 = (Graphics::SCREEN_WIDTH + 10) << CSF;
 			
 			o->x = o->xmark2;
-			o->y = (SCREEN_HEIGHT - sprites[o->sprite].h - 8) << CSF;
+			o->y = (Graphics::SCREEN_HEIGHT - sprites[o->sprite].h - 8) << CSF;
 			o->dir = LEFT;
 			
 			o->sprite = SPR_OC_QUOTE;
@@ -266,7 +266,7 @@ static void ai_oc_ikachan(Object *o)
 		break;
 	}
 	
-	if (o->x > SCREEN_WIDTH<<CSF)
+	if (o->x > Graphics::SCREEN_WIDTH<<CSF)
 		o->deleted = true;
 }
 
@@ -278,7 +278,7 @@ static void ai_oc_current(Object *o)
 	
 	o->xinertia = 0x400;
 	
-	if (o->x > SCREEN_WIDTH<<CSF)
+	if (o->x > Graphics::SCREEN_WIDTH<<CSF)
 		o->deleted = true;
 }
 */

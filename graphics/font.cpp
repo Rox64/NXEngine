@@ -4,7 +4,7 @@
 #include <SDL_rwops.h>
 
 #ifdef CONFIG_ENABLE_TTF
-	#include <SDL/SDL_ttf.h>
+	#include <SDL_ttf.h>
 #endif
 
 #include "../nx.h"
@@ -29,8 +29,10 @@ static const char bitmap_map[] = {		// letter order of bitmap font sheet
 const char *bmpfontfile = "smalfont.bmp";
 const char *ttffontfile = "font.ttf";
 
-static SDL_Surface *sdl_screen = NULL;
-static SDL_Surface *shadesfc = NULL;
+//static SDL_Surface *sdl_screen = NULL;
+//static SDL_Surface *shadesfc = NULL;
+static SDL_Texture* tshadesfc = NULL;
+static int shadesfc_h = 0;
 
 static bool initilized = false;
 static bool rendering = true;
@@ -45,6 +47,8 @@ NXFont shadowfont;		// white letters w/ drop shadow
 // point sizes for each valid scaling factor
 int pointsize[] = { -1,  8, 17, 26 };
 
+extern SDL_Renderer * renderer;
+
 /*
 void c------------------------------() {}
 */
@@ -55,7 +59,7 @@ bool error = false;
 
 	// we'll be bypassing the NXSurface automatic scaling features
 	// and drawing at the real resolution so we can get better-looking fonts.
-	sdl_screen = screen->GetSDLSurface();
+//	sdl_screen = screen->GetSDLSurface();
 	
 	// at 320x240 switch to bitmap fonts for better appearance
 	#ifdef CONFIG_ENABLE_TTF
@@ -105,6 +109,11 @@ bool error = false;
 		TTF_CloseFont(font);
 	}
 	#endif
+
+	error |= whitefont.InitTextures();
+	error |= greenfont.InitTextures();
+	error |= bluefont.InitTextures();
+	error |= shadowfont.InitTextures();
 	
 	error |= create_shade_sfc();
 	if (error) return 1;
@@ -138,6 +147,7 @@ void c------------------------------() {}
 NXFont::NXFont()
 {
 	memset(letters, 0, sizeof(letters));
+	memset(tletters, 0, sizeof(tletters));
 }
 
 NXFont::~NXFont()
@@ -151,6 +161,8 @@ void NXFont::free()
 	{
 		if (letters[i]) SDL_FreeSurface(letters[i]);
 		letters[i] = NULL;
+		if (tletters[i]) SDL_DestroyTexture(tletters[i]);
+		tletters[i] = NULL;
 	}
 }
 
@@ -182,8 +194,8 @@ SDL_Surface *letter;
 			return 1;
 		}
 		
-		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
-		letters[i] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
+		Uint32 format = screen->Format()->format;
+		letters[i] = SDL_ConvertSurfaceFormat(letter, format, SDL_RLEACCEL);
 
 		SDL_FreeSurface(letter);
 	}
@@ -209,8 +221,13 @@ SDL_Rect dstrect;
 	char str[2];
 	str[1] = 0;
 	
-	SDL_PixelFormat *format = sdl_screen->format;
-	uint32_t transp = SDL_MapRGB(format, 255, 0, 255);
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(screen->Format()->format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
+	uint32_t transp = SDL_MapRGB(pxformat, 255, 0, 255);
 	
 	for(int i=1;i<NUM_LETTERS_RENDERED;i++)
 	{
@@ -221,15 +238,21 @@ SDL_Rect dstrect;
 		if (!top || !bottom)
 		{
 			staterr("InitCharsShadowed: failed to render character %d: %s", i, TTF_GetError());
+			SDL_FreeFormat(pxformat);
+			SDL_FreeSurface(top);
+			SDL_FreeSurface(bottom);
 			return 1;
 		}
 		
 		letters[i] = SDL_CreateRGBSurface(0, top->w, top->h+SHADOW_OFFSET,
-							format->BitsPerPixel, format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 		if (!letters[i])
 		{
 			staterr("InitCharsShadowed: failed to create surface for character %d: %s", i, SDL_GetError());
+			SDL_FreeFormat(pxformat);
+			SDL_FreeSurface(top);
+			SDL_FreeSurface(bottom);
 			return 1;
 		}
 		
@@ -243,6 +266,9 @@ SDL_Rect dstrect;
 		dstrect.x = 0;
 		dstrect.y = 0;
 		SDL_BlitSurface(top, NULL, letters[i], &dstrect);
+
+		SDL_FreeSurface(top);
+		SDL_FreeSurface(bottom);
 	}
 	
 	return 0;
@@ -260,10 +286,17 @@ void c------------------------------() {}
 // color: the color you want the letters to be.
 bool NXFont::InitBitmapChars(SDL_Surface *sheet, uint32_t fgcolor, uint32_t color)
 {
-SDL_PixelFormat *format = sdl_screen->format;
+Uint32 format = screen->Format()->format;
 SDL_Rect srcrect, dstrect;
 SDL_Surface *letter;
 int x, y, i;
+
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
 
 	// NULL out letters we don't have a character for
 	memset(this->letters, 0, sizeof(this->letters));
@@ -283,16 +316,17 @@ int x, y, i;
 		// is some space between letters in autospaced text such as on the menus.
 		letter = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1,
-							format->BitsPerPixel, \
-							format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, \
+							pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 		if (!letter)
 		{
 			staterr("InitBitmapChars: failed to create surface for character %d/%d", i, ch);
+			SDL_FreeFormat(pxformat);
 			return 1;
 		}
 		
-		SDL_FillRect(letter, NULL, SDL_MapRGB(format, 0, 0, 0));
+		SDL_FillRect(letter, NULL, SDL_MapRGB(pxformat, 0, 0, 0));
 		
 		// copy letter off of sheet
 		srcrect.x = x;
@@ -306,12 +340,13 @@ int x, y, i;
 		SDL_BlitSurface(sheet, &srcrect, letter, &dstrect);
 		
 		// make background transparent and copy into final position
-		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(format, 0, 0, 0));
+		SDL_SetColorKey(letter, SDL_TRUE, SDL_MapRGB(pxformat, 0, 0, 0));
 
-		SDL_PixelFormat * format = screen->GetSDLSurface()->format;
-		letters[ch] = SDL_ConvertSurface(letter, format, SDL_RLEACCEL);
+		SDL_PixelFormat * format = screen->Format();
+		letters[ch] = SDL_ConvertSurfaceFormat(letter, format->format, 0);
 		
 		SDL_FreeSurface(letter);
+		// letters[ch] = letter;
 		
 		// advance to next position on sheet
 		x += BITMAP_SPAC_WIDTH;
@@ -321,7 +356,7 @@ int x, y, i;
 			y += BITMAP_SPAC_HEIGHT;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -329,9 +364,11 @@ int x, y, i;
 bool NXFont::InitBitmapCharsShadowed(SDL_Surface *sheet, uint32_t fgcolor, \
 									uint32_t color, uint32_t shadowcolor)
 {
-SDL_PixelFormat *format = sdl_screen->format;
+Uint32 format = screen->Format()->format;
 NXFont fgfont, shadowfont;
 SDL_Rect dstrect;
+
+
 
 	// create temporary fonts in the fg and shadow color
 	if (fgfont.InitBitmapChars(sheet, fgcolor, color))
@@ -339,18 +376,25 @@ SDL_Rect dstrect;
 	
 	if (shadowfont.InitBitmapChars(sheet, fgcolor, shadowcolor))
 		return 1;
+
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
 	
 	// now combine the two fonts
-	uint32_t transp = SDL_MapRGB(format, 0, 0, 0);
+	uint32_t transp = SDL_MapRGB(pxformat, 0, 0, 0);
 	for(int i=0;i<NUM_FONT_LETTERS;i++)
 	{
 		if (fgfont.letters[i])
 		{
 			letters[i] = SDL_CreateRGBSurface(0, \
 							BITMAP_CHAR_WIDTH+1, BITMAP_CHAR_HEIGHT+1+SHADOW_OFFSET,
-							format->BitsPerPixel, \
-							format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+							pxformat->BitsPerPixel, \
+							pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 			
 			SDL_FillRect(letters[i], NULL, transp);
 			SDL_SetColorKey(letters[i], SDL_TRUE, transp);
@@ -364,10 +408,30 @@ SDL_Rect dstrect;
 			SDL_BlitSurface(fgfont.letters[i], NULL, letters[i], &dstrect);
 		}
 	}
+
+	SDL_FreeFormat(pxformat);
 	
 	return 0;
 }
 
+
+bool NXFont::InitTextures()
+{
+	for (int i = 0; i < NUM_FONT_LETTERS; ++i)
+	{
+		if (!letters[i])
+			continue;
+
+		tletters[i] = SDL_CreateTextureFromSurface(renderer, letters[i]);
+		if (!tletters[i])
+		{
+			staterr("NXFont::InitTextures() SDL_CreateTextureFromSurface failed: %s", SDL_GetError());
+			return true;
+		}
+	}
+
+	return false;
+}
 
 // if sfc is an 8bpp paletted surface, change color index 'oldcolor' to be newcolor.
 // if sfc is a 16bpp surface, replace all instances of color 'oldcolor' with 'newcolor'
@@ -434,7 +498,8 @@ SDL_Rect dstrect;
 	for(i=0;text[i];i++)
 	{
 		uint8_t ch = text[i];
-		SDL_Surface *letter = font->letters[ch];
+		SDL_Surface* letter = font->letters[ch];
+		SDL_Texture* tletter = font->tletters[ch];
 		
 		if (ch == '=' && game.mode != GM_CREDITS)
 		{
@@ -444,13 +509,18 @@ SDL_Rect dstrect;
 				draw_sprite((x/SCALE), (y/SCALE)+yadj, SPR_TEXTBULLET);
 			}
 		}
-		else if (rendering && ch != ' ' && letter)
+		else if (rendering && ch != ' ' && tletter)
 		{
 			// must set this every time, because SDL_BlitSurface overwrites
 			// dstrect with final clipping rectangle.
 			dstrect.x = x;
 			dstrect.y = y;
-			SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
+			dstrect.w = letter->w;
+			dstrect.h = letter->h;
+			
+			// TODO FONT
+			//SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
+			SDL_RenderCopy(renderer, tletter, NULL, &dstrect);
 		}
 		
 		if (spacing != 0)
@@ -508,24 +578,33 @@ void c------------------------------() {}
 // with 50% per-surface alpha applied, that we can use to darken the background.
 static bool create_shade_sfc(void)
 {
-	if (shadesfc)
-		SDL_FreeSurface(shadesfc);
+	if (tshadesfc)
+	{
+		SDL_DestroyTexture(tshadesfc);
+		tshadesfc = NULL;
+	}
 	
-	int wd = (SCREEN_WIDTH * SCALE);
+	int wd = (Graphics::SCREEN_WIDTH * SCALE);
 	int ht = whitefont.letters['M']->h;
 	
-	SDL_PixelFormat *format = sdl_screen->format;
-	shadesfc = SDL_CreateRGBSurface(0, wd, ht,
-							format->BitsPerPixel, format->Rmask, format->Gmask,
-							format->Bmask, format->Amask);
+	SDL_PixelFormat* pxformat = SDL_AllocFormat(screen->Format()->format);
+	if (!pxformat)
+	{
+		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
+		return 1;
+	}
+	SDL_Surface* shadesfc = SDL_CreateRGBSurface(0, wd, ht,
+							pxformat->BitsPerPixel, pxformat->Rmask, pxformat->Gmask,
+							pxformat->Bmask, pxformat->Amask);
 	
 	if (!shadesfc)
 	{
-		staterr("create_shade_sfc: failed to create surface");
+		staterr("create_shade_sfc: failed to create surface: %s", SDL_GetError());
+		SDL_FreeFormat(pxformat);
 		return 1;
 	}
 	
-	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(format, 0, 0, 0));
+	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(pxformat, 0, 0, 0));
 
 	Uint8 alpha_value = 128;
 	if (shadesfc->format->Amask) {
@@ -535,7 +614,18 @@ static bool create_shade_sfc(void)
 	SDL_SetSurfaceBlendMode(shadesfc, SDL_BLENDMODE_BLEND);
 
 	
-	return 0;
+	tshadesfc = SDL_CreateTextureFromSurface(renderer, shadesfc);
+	if (!shadesfc)
+	{
+		staterr("create_shade_sfc: failed to create surface: %s", SDL_GetError());
+		SDL_FreeSurface(shadesfc);
+		return 1;
+	}
+
+	SDL_FreeSurface(shadesfc);
+	shadesfc_h = ht;
+
+	return tshadesfc == NULL;
 }
 
 
@@ -564,7 +654,7 @@ int wd;
 	
 	srcrect.x = 0;
 	srcrect.y = 0;
-	srcrect.h = shadesfc->h;
+	srcrect.h = shadesfc_h;
 	srcrect.w = text_draw(0, 0, text, spacing, font);
 	
 	rendering = true;
@@ -572,7 +662,13 @@ int wd;
 	// shade
 	dstrect.x = x;
 	dstrect.y = y;
-	SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
+	dstrect.w = srcrect.w;
+	dstrect.h = srcrect.h;
+	
+	// TODO FONT
+	//SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
+
+	SDL_RenderCopy(renderer, tshadesfc, &srcrect, &dstrect);
 	
 	// draw the text on top as normal
 	wd = text_draw(x, y, text, spacing, font);

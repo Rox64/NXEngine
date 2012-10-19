@@ -78,7 +78,7 @@ int curwpn = 0;
 	
 	inv.w = 244;
 	inv.h = 152;
-	inv.x = (SCREEN_WIDTH / 2) - (inv.w / 2);
+	inv.x = (Graphics::SCREEN_WIDTH / 2) - (inv.w / 2);
 	inv.y = 8;
 	
 	// find current weapon and count # items for armssel selector

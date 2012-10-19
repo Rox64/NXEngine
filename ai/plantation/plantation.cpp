@@ -78,7 +78,7 @@ void ai_stumpy(Object *o)
 			if (++o->timer > 50)
 				o->state = 4;
 			
-			if (!pdistlx(SCREEN_WIDTH<<CSF) || !pdistly(SCREEN_HEIGHT<<CSF))
+			if (!pdistlx(Graphics::SCREEN_WIDTH<<CSF) || !pdistly(Graphics::SCREEN_HEIGHT<<CSF))
 				o->state = 0;
 		}
 		break;

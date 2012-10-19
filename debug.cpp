@@ -180,7 +180,7 @@ void debug_draw(void)
 		const char *text = DebugList.StringAt(i);
 		if (!text) break;
 		
-		int x = (SCREEN_WIDTH - 8) - GetFontWidth(text, 0, true);
+		int x = (Graphics::SCREEN_WIDTH - 8) - GetFontWidth(text, 0, true);
 		int y = 4 + (i * (GetFontHeight() + 1));
 		font_draw_shaded(x, y, text, 0, &greenfont);
 	}
@@ -318,11 +318,11 @@ uchar r, g, b;
 			break;
 			
 			case DM_XLINE:
-				FillRect(x, 0, x, SCREEN_HEIGHT, r, g, b);
+				FillRect(x, 0, x, Graphics::SCREEN_HEIGHT, r, g, b);
 			break;
 			
 			case DM_YLINE:
-				FillRect(0, y, SCREEN_WIDTH, y, r, g, b);
+				FillRect(0, y, Graphics::SCREEN_WIDTH, y, r, g, b);
 			break;
 			
 			case DM_BOX:

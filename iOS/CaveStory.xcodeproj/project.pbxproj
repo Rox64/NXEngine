@@ -209,6 +209,20 @@
 			remoteGlobalIDString = 6382B1B10FB0FC5100ECAC02;
 			remoteInfo = Freetype2;
 		};
+		E9BBB42A1631BC930046EC76 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05819F2015FC1E300013D501 /* SDL_ttf.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BE48FD6807AFA17000BB41DA;
+			remoteInfo = "Static Library";
+		};
+		E9BBB42C1631BC950046EC76 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05C7AE8615FC241700F03DD9 /* freetype2.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6382B1B00FB0FC5100ECAC02;
+			remoteInfo = Freetype2;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -1067,6 +1081,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				E9BBB42D1631BC950046EC76 /* PBXTargetDependency */,
+				E9BBB42B1631BC930046EC76 /* PBXTargetDependency */,
 				0560063A15EEBC2D00A7CCD5 /* PBXTargetDependency */,
 			);
 			name = CaveStory;
@@ -1324,6 +1340,16 @@
 			isa = PBXTargetDependency;
 			name = libSDL;
 			targetProxy = 0560063915EEBC2D00A7CCD5 /* PBXContainerItemProxy */;
+		};
+		E9BBB42B1631BC930046EC76 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Static Library";
+			targetProxy = E9BBB42A1631BC930046EC76 /* PBXContainerItemProxy */;
+		};
+		E9BBB42D1631BC950046EC76 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Freetype2;
+			targetProxy = E9BBB42C1631BC950046EC76 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

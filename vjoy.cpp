@@ -129,7 +129,8 @@ namespace Pad
       Point a;
       Point b, c;
 
-      Tri(Point a, float size, float rb, float rc)
+      Tri(Point const& a, float size, float rb, float rc) :
+         a(a)
       {
          #define P(a) (double(a) * M_PI / 8.0)
          b = Point(cos(P(rb)), sin(P(rb))) * size + a;
@@ -154,8 +155,8 @@ namespace Pad
       }
    };
 
-   const float seg_size = 0.2f;
-   const Point seg_center(0.75f, 0.75f);
+   const float seg_size = 0.13f;
+   const Point seg_center(0.82f, 0.82f);
 
    const size_t seg_count = 8;
    Tri segments[seg_count] = {
@@ -168,7 +169,7 @@ namespace Pad
       Tri(seg_center, seg_size, -5, -3),
       Tri(seg_center, seg_size, -3, -1)
    };
-
+   
    bool pressed[seg_count];
 
    void insert_event(SDL_Event const& evt, Point const& p)
@@ -204,13 +205,18 @@ namespace Pad
          return;
 
       // left
-      inputs[0] = segments[0].in(p) || segments[1].in(p) || segments[7].in(p);
+      inputs[0] = segments[3].in(p) || segments[4].in(p) || segments[5].in(p);
       // right
-      inputs[1] = segments[3].in(p) || segments[4].in(p) || segments[5].in(p);
+      inputs[1] = segments[7].in(p) || segments[0].in(p) || segments[1].in(p);
       // up
-      inputs[2] = segments[1].in(p) || segments[2].in(p) || segments[3].in(p);
+      inputs[2] = segments[5].in(p) || segments[6].in(p) || segments[7].in(p);
       // down
-      inputs[3] = segments[5].in(p) || segments[6].in(p) || segments[7].in(p);
+      inputs[3] = segments[1].in(p) || segments[2].in(p) || segments[3].in(p);
+      
+      for (int i = 0; i < seg_count; ++i)
+      {
+         pressed[i] = segments[i].in(p);
+      }
    }
 
    void process()
@@ -243,16 +249,19 @@ namespace Pad
    void draw()
    {
       const NXColor col(0xff, 0xcf, 0x33);
+      const NXColor prcol(0xff, 0x00, 0x00);
       Point const& a = seg_center;
       for (size_t i = 0; i < seg_count; ++i)
       {
          Point const& b = segments[i].b;
          Point const& c = segments[i].c;
 
+         NXColor const& color = pressed[i] ? prcol : col;
+         
          Graphics::DrawLine(a.x * Graphics::SCREEN_WIDTH, a.y * Graphics::SCREEN_HEIGHT,
-            b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, col);
+            b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, color);
          Graphics::DrawLine(b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, 
-            c.x * Graphics::SCREEN_WIDTH, c.y * Graphics::SCREEN_HEIGHT, col);
+            c.x * Graphics::SCREEN_WIDTH, c.y * Graphics::SCREEN_HEIGHT, color);
       }
 
       // if (!enabled)
@@ -378,6 +387,7 @@ void VJoy::ProcessInput()
       return;
 
    memset(inputs, 0, sizeof(inputs));
+   memset(Pad::pressed, 0, sizeof(Pad::pressed));
 
    for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
    {
@@ -385,6 +395,4 @@ void VJoy::ProcessInput()
       updateButtons(p, true);
       Pad::update_buttons(p);
    }
-
-   Pad::process();
 }

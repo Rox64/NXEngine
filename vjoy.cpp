@@ -64,11 +64,29 @@ struct Rect
       to_screen_coord(x1, y1, x2, y2);
       Graphics::FillRect(x1, y1, x2, y2, c);
    }
+   
+   void draw_thick_rect(NXColor const& c) const
+   {
+      int x1, y1, x2, y2;
+      to_screen_coord(x1, y1, x2, y2);
+      Graphics::DrawRect(x1, y1, x2, y2, c);
+   }
+   
+   void draw_thin_rect(NXColor const& c) const
+   {
+      int x1, y1, x2, y2;
+      to_screen_coord(x1, y1, x2, y2);
+      Graphics::DrawLine(x1, y1, x2, y1, c);
+      Graphics::DrawLine(x1, y2, x2, y2, c);
+      Graphics::DrawLine(x1, y1, x1, y2, c);
+      Graphics::DrawLine(x2, y1, x2, y2, c);
+   }
 };
 
+const NXColor col_released(0xff, 0xcf, 0x33);
+const NXColor col_pressed (0xff, 0x00, 0x00);
 
-
-const Rect vkeys[INPUT_COUNT] = 
+const Rect vkeys[INPUT_COUNT] =
 {
    {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
    {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
@@ -248,15 +266,13 @@ namespace Pad
 
    void draw()
    {
-      const NXColor col(0xff, 0xcf, 0x33);
-      const NXColor prcol(0xff, 0x00, 0x00);
       Point const& a = seg_center;
       for (size_t i = 0; i < seg_count; ++i)
       {
          Point const& b = segments[i].b;
          Point const& c = segments[i].c;
 
-         NXColor const& color = pressed[i] ? prcol : col;
+         NXColor const& color = pressed[i] ? col_pressed : col_released;
          
          Graphics::DrawLine(a.x * Graphics::SCREEN_WIDTH, a.y * Graphics::SCREEN_HEIGHT,
             b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, color);
@@ -301,11 +317,7 @@ void VJoy::DrawAll()
 {
    if (!(vjoy_enabled && vjoy_visible))
       return;
-
-   const NXColor pressed(0, 0, 0x21);
-   const NXColor released(0, 0x21, 0);
-
-
+   
    for (int i = 0; i < INPUT_COUNT; ++i)
    {
       Rect const& vkey = vkeys[i];
@@ -313,8 +325,8 @@ void VJoy::DrawAll()
       if (vkey.x < 0)
          continue;
 
-      NXColor const& c = inputs[i] ? pressed : released; 
-      vkey.draw_fill_rect(c);
+      NXColor const& c = inputs[i] ? col_pressed : col_released;
+      vkey.draw_thin_rect(c);
    }
 
    Pad::draw();

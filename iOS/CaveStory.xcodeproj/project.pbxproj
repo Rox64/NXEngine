@@ -1423,6 +1423,8 @@
 					"$(SRCROOT)/../../SDL_ttf",
 				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1439,6 +1441,8 @@
 					"$(SRCROOT)/../../SDL_ttf",
 				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

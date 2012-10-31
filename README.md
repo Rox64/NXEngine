@@ -22,11 +22,10 @@ Game has been tested on jailbroken iPhone 4S (iOS 5.1.1) and non-jailbroken iPad
 ```
 git clone git://github.com/PIlin/NXEngine-iOS.git
 ```
-2. In the same folder checkout all needed libraries:
+2. Downaload dependencies into iOS/deps folder. Use script:
 ```
-hg clone http://hg.libsdl.org/SDL
-hg clone http://hg.libsdl.org/SDL_ttf
-git clone git://github.com/cdave1/freetype2-ios.git libfreetype
+cd NXEngin-iOS/iOS/deps
+./deploy.sh
 ```
 
 3. Xcode porject is located in NXEngine-iOS/iOS/CaveStory.xcodeproj

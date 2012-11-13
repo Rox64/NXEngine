@@ -99,10 +99,40 @@ bool Graphics::SelectResolution()
 	curr.driverdata = NULL;
 	curr.refresh_rate = 0;
 	curr.format = 0;
-
-	if (!SDL_GetClosestDisplayMode(0, &curr, &close))
+	
+	// Getting biggest display mode
+	// On iPhone 4S (retina device) there is two set of resolutions.
+	// On iPad 2 - only one set.
+	
+	int displayModes = SDL_GetNumDisplayModes(0);
+	
+	if (displayModes <= 0)
 	{
-		staterr("SDL_GetCurrentDisplayMode %s", SDL_GetError());
+		staterr("SDL_GetNumDisplayModes modes count = %d, %s", displayModes, SDL_GetError());
+		return true;
+	}
+	
+	int maxw = 0;
+	int maxi = 0;
+	for (int i = 0; i < displayModes; ++i)
+	{
+		if (SDL_GetDisplayMode(0, i, &close))
+		{
+			staterr("SDL_GetDisplayMode %s", SDL_GetError());
+			return true;
+		}
+		
+		int w = close.w > close.h ? close.w : close.h;
+		if (w > maxw)
+		{
+			maxw = w;
+			maxi = i;
+		}
+	}
+	
+	if (SDL_GetDisplayMode(0, maxi, &close))
+	{
+		staterr("SDL_GetDisplayMode %s", SDL_GetError());
 		return true;
 	}
 	
@@ -139,8 +169,8 @@ bool Graphics::SelectResolution()
 	Graphics::SCREEN_HEIGHT = int((close.h / wf) & 0xfffffffe);
 
 	NXSurface::SetScale(wf);
-    
-    return false;
+	
+	return false;
 }
 
 bool Graphics::InitVideo()

@@ -40,23 +40,14 @@
 		05600D2915EEC53D00A7CCD5 /* almond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BEE15EEC53B00A7CCD5 /* almond.cpp */; };
 		05600D2B15EEC53D00A7CCD5 /* balrog_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BF115EEC53B00A7CCD5 /* balrog_common.cpp */; };
 		05600D2D15EEC53D00A7CCD5 /* balfrog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BF515EEC53B00A7CCD5 /* balfrog.cpp */; };
-		05600D2E15EEC53D00A7CCD5 /* balfrog.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600BF615EEC53B00A7CCD5 /* balfrog.fdh */; };
 		05600D2F15EEC53D00A7CCD5 /* ballos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BF815EEC53B00A7CCD5 /* ballos.cpp */; };
-		05600D3015EEC53D00A7CCD5 /* ballos.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600BF915EEC53B00A7CCD5 /* ballos.fdh */; };
 		05600D3115EEC53D00A7CCD5 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BFB15EEC53B00A7CCD5 /* core.cpp */; };
-		05600D3215EEC53D00A7CCD5 /* core.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600BFC15EEC53B00A7CCD5 /* core.fdh */; };
 		05600D3315EEC53D00A7CCD5 /* heavypress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BFE15EEC53B00A7CCD5 /* heavypress.cpp */; };
-		05600D3415EEC53D00A7CCD5 /* heavypress.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600BFF15EEC53B00A7CCD5 /* heavypress.fdh */; };
 		05600D3515EEC53D00A7CCD5 /* ironhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C0115EEC53B00A7CCD5 /* ironhead.cpp */; };
-		05600D3615EEC53D00A7CCD5 /* ironhead.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600C0215EEC53B00A7CCD5 /* ironhead.fdh */; };
 		05600D3715EEC53D00A7CCD5 /* omega.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C0415EEC53B00A7CCD5 /* omega.cpp */; };
-		05600D3815EEC53D00A7CCD5 /* omega.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600C0515EEC53B00A7CCD5 /* omega.fdh */; };
 		05600D3915EEC53D00A7CCD5 /* sisters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C0715EEC53B00A7CCD5 /* sisters.cpp */; };
-		05600D3A15EEC53D00A7CCD5 /* sisters.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600C0815EEC53B00A7CCD5 /* sisters.fdh */; };
 		05600D3B15EEC53D00A7CCD5 /* undead_core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C0A15EEC53B00A7CCD5 /* undead_core.cpp */; };
-		05600D3C15EEC53D00A7CCD5 /* undead_core.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600C0B15EEC53B00A7CCD5 /* undead_core.fdh */; };
 		05600D3D15EEC53D00A7CCD5 /* x.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C0D15EEC53B00A7CCD5 /* x.cpp */; };
-		05600D3E15EEC53D00A7CCD5 /* x.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600C0E15EEC53B00A7CCD5 /* x.fdh */; };
 		05600D3F15EEC53D00A7CCD5 /* egg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C1115EEC53B00A7CCD5 /* egg.cpp */; };
 		05600D4115EEC53D00A7CCD5 /* egg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C1315EEC53B00A7CCD5 /* egg2.cpp */; };
 		05600D4315EEC53D00A7CCD5 /* igor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600C1515EEC53B00A7CCD5 /* igor.cpp */; };
@@ -140,7 +131,6 @@
 		05600DE615EEC53D00A7CCD5 /* intro.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CE715EEC53C00A7CCD5 /* intro.cpp */; };
 		05600DE815EEC53D00A7CCD5 /* title.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CEA15EEC53C00A7CCD5 /* title.cpp */; };
 		05600DEA15EEC53D00A7CCD5 /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CEE15EEC53C00A7CCD5 /* dialog.cpp */; };
-		05600DEB15EEC53D00A7CCD5 /* dialog.fdh in Resources */ = {isa = PBXBuildFile; fileRef = 05600CEF15EEC53C00A7CCD5 /* dialog.fdh */; };
 		05600DEC15EEC53D00A7CCD5 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CF115EEC53C00A7CCD5 /* message.cpp */; };
 		05600DEE15EEC53D00A7CCD5 /* objects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CF415EEC53C00A7CCD5 /* objects.cpp */; };
 		05600DF015EEC53D00A7CCD5 /* options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600CF615EEC53C00A7CCD5 /* options.cpp */; };
@@ -1167,16 +1157,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				056D156715EEB8C800CFE45C /* InfoPlist.strings in Resources */,
-				05600D2E15EEC53D00A7CCD5 /* balfrog.fdh in Resources */,
-				05600D3015EEC53D00A7CCD5 /* ballos.fdh in Resources */,
-				05600D3215EEC53D00A7CCD5 /* core.fdh in Resources */,
-				05600D3415EEC53D00A7CCD5 /* heavypress.fdh in Resources */,
-				05600D3615EEC53D00A7CCD5 /* ironhead.fdh in Resources */,
-				05600D3815EEC53D00A7CCD5 /* omega.fdh in Resources */,
-				05600D3A15EEC53D00A7CCD5 /* sisters.fdh in Resources */,
-				05600D3C15EEC53D00A7CCD5 /* undead_core.fdh in Resources */,
-				05600D3E15EEC53D00A7CCD5 /* x.fdh in Resources */,
-				05600DEB15EEC53D00A7CCD5 /* dialog.fdh in Resources */,
 				058E85FC15EED58E007F72C2 /* game_resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

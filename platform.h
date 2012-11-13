@@ -22,7 +22,7 @@ extern "C"
 	void platform_sync_to_vblank(void);
 };
 
-void setup_path();
+bool setup_path(int argc, char** argv);
 
 // Opens file from readonly place
 FILE *fileopenRO(const char *fname);

@@ -30,7 +30,8 @@ bool error = false;
 bool freshstart;
     
     
-    setup_path();
+    if (!setup_path(argc, argv))
+        return 1;
 	
 	SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)

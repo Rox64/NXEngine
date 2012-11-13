@@ -1,0 +1,19 @@
+diff -r e5527ff4976f Xcode-iOS/SDL_ttf.xcodeproj/project.pbxproj
+--- a/Xcode-iOS/SDL_ttf.xcodeproj/project.pbxproj	Sun Oct 28 13:33:36 2012 -0700
++++ b/Xcode-iOS/SDL_ttf.xcodeproj/project.pbxproj	Tue Nov 13 17:26:22 2012 +0100
+@@ -154,6 +154,7 @@
+ 		00B7E1EE097E26C600826121 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+ 				DYLIB_COMPATIBILITY_VERSION = 1;
+ 				DYLIB_CURRENT_VERSION = 1;
+ 				LIBRARY_STYLE = STATIC;
+@@ -165,6 +166,7 @@
+ 		00B7E1EF097E26C600826121 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+ 				DYLIB_COMPATIBILITY_VERSION = 1;
+ 				DYLIB_CURRENT_VERSION = 1;
+ 				LIBRARY_STYLE = STATIC;

@@ -1,0 +1,12 @@
+Package: org.pilin.CaveStory
+Name: Cave Story
+Version: 0.1
+Architecture: iphoneos-arm
+Depends:
+Description: iOS port of the Cave Story
+Homepage: https://github.com/PIlin/NXEngine-iOS
+Depiction:
+Maintainer: Pavel Ilin <ilin.pa@gmail.com>
+Author: Pavel Ilin <ilin.pa@gmail.com>
+Sponsor:
+Section: Games

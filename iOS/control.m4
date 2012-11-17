@@ -1,6 +1,6 @@
-Package: org.pilin.CaveStory
+Package: PACKAGE_ID
 Name: Cave Story
-Version: 0.1
+Version: PACKAGE_VERSION
 Architecture: iphoneos-arm
 Depends:
 Description: iOS port of the Cave Story

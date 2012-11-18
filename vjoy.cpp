@@ -119,7 +119,8 @@ public:
     enum Mode
     {
         ETOUCH,
-        EGESTURE
+        EGESTURE,
+        EBOTH
     };
     
     VjoyMode()
@@ -427,7 +428,10 @@ namespace ModeAware
         };
         
     public:
+        bool textbox_mode;
 
+        NormalModePad() : textbox_mode(false) {}
+        
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::ETOUCH);
@@ -435,16 +439,24 @@ namespace ModeAware
         
         virtual void update_buttons(Point const& p)
         {
-            for (int i = 0; i < INPUT_COUNT; ++i)
+            if (textbox_mode)
             {
-                if (vkeys[i].x < 0)
-                    continue;
-                
-                if (vkeys[i].point_in(p))
-                    inputs[i] = true;
+                // This is used to speed up text in textboxes
+                inputs[FIREKEY] = true;
             }
-            
-            Pad::update_buttons(p);
+            else
+            {
+                for (int i = 0; i < INPUT_COUNT; ++i)
+                {
+                    if (vkeys[i].x < 0)
+                        continue;
+                    
+                    if (vkeys[i].point_in(p))
+                        inputs[i] = true;
+                }
+                
+                Pad::update_buttons(p);
+            }
         }
         
         virtual void draw()
@@ -577,18 +589,21 @@ namespace ModeAware
                 VjoyMode::Mode mode;
                 GameModes gm;
                 bool gm_draw;
+                bool normal_textbox_mode;
                 
                 void push()
                 {
                     mode = vjoy_mode.getMode();
                     gm = getGamemode();
                     gm_draw = pads[gm]->disable_draw;
+                    normal_textbox_mode = static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode;
                 }
                 
                 void pop()
                 {
                     vjoy_mode.setMode(mode);
                     pads[gm]->disable_draw = gm_draw;
+                    static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = normal_textbox_mode;
                 }
             };
             
@@ -615,8 +630,9 @@ namespace ModeAware
         switch (newScreen) {
             case ETextBox:
             {
-                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                vjoy_mode.setMode(VjoyMode::EBOTH);
                 pads[getGamemode()]->disable_draw = true;
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = true;
                 break;
             }
             case ESaveLoad:
@@ -675,7 +691,7 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
     if (!vjoy_enabled)
         return;
     
-    if (vjoy_mode.getMode() != VjoyMode::ETOUCH)
+    if (vjoy_mode.getMode() == VjoyMode::EGESTURE)
         return;
     
     if (xres < 0)

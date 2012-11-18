@@ -21,7 +21,9 @@ namespace ModeAware
     {
         ETextBox,
         ESaveLoad,
-        EYesNo
+        EYesNo,
+        EStageSelect1,
+        EStageSelect2
     };
     
     

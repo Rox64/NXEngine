@@ -136,7 +136,7 @@ public:
         mode = newmode;
         
 #ifdef CONFIG_USE_TAPS
-        toggleGestureRecognizer(mode == EGESTURE);
+        toggleGestureRecognizer(mode != ETOUCH);
         
         if (mode == EGESTURE)
         {
@@ -645,6 +645,20 @@ namespace ModeAware
             {
                 vjoy_mode.setMode(VjoyMode::EGESTURE);
                 pads[getGamemode()]->disable_draw = true;
+                break;
+            }
+            case EStageSelect1:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                pads[getGamemode()]->disable_draw = true;
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = false;
+                break;
+            }
+            case EStageSelect2:
+            {
+                vjoy_mode.setMode(VjoyMode::EBOTH);
+                pads[getGamemode()]->disable_draw = true;
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = true;
                 break;
             }
         }

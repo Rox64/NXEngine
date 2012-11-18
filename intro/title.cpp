@@ -156,10 +156,22 @@ static void handle_input()
     for(int i=0;i<sprites[SPR_MENU].nframes;i++)
 	{
 		RectI r = Sprites::get_sprite_rect(cx, cy, SPR_MENU, i);
-        if (VJoy::ModeAware::isPressedInCurrentMode(r))
+        if (VJoy::ModeAware::wasTap(r))
         {
-            title.cursel = i;
-            button_pressed = true;
+            if (title.cursel == i)
+            {
+                button_pressed = true;
+                
+            }
+            else
+            {
+                sound(SND_MENU_MOVE);
+                title.cursel = i;
+            }
+            
+            //title.cursel = i;
+            //button_pressed = true;
+            
             break;
         }
 

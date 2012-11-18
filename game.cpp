@@ -11,6 +11,7 @@
 #include "game.h"
 #include "profile.h"
 #include "game.fdh"
+#include "vjoy.h"
 
 static struct TickFunctions
 {
@@ -162,6 +163,10 @@ bool Game::setmode(int newmode, int param, bool force)
 			return 1;
 		}
 	}
+    
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(newmode);
+#endif
 	
 	return 0;
 }

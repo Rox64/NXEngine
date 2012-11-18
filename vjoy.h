@@ -12,11 +12,17 @@ bool Init();
 void Destroy();
 void DrawAll();
 void InjectInputEvent(SDL_Event const & event);
+void PreProcessInput();
 void ProcessInput();
 
 namespace ModeAware
 {
-    bool isPressedInCurrentMode(RectI rect);
+    //bool isPressedInCurrentMode(RectI rect);
+    bool wasTap(RectI rect);
+    bool wasDoubleTap(RectI rect);
+    
+    
+    void gameModeChanged(int newMode);
 }
     
 } // namespace VJoy

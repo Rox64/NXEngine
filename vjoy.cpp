@@ -8,6 +8,11 @@
 #include "graphics/graphics.h"
 #include "game_modes.h"
 
+#include "platform/platform.h"
+#ifdef IPHONE
+# include "platform/iOS/touch_control.h"
+#endif
+
 struct Point
 {
     float x, y;
@@ -103,17 +108,51 @@ bool point_in(RectI const& rect, Point const& p)
 const NXColor col_released(0xff, 0xcf, 0x33);
 const NXColor col_pressed (0xff, 0x00, 0x00);
 
+typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
+lastFingerPos_t lastFingerPos;
 
-
+class VjoyMode
+{
+public:
+    enum Mode
+    {
+        ETOUCH,
+        EGESTURE
+    };
+    
+    VjoyMode()
+    {
+        setMode(ETOUCH);
+    }
+    
+    void setMode(Mode newmode)
+    {
+        if (newmode == mode)
+            return;
+        
+        mode = newmode;
+        toggleGestureRecognizer(mode == EGESTURE);
+        
+        if (mode == EGESTURE)
+        {
+            lastFingerPos.clear();
+        }
+    }
+    
+    Mode getMode() const { return mode; }
+    
+private:
+    Mode mode;
+};
 
 bool vjoy_enabled = true;
 bool vjoy_visible = true;
+VjoyMode vjoy_mode;
+
+
 
 float xres = -1.0f;
 float yres = -1.0f;
-
-typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
-lastFingerPos_t lastFingerPos;
 
 namespace Pad
 {
@@ -284,11 +323,64 @@ namespace Pad
     }
 };
 
+class GestureObserver : public IGestureObserver
+{
+    typedef std::vector<Point> tapLocation_t;
+public:
+    virtual void tap(float x, float y)
+    {
+        taps.push_back(Point(x, y));
+    }
+    
+    virtual void double_tap(float x, float y)
+    {
+        double_taps.push_back(Point(x, y));
+    }
+    
+public:
+    
+    bool wasTap(Rect const& rect)
+    {
+        for (tapLocation_t::const_iterator it = taps.begin(); it != taps.end(); ++it)
+        {
+            if (rect.point_in(*it))
+                return true;
+        }
+        
+        return false;
+    }
+    
+    bool wasDoubleTap(Rect const& rect)
+    {
+        for (tapLocation_t::const_iterator it = double_taps.begin(); it != taps.end(); ++it)
+        {
+            if (rect.point_in(*it))
+                return true;
+        }
+        
+        return false;
+    }
+    
+    void flushEvents()
+    {
+        taps.clear();
+        double_taps.clear();
+    }
+    
+private:
+    
+    tapLocation_t taps;
+    tapLocation_t double_taps;
+};
+
+static GestureObserver gestureObserver;
+
 namespace VJoy {
 namespace ModeAware
 {
     struct IModeAwarePad
     {
+        virtual void on_enter() {}
         virtual void update_buttons(Point const& p) {}
         virtual void draw() {}
         virtual ~IModeAwarePad() {}
@@ -296,7 +388,10 @@ namespace ModeAware
     
     class NoneModePad : public IModeAwarePad
     {
-        
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::ETOUCH);
+        }
     };    
     class NormalModePad : public IModeAwarePad
     {
@@ -336,6 +431,11 @@ namespace ModeAware
         };
         
     public:
+
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::ETOUCH);
+        }
         
         virtual void update_buttons(Point const& p)
         {
@@ -385,11 +485,17 @@ namespace ModeAware
     };
     class IntroModePad : public IModeAwarePad
     {
-        
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::EGESTURE);
+        }
     };
     class TitleModePad : public IModeAwarePad
     {
-        
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::EGESTURE);
+        }
     };
     class PausedModePad : public IModeAwarePad
     {
@@ -438,16 +544,31 @@ namespace ModeAware
         pads[GM_NORMAL]->draw();
     }
     
-    bool isPressedInCurrentMode(RectI rect)
+//    bool isPressedInCurrentMode(RectI rect)
+//    {
+//        bool res = false;
+//        for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end() && !res; ++it)
+//        {
+//            Point const& p = it->second;
+//            res = point_in(rect, p);
+//        }
+//        
+//        return res;
+//    }
+
+    bool wasTap(RectI rect)
     {
-        bool res = false;
-        for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end() && !res; ++it)
-        {
-            Point const& p = it->second;
-            res = point_in(rect, p);
-        }
-        
-        return res;
+        return gestureObserver.wasTap(Rect::fromRectI(rect));
+    }
+    
+    bool wasDoubleTap(RectI rect)
+    {
+        return gestureObserver.wasDoubleTap(Rect::fromRectI(rect));
+    }
+    
+    void gameModeChanged(int newMode)
+    {
+        pads[newMode]->on_enter();
     }
     
 } // namespace ModeAware
@@ -457,6 +578,7 @@ namespace ModeAware
 bool  VJoy::Init()
 {
     vjoy_enabled = true;
+    registerGetureObserver(&gestureObserver);
     return true;
 }
 
@@ -464,8 +586,6 @@ void VJoy::Destroy()
 {
     vjoy_enabled = false;
 }
-
-
 
 void VJoy::DrawAll()
 {
@@ -489,6 +609,9 @@ void VJoy::DrawAll()
 void VJoy::InjectInputEvent(SDL_Event const & evt)
 {
     if (!vjoy_enabled)
+        return;
+    
+    if (vjoy_mode.getMode() != VjoyMode::ETOUCH)
         return;
     
     if (xres < 0)
@@ -522,6 +645,14 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
     }
     
     Pad::insert_event(evt, p);
+}
+
+void VJoy::PreProcessInput()
+{
+    if (!vjoy_enabled)
+        return;
+    
+    gestureObserver.flushEvents();
 }
 
 void VJoy::ProcessInput()

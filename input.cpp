@@ -126,6 +126,8 @@ void input_poll(void)
 {
 SDL_Event evt;
 int ino, key;
+    
+    VJoy::PreProcessInput();
 	
 	while(SDL_PollEvent(&evt))
 	{

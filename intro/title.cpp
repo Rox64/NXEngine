@@ -219,7 +219,7 @@ static void draw_title()
 	
 	// draw menu
 	int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
-	int cy = (Graphics::SCREEN_HEIGHT / 2) + 8;
+	int cy = (Graphics::SCREEN_HEIGHT / 2) - 8;
 	for(int i=0;i<sprites[SPR_MENU].nframes;i++)
 	{
 		draw_sprite(cx, cy, SPR_MENU, i);
@@ -228,7 +228,7 @@ static void draw_title()
 			draw_sprite(cx - 16, cy - 1, title.sprite, title.selframe);
 		}
 		
-		cy += (sprites[SPR_MENU].h + 4);
+		cy += (sprites[SPR_MENU].h + 18);
 	}
 	
 	// animate character

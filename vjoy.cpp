@@ -3,6 +3,7 @@
 #include <vector>
 #include <SDL.h>
 
+#include "config.h"
 #include "vjoy.h"
 #include "input.h"
 #include "graphics/graphics.h"
@@ -348,6 +349,11 @@ public:
         return false;
     }
     
+    bool wasTap()
+    {
+        return !taps.empty();
+    }
+    
     void flushEvents()
     {
         taps.clear();
@@ -544,6 +550,11 @@ namespace ModeAware
     bool wasTap(RectI rect)
     {
         return gestureObserver.wasTap(Rect::fromRectI(rect));
+    }
+    
+    bool wasTap()
+    {
+        return gestureObserver.wasTap();
     }
     
     void gameModeChanged(int newMode)

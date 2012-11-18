@@ -2,6 +2,7 @@
 #include "../nx.h"
 #include "../ai/stdai.h"
 #include "intro.fdh"
+#include "../vjoy.h"
 
 static int blanktimer;
 #define EXIT_DELAY				20		// delay between intro and title screen
@@ -36,7 +37,7 @@ void intro_tick()
 	
 	// when script ends with WAI9999, detect it and move on to title screen
 	ScriptInstance *script = GetCurrentScriptInstance();
-	if ((script && script->delaytimer == 9999) || buttonjustpushed())
+	if ((script && script->delaytimer == 9999) || buttonjustpushed() || VJoy::ModeAware::wasTap())
 	{
 		StopScripts();
 		blanktimer = EXIT_DELAY;

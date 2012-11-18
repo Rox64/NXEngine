@@ -1,5 +1,6 @@
 #include <cmath>
 #include <map>
+#include <stack>
 #include <vector>
 #include <SDL.h>
 
@@ -371,9 +372,13 @@ namespace ModeAware
 {
     struct IModeAwarePad
     {
+        IModeAwarePad() : disable_draw(false) {}
         virtual void on_enter() {}
         virtual void update_buttons(Point const& p) {}
         virtual void draw() {}
+        
+        bool disable_draw;
+        
         virtual ~IModeAwarePad() {}
     };
     
@@ -525,14 +530,15 @@ namespace ModeAware
     
     static void dispatch(Point const& p)
     {
-        //pads[getGamemode()].update_buttons(p);
-        pads[GM_NORMAL]->update_buttons(p);
+        pads[getGamemode()]->update_buttons(p);
+        //pads[GM_NORMAL]->update_buttons(p);
     }
     
     static void draw()
     {
-        //pads[getGamemode()].draw();
-        pads[GM_NORMAL]->draw();
+        if (!pads[getGamemode()]->disable_draw)
+            pads[getGamemode()]->draw();
+        //pads[GM_NORMAL]->draw();
     }
     
 //    bool isPressedInCurrentMode(RectI rect)
@@ -562,21 +568,71 @@ namespace ModeAware
         pads[newMode]->on_enter();
     }
     
-    void specScreenChanged(SpecScreens newScreen)
+    void specScreenChanged(SpecScreens newScreen, bool enter)
     {
-        static VjoyMode::Mode lastMode = VjoyMode::ETOUCH;
-        VjoyMode::Mode current = vjoy_mode.getMode();
         
-        switch (newScreen) {
-            case ENone:
-                vjoy_mode.setMode(lastMode);
-                break;
-            case ESaveLoad:
-                vjoy_mode.setMode(VjoyMode::EGESTURE);
-                break;
+        {
+            struct state_t
+            {
+                VjoyMode::Mode mode;
+                GameModes gm;
+                bool gm_draw;
+                
+                void push()
+                {
+                    mode = vjoy_mode.getMode();
+                    gm = getGamemode();
+                    gm_draw = pads[gm]->disable_draw;
+                }
+                
+                void pop()
+                {
+                    vjoy_mode.setMode(mode);
+                    pads[gm]->disable_draw = gm_draw;
+                }
+            };
+            
+            static std::stack<state_t> states;
+        
+        
+            state_t s;
+            if (enter)
+            {
+                s.push();
+                states.push(s);
+            }
+            else
+            {
+                if (states.empty())
+                    return;
+                s = states.top();
+                s.pop();
+                states.pop();
+                return;
+            }
         }
         
-        lastMode = current;
+        switch (newScreen) {
+            case ETextBox:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                pads[getGamemode()]->disable_draw = true;
+                break;
+            }
+            case ESaveLoad:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                pads[getGamemode()]->disable_draw = true;
+                break;
+            }
+            case EYesNo:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                pads[getGamemode()]->disable_draw = true;
+                break;
+            }
+        }
+        
     }
     
 } // namespace ModeAware

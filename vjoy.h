@@ -19,8 +19,9 @@ namespace ModeAware
 {
     enum SpecScreens
     {
-        ENone,
-        ESaveLoad
+        ETextBox,
+        ESaveLoad,
+        EYesNo
     };
     
     
@@ -28,7 +29,7 @@ namespace ModeAware
     bool wasTap();
     
     void gameModeChanged(int newMode);
-    void specScreenChanged(SpecScreens newScreen);
+    void specScreenChanged(SpecScreens newScreen, bool enter);
 }
     
 } // namespace VJoy

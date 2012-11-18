@@ -28,13 +28,15 @@ void c------------------------------() {}
 
 void TB_SaveSelect::ResetState()
 {
+    if (fVisible != false)
+        VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ESaveLoad, false);
 	fVisible = false;
 }
 
 void TB_SaveSelect::SetVisible(bool enable, bool saving)
 {
 	fVisible = enable;
-    VJoy::ModeAware::specScreenChanged(enable ? VJoy::ModeAware::ESaveLoad : VJoy::ModeAware::ENone);
+    VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ESaveLoad, enable);
 	if (!enable) return;
 	game.showmapnametime = 0;
 	

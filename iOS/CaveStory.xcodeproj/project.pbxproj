@@ -473,6 +473,7 @@
 		E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "deps/SDL_ttf/Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
 		E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = deps/libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
 		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
+		E9EF8EC916590D320038DBB1 /* RectI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RectI.h; path = ../../RectI.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -570,6 +571,7 @@
 				05600CFC15EEC53C00A7CCD5 /* siflib */,
 				05600D0A15EEC53C00A7CCD5 /* sound */,
 				05600D1715EEC53D00A7CCD5 /* TextBox */,
+				E9EF8EC916590D320038DBB1 /* RectI.h */,
 			);
 			name = src;
 			sourceTree = "<group>";

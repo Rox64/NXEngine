@@ -91,6 +91,10 @@ bool setup_path(int argc, char** argv)
     {
         sandboxed = true;
     }
+
+#if TARGET_IPHONE_SIMULATOR
+    sandboxed = true;
+#endif
     
     if (sandboxed)
     {

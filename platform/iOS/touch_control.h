@@ -12,7 +12,6 @@
 struct IGestureObserver
 {
     virtual void tap(float x, float y) = 0;
-    virtual void double_tap(float x, float y) = 0;
 protected:
     virtual ~IGestureObserver() {}
 };

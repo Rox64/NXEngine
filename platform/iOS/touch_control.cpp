@@ -29,11 +29,5 @@ extern "C"
         if (sGO)
             sGO->tap(x, y);
     }
-    
-    void double_tap(float x, float y)
-    {
-        if (sGO)
-            sGO->double_tap(x, y);
-    }
 
 }

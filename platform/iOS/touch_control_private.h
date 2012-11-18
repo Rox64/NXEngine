@@ -14,7 +14,6 @@ extern "C"
 {
 #endif
     void tap(float x, float y);
-    void double_tap(float x, float y);
     
     void toggle_gesture_recognizer(int enabled);
 

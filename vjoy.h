@@ -17,10 +17,7 @@ void ProcessInput();
 
 namespace ModeAware
 {
-    //bool isPressedInCurrentMode(RectI rect);
     bool wasTap(RectI rect);
-    bool wasDoubleTap(RectI rect);
-    
     
     void gameModeChanged(int newMode);
 }

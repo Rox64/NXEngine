@@ -332,11 +332,6 @@ public:
         taps.push_back(Point(x, y));
     }
     
-    virtual void double_tap(float x, float y)
-    {
-        double_taps.push_back(Point(x, y));
-    }
-    
 public:
     
     bool wasTap(Rect const& rect)
@@ -350,27 +345,14 @@ public:
         return false;
     }
     
-    bool wasDoubleTap(Rect const& rect)
-    {
-        for (tapLocation_t::const_iterator it = double_taps.begin(); it != taps.end(); ++it)
-        {
-            if (rect.point_in(*it))
-                return true;
-        }
-        
-        return false;
-    }
-    
     void flushEvents()
     {
         taps.clear();
-        double_taps.clear();
     }
     
 private:
     
     tapLocation_t taps;
-    tapLocation_t double_taps;
 };
 
 static GestureObserver gestureObserver;
@@ -559,11 +541,6 @@ namespace ModeAware
     bool wasTap(RectI rect)
     {
         return gestureObserver.wasTap(Rect::fromRectI(rect));
-    }
-    
-    bool wasDoubleTap(RectI rect)
-    {
-        return gestureObserver.wasDoubleTap(Rect::fromRectI(rect));
     }
     
     void gameModeChanged(int newMode)

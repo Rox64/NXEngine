@@ -68,6 +68,10 @@ void toggle_gesture_recognizer(int enabled)
     if (gesture.state == UIGestureRecognizerStateEnded)
     {
         CGPoint location = [gesture locationInView:gesture.view];
+        
+        location.x /= self.view.bounds.size.width;
+        location.y /= self.view.bounds.size.height;
+        
         NSLog(@"TAP GESTERE %f %f", location.x, location.y);
         
         tap(location.x, location.y);
@@ -78,6 +82,10 @@ void toggle_gesture_recognizer(int enabled)
     if (gesture.state == UIGestureRecognizerStateEnded)
     {
         CGPoint location = [gesture locationInView:gesture.view];
+        
+        location.x /= self.view.bounds.size.width;
+        location.y /= self.view.bounds.size.height;
+        
         NSLog(@"DOUBLE TAP GESTURE %f %f", location.x, location.y);
         
         double_tap(location.x, location.y);

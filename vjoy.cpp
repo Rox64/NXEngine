@@ -6,6 +6,7 @@
 #include "vjoy.h"
 #include "input.h"
 #include "graphics/graphics.h"
+#include "game_modes.h"
 
 struct Point
 {
@@ -86,40 +87,7 @@ struct Rect
 const NXColor col_released(0xff, 0xcf, 0x33);
 const NXColor col_pressed (0xff, 0x00, 0x00);
 
-const Rect vkeys[INPUT_COUNT] =
-{
-    {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
-    {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
-    {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
-    {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
-    
-    {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
-    {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
-    
-    {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
-    {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
-    
-    {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
-    {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
-    
-    {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
-    {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F2KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F3KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F4KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F5KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F6KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F7KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F8KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F9KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F10KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F11KEY
-    {-1.f, -1.f, -1.f, -1.f}, // F12KEY
-    
-    {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
-    {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
-    {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
-};
+
 
 
 bool vjoy_enabled = true;
@@ -300,6 +268,160 @@ namespace Pad
     }
 };
 
+namespace ModeAware
+{
+    struct IModeAwarePad
+    {
+        virtual void update_buttons(Point const& p) {}
+        virtual void draw() {}
+        virtual ~IModeAwarePad() {}
+    };
+    
+    class NoneModePad : public IModeAwarePad
+    {
+        
+    };    
+    class NormalModePad : public IModeAwarePad
+    {
+        const Rect vkeys[INPUT_COUNT] =
+        {
+            {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
+            {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
+            {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
+            {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
+            
+            {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
+            {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
+            
+            {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
+            {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
+            
+            {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
+            {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
+            
+            {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
+            {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F2KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F3KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F4KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F5KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F6KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F7KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F8KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F9KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F10KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F11KEY
+            {-1.f, -1.f, -1.f, -1.f}, // F12KEY
+            
+            {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
+            {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
+            {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
+        };
+        
+    public:
+        
+        virtual void update_buttons(Point const& p)
+        {
+            for (int i = 0; i < INPUT_COUNT; ++i)
+            {
+                if (vkeys[i].x < 0)
+                    continue;
+                
+                if (vkeys[i].point_in(p))
+                    inputs[i] = true;
+            }
+            
+            Pad::update_buttons(p);
+        }
+        
+        virtual void draw()
+        {
+            for (int i = 0; i < INPUT_COUNT; ++i)
+            {
+                Rect const& vkey = vkeys[i];
+                
+                if (vkey.x < 0)
+                    continue;
+                
+                NXColor const& c = inputs[i] ? col_pressed : col_released;
+                vkey.draw_thin_rect(c);
+            }
+            
+            Pad::draw();
+        }
+    };
+    class InventoryModePad : public IModeAwarePad
+    {
+        
+    };
+    class MapSystemModePad : public IModeAwarePad
+    {
+        
+    };
+    class IslandModePad : public IModeAwarePad
+    {
+        
+    };
+    class CreditsModePad : public IModeAwarePad
+    {
+        
+    };
+    class IntroModePad : public IModeAwarePad
+    {
+        
+    };
+    class TitleModePad : public IModeAwarePad
+    {
+        
+    };
+    class PausedModePad : public IModeAwarePad
+    {
+        
+    };
+    class OptionsModePad : public IModeAwarePad
+    {
+        
+    };
+    
+    
+    NoneModePad noneModePad;
+    NormalModePad normalModePad;
+    InventoryModePad inventoryModePad;
+    MapSystemModePad mapSystemModePad;
+    IslandModePad islandModePad;
+    CreditsModePad creditsModePad;
+    IntroModePad introModePad;
+    TitleModePad titleModePad;
+    PausedModePad pausedModePad;
+    OptionsModePad optionsModePad;    
+    
+    IModeAwarePad* const pads[NUM_GAMEMODES] =
+    {
+        &noneModePad,
+        &normalModePad,
+        &inventoryModePad,
+        &mapSystemModePad,
+        &islandModePad,
+        &creditsModePad,
+        &introModePad,
+        &titleModePad,
+        &pausedModePad,
+        &optionsModePad
+    };
+    
+    static void dispatch(Point const& p)
+    {
+        //pads[getGamemode()].update_buttons(p);
+        pads[GM_NORMAL]->update_buttons(p);
+    }
+    
+    static void draw()
+    {
+        //pads[getGamemode()].draw();
+        pads[GM_NORMAL]->draw();
+    }
+}
+
 bool  VJoy::Init()
 {
     vjoy_enabled = true;
@@ -318,18 +440,9 @@ void VJoy::DrawAll()
     if (!(vjoy_enabled && vjoy_visible))
         return;
     
-    for (int i = 0; i < INPUT_COUNT; ++i)
-    {
-        Rect const& vkey = vkeys[i];
-        
-        if (vkey.x < 0)
-            continue;
-        
-        NXColor const& c = inputs[i] ? col_pressed : col_released;
-        vkey.draw_thin_rect(c);
-    }
+    ModeAware::draw();
     
-    Pad::draw();
+    
     
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {
@@ -379,20 +492,6 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
     Pad::insert_event(evt, p);
 }
 
-void updateButtons(Point const& p, bool state)
-{
-    for (int i = 0; i < INPUT_COUNT; ++i)
-    {
-        if (vkeys[i].x < 0)
-            continue;
-        
-        if (vkeys[i].point_in(p))
-            inputs[i] = state;
-    }
-}
-
-
-
 void VJoy::ProcessInput()
 {
     if (!vjoy_enabled)
@@ -404,7 +503,7 @@ void VJoy::ProcessInput()
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {
         Point const& p = it->second;
-        updateButtons(p, true);
-        Pad::update_buttons(p);
+        ModeAware::dispatch(p);
     }
 }
+

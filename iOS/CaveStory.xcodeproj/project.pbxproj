@@ -28,7 +28,6 @@
 		05600BB015EEC2C300A7CCD5 /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BA715EEC2C300A7CCD5 /* object.cpp */; };
 		05600BB215EEC2C300A7CCD5 /* ObjManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BAA15EEC2C300A7CCD5 /* ObjManager.cpp */; };
 		05600BB415EEC2C300A7CCD5 /* p_arms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BAD15EEC2C300A7CCD5 /* p_arms.cpp */; };
-		05600BC115EEC2D200A7CCD5 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BB615EEC2D100A7CCD5 /* platform.cpp */; };
 		05600BC315EEC2D200A7CCD5 /* player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BB915EEC2D100A7CCD5 /* player.cpp */; };
 		05600BC515EEC2D200A7CCD5 /* playerstats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BBC15EEC2D100A7CCD5 /* playerstats.cpp */; };
 		05600BC715EEC2D200A7CCD5 /* profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05600BBE15EEC2D200A7CCD5 /* profile.cpp */; };
@@ -161,6 +160,7 @@
 		E974C8CD1641B9EF003009AB /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8C11641B98E003009AB /* libSDL2.a */; };
 		E974C8CE1641B9F2003009AB /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */; };
 		E974C8E81641CA07003009AB /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8E71641C9F3003009AB /* libFreetype2.a */; };
+		E9EF8ECD16592B7E0038DBB1 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ECC16592B7E0038DBB1 /* platform.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -259,8 +259,6 @@
 		05600BAC15EEC2C300A7CCD5 /* ObjManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjManager.h; path = ../../ObjManager.h; sourceTree = "<group>"; };
 		05600BAD15EEC2C300A7CCD5 /* p_arms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = p_arms.cpp; path = ../../p_arms.cpp; sourceTree = "<group>"; };
 		05600BAF15EEC2C300A7CCD5 /* p_arms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = p_arms.h; path = ../../p_arms.h; sourceTree = "<group>"; };
-		05600BB615EEC2D100A7CCD5 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform.cpp; sourceTree = "<group>"; };
-		05600BB815EEC2D100A7CCD5 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform.h; sourceTree = "<group>"; };
 		05600BB915EEC2D100A7CCD5 /* player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = player.cpp; path = ../../player.cpp; sourceTree = "<group>"; };
 		05600BBB15EEC2D100A7CCD5 /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = player.h; path = ../../player.h; sourceTree = "<group>"; };
 		05600BBC15EEC2D100A7CCD5 /* playerstats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = playerstats.cpp; path = ../../playerstats.cpp; sourceTree = "<group>"; };
@@ -474,6 +472,8 @@
 		E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = deps/libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
 		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
 		E9EF8EC916590D320038DBB1 /* RectI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RectI.h; path = ../../RectI.h; sourceTree = "<group>"; };
+		E9EF8ECB16592B730038DBB1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform/platform.h; sourceTree = "<group>"; };
+		E9EF8ECC16592B7E0038DBB1 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform/platform.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -500,6 +500,7 @@
 		0560064C15EEC07A00A7CCD5 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				E9EF8ECA16592ABD0038DBB1 /* platform */,
 				0560094F15EEC12D00A7CCD5 /* caret.cpp */,
 				0560097215EEC12D00A7CCD5 /* console.cpp */,
 				0560097515EEC12D00A7CCD5 /* debug.cpp */,
@@ -514,7 +515,6 @@
 				05600BA715EEC2C300A7CCD5 /* object.cpp */,
 				05600BAA15EEC2C300A7CCD5 /* ObjManager.cpp */,
 				05600BAD15EEC2C300A7CCD5 /* p_arms.cpp */,
-				05600BB615EEC2D100A7CCD5 /* platform.cpp */,
 				05600BB915EEC2D100A7CCD5 /* player.cpp */,
 				05600BBC15EEC2D100A7CCD5 /* playerstats.cpp */,
 				05600BBE15EEC2D200A7CCD5 /* profile.cpp */,
@@ -545,7 +545,6 @@
 				05600BA915EEC2C300A7CCD5 /* object.h */,
 				05600BAC15EEC2C300A7CCD5 /* ObjManager.h */,
 				05600BAF15EEC2C300A7CCD5 /* p_arms.h */,
-				05600BB815EEC2D100A7CCD5 /* platform.h */,
 				05600BBB15EEC2D100A7CCD5 /* player.h */,
 				05600BC015EEC2D200A7CCD5 /* profile.h */,
 				05600BCB15EEC2E200A7CCD5 /* replay.h */,
@@ -1061,6 +1060,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E9EF8ECA16592ABD0038DBB1 /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				E9EF8ECC16592B7E0038DBB1 /* platform.cpp */,
+				E9EF8ECB16592B730038DBB1 /* platform.h */,
+			);
+			name = platform;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1191,7 +1199,6 @@
 				05600BB015EEC2C300A7CCD5 /* object.cpp in Sources */,
 				05600BB215EEC2C300A7CCD5 /* ObjManager.cpp in Sources */,
 				05600BB415EEC2C300A7CCD5 /* p_arms.cpp in Sources */,
-				05600BC115EEC2D200A7CCD5 /* platform.cpp in Sources */,
 				05600BC315EEC2D200A7CCD5 /* player.cpp in Sources */,
 				05600BC515EEC2D200A7CCD5 /* playerstats.cpp in Sources */,
 				05600BC715EEC2D200A7CCD5 /* profile.cpp in Sources */,
@@ -1314,6 +1321,7 @@
 				05600E0D15EEC53D00A7CCD5 /* YesNoPrompt.cpp in Sources */,
 				05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.h in Sources */,
 				058E860815EEF911007F72C2 /* vjoy.cpp in Sources */,
+				E9EF8ECD16592B7E0038DBB1 /* platform.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

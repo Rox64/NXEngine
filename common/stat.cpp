@@ -6,7 +6,7 @@
 
 #include "basics.h"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 
 #define MAXBUFSIZE		1024
 char logfilename[64] = { 0 };

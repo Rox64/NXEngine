@@ -6,7 +6,7 @@
 #include "graphics.h"
 #include "nxsurface.h"
 #include "nxsurface.fdh"
-#include "../platform.h"
+#include "../platform/platform.h"
 
 
 #ifdef CONFIG_MUTABLE_SCALE

@@ -5,7 +5,7 @@
 #include "sifloader.h"
 #include "sifloader.fdh"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 
 #define SIF_MAGICK	'SIF2'		// SIF magick and version denotation; first 4 bytes of file
 

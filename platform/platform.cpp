@@ -6,7 +6,7 @@
 
 #include "config.h"
 #include "platform.h"
-#include "common/basics.h"
+#include "../common/basics.h"
 
 char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";

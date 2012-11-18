@@ -12,7 +12,7 @@
 #include "../maprecord.h"
 #include "extractstages.fdh"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 
 #include "fileio.h"
 

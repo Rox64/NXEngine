@@ -15,7 +15,7 @@
 #include "pxt.h"
 #include "sslib.h"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "../common/endian.h"
 
 #include "pxt.fdh"

@@ -15,7 +15,7 @@
 #include "sslib.h"			// SAMPLE_RATE
 #include "org.fdh"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "../common/endian.h"
 
 //#define QUIET

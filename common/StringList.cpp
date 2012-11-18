@@ -5,7 +5,7 @@
 #include "StringList.h"
 #include "StringList.fdh"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 
 
 StringList::~StringList()

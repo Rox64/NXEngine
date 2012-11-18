@@ -24,16 +24,38 @@ git clone git://github.com/PIlin/NXEngine-iOS.git
 ```
 2. Downaload dependencies into iOS/deps folder. Use script:
 ```
-cd NXEngin-iOS/iOS/deps
+cd NXEngine-iOS/iOS/deps
 ./deploy.sh
 ```
 
 3. Xcode porject is located in NXEngine-iOS/iOS/CaveStory.xcodeproj
+You can also use xcodebuild utility from command line:
+```
+cd NXEngine-iOS/iOS
+xcodebuild
+```
 
 # How to run on jailbroken device:
 
 1. Configure your environment: http://iphonedevwiki.net/index.php/Xcode#Developing_without_Provisioning_Profile
 2. Don't forget to set -gta flag in project properties.
+
+# How to build deb-pack
+1. Install dpkg. 
+For example, from homebrew.
+
+2. Build package:
+```
+cd NXEngine-iOS/iOS
+xcodebuild install
+make deb
+```
+
+Package will be in 
+```
+NXEngine-iOS/iOS/deb/CaveStory.deb
+```
+
 
 # Links:
 

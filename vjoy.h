@@ -17,10 +17,18 @@ void ProcessInput();
 
 namespace ModeAware
 {
+    enum SpecScreens
+    {
+        ENone,
+        ESaveLoad
+    };
+    
+    
     bool wasTap(RectI rect);
     bool wasTap();
     
     void gameModeChanged(int newMode);
+    void specScreenChanged(SpecScreens newScreen);
 }
     
 } // namespace VJoy

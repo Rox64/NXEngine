@@ -34,6 +34,7 @@ void TB_SaveSelect::ResetState()
 void TB_SaveSelect::SetVisible(bool enable, bool saving)
 {
 	fVisible = enable;
+    VJoy::ModeAware::specScreenChanged(enable ? VJoy::ModeAware::ESaveLoad : VJoy::ModeAware::ENone);
 	if (!enable) return;
 	game.showmapnametime = 0;
 	

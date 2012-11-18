@@ -6,6 +6,7 @@
 #include "vararray.h"
 #include "tsc.h"
 #include "tsc.fdh"
+#include "vjoy.h"
 
 #define TRACE_SCRIPT
 
@@ -548,7 +549,8 @@ int cmdip;
 			// check them separately to allow holding X while
 			// tapping Z to keep text scrolling fast.
 			if ((inputs[JUMPKEY] && !s->lastjump) || \
-				(inputs[FIREKEY] && !s->lastfire))
+				(inputs[FIREKEY] && !s->lastfire) ||
+                VJoy::ModeAware::wasTap())
 			{
 				// hide the fact that the key was just pushed
 				// so player doesn't jump/fire stupidly when dismissing textboxes

@@ -562,6 +562,23 @@ namespace ModeAware
         pads[newMode]->on_enter();
     }
     
+    void specScreenChanged(SpecScreens newScreen)
+    {
+        static VjoyMode::Mode lastMode = VjoyMode::ETOUCH;
+        VjoyMode::Mode current = vjoy_mode.getMode();
+        
+        switch (newScreen) {
+            case ENone:
+                vjoy_mode.setMode(lastMode);
+                break;
+            case ESaveLoad:
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                break;
+        }
+        
+        lastMode = current;
+    }
+    
 } // namespace ModeAware
 } // namespace VJoy
 

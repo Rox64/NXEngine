@@ -219,6 +219,12 @@ void Game::tick(void)
 }
 
 
+GameModes getGamemode()
+{
+    return static_cast<GameModes>(game.mode);
+}
+
+
 void Game::switchmap(int mapno, int scriptno, int px, int py)
 {
 	game.switchstage.mapno = mapno;

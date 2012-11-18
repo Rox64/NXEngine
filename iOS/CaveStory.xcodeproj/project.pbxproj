@@ -472,6 +472,7 @@
 		E974C8B61641B98D003009AB /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "deps/SDL/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "deps/SDL_ttf/Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
 		E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = deps/libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
+		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -533,6 +534,7 @@
 				0560099215EEC13900A7CCD5 /* dirnames.h */,
 				056009AD15EEC15300A7CCD5 /* floattext.h */,
 				056009B015EEC15300A7CCD5 /* game.h */,
+				E9EF8EA01658F8B10038DBB1 /* game_modes.h */,
 				056009CC15EEC15300A7CCD5 /* input.h */,
 				056009D615EEC15300A7CCD5 /* inventory.h */,
 				05600B9C15EEC2B600A7CCD5 /* map.h */,

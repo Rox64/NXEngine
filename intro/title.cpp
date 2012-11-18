@@ -1,6 +1,7 @@
 
 #include "../nx.h"
 #include "title.fdh"
+#include "vjoy.h"
 
 // music and character selections for the different Counter times
 static struct
@@ -148,6 +149,23 @@ static void selectoption(int index)
 
 static void handle_input()
 {
+    bool button_pressed = false;
+#ifdef CONFIG_USE_VJOY
+    int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
+	int cy = (Graphics::SCREEN_HEIGHT / 2) - 8;
+    for(int i=0;i<sprites[SPR_MENU].nframes;i++)
+	{
+		RectI r = Sprites::get_sprite_rect(cx, cy, SPR_MENU, i);
+        if (VJoy::ModeAware::isPressedInCurrentMode(r))
+        {
+            title.cursel = i;
+            button_pressed = true;
+            break;
+        }
+
+		cy += (sprites[SPR_MENU].h + 18);
+	}
+#else
 	if (justpushed(DOWNKEY))
 	{
 		sound(SND_MENU_MOVE);
@@ -160,8 +178,11 @@ static void handle_input()
 		if (--title.cursel < 0)
 			title.cursel = sprites[SPR_MENU].nframes - 1;
 	}
+    
+    button_pressed = buttonjustpushed();
+#endif // CONFIG_USE_VJOY
 	
-	if (buttonjustpushed())
+	if (button_pressed)
 	{
 		sound(SND_MENU_SELECT);
 		int choice = title.cursel;
@@ -228,6 +249,9 @@ static void draw_title()
 			draw_sprite(cx - 16, cy - 1, title.sprite, title.selframe);
 		}
 		
+        //RectI r = Sprites::get_sprite_rect(cx, cy, SPR_MENU, i);
+        //Graphics::DrawRect(r.x, r.y, r.x + r.w, r.y + r.h, 255,255,255);
+        
 		cy += (sprites[SPR_MENU].h + 18);
 	}
 	

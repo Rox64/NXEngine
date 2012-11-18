@@ -41,6 +41,16 @@ struct Rect
         return r;
     }
     
+    static Rect fromRectI(RectI const& rect)
+    {
+        Rect r = {(float)rect.x / Graphics::SCREEN_WIDTH,
+            (float)rect.y / Graphics::SCREEN_HEIGHT,
+            (float)rect.w / Graphics::SCREEN_WIDTH,
+            (float)rect.h / Graphics::SCREEN_HEIGHT,
+        };
+        return r;
+    }
+    
     bool point_in(Point const& p) const
     {
         return point_in(p.x, p.y);
@@ -83,6 +93,12 @@ struct Rect
         Graphics::DrawLine(x2, y1, x2, y2, c);
     }
 };
+
+bool point_in(RectI const& rect, Point const& p)
+{
+    Rect r = Rect::fromRectI(rect);
+    return r.point_in(p);
+}
 
 const NXColor col_released(0xff, 0xcf, 0x33);
 const NXColor col_pressed (0xff, 0x00, 0x00);
@@ -268,6 +284,7 @@ namespace Pad
     }
 };
 
+namespace VJoy {
 namespace ModeAware
 {
     struct IModeAwarePad
@@ -420,7 +437,22 @@ namespace ModeAware
         //pads[getGamemode()].draw();
         pads[GM_NORMAL]->draw();
     }
-}
+    
+    bool isPressedInCurrentMode(RectI rect)
+    {
+        bool res = false;
+        for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end() && !res; ++it)
+        {
+            Point const& p = it->second;
+            res = point_in(rect, p);
+        }
+        
+        return res;
+    }
+    
+} // namespace ModeAware
+} // namespace VJoy
+
 
 bool  VJoy::Init()
 {

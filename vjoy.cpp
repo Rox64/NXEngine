@@ -131,12 +131,15 @@ public:
             return;
         
         mode = newmode;
+        
+#ifdef CONFIG_USE_TAPS
         toggleGestureRecognizer(mode == EGESTURE);
         
         if (mode == EGESTURE)
         {
             lastFingerPos.clear();
         }
+#endif // CONFIG_USE_TAPS
     }
     
     Mode getMode() const { return mode; }

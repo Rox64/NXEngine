@@ -19,4 +19,6 @@
 // show virtual joystick
 #define CONFIG_USE_VJOY
 
+#define CONFIG_USE_TAPS
+
 #endif

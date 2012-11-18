@@ -150,7 +150,7 @@ static void selectoption(int index)
 static void handle_input()
 {
     bool button_pressed = false;
-#ifdef CONFIG_USE_VJOY
+#ifdef CONFIG_USE_TAPS
     int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
 	int cy = (Graphics::SCREEN_HEIGHT / 2) - 8;
     for(int i=0;i<sprites[SPR_MENU].nframes;i++)
@@ -192,7 +192,7 @@ static void handle_input()
 	}
     
     button_pressed = buttonjustpushed();
-#endif // CONFIG_USE_VJOY
+#endif // CONFIG_USE_TAPS
 	
 	if (button_pressed)
 	{

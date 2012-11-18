@@ -161,6 +161,9 @@
 		E974C8CE1641B9F2003009AB /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */; };
 		E974C8E81641CA07003009AB /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8E71641C9F3003009AB /* libFreetype2.a */; };
 		E9EF8ECD16592B7E0038DBB1 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ECC16592B7E0038DBB1 /* platform.cpp */; };
+		E9EF8ED116592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ED016592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m */; };
+		E9EF8ED41659309E0038DBB1 /* SDL_uikitview+touch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ED31659309E0038DBB1 /* SDL_uikitview+touch.m */; };
+		E9EF8ED8165939780038DBB1 /* touch_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ED7165939770038DBB1 /* touch_control.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -474,6 +477,13 @@
 		E9EF8EC916590D320038DBB1 /* RectI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RectI.h; path = ../../RectI.h; sourceTree = "<group>"; };
 		E9EF8ECB16592B730038DBB1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform/platform.h; sourceTree = "<group>"; };
 		E9EF8ECC16592B7E0038DBB1 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform/platform.cpp; sourceTree = "<group>"; };
+		E9EF8ECF16592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h"; path = "../../platform/iOS/SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h"; sourceTree = "<group>"; };
+		E9EF8ED016592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m"; path = "../../platform/iOS/SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m"; sourceTree = "<group>"; };
+		E9EF8ED21659309E0038DBB1 /* SDL_uikitview+touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SDL_uikitview+touch.h"; path = "../../platform/iOS/SDL_uikitview+touch.h"; sourceTree = "<group>"; };
+		E9EF8ED31659309E0038DBB1 /* SDL_uikitview+touch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SDL_uikitview+touch.m"; path = "../../platform/iOS/SDL_uikitview+touch.m"; sourceTree = "<group>"; };
+		E9EF8ED5165937B50038DBB1 /* touch_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touch_control.h; path = ../../platform/iOS/touch_control.h; sourceTree = "<group>"; };
+		E9EF8ED6165939590038DBB1 /* touch_control_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touch_control_private.h; path = ../../platform/iOS/touch_control_private.h; sourceTree = "<group>"; };
+		E9EF8ED7165939770038DBB1 /* touch_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touch_control.cpp; path = ../../platform/iOS/touch_control.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1063,10 +1073,25 @@
 		E9EF8ECA16592ABD0038DBB1 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				E9EF8ECE16592C700038DBB1 /* iOS */,
 				E9EF8ECC16592B7E0038DBB1 /* platform.cpp */,
 				E9EF8ECB16592B730038DBB1 /* platform.h */,
 			);
 			name = platform;
+			sourceTree = "<group>";
+		};
+		E9EF8ECE16592C700038DBB1 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E9EF8ECF16592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h */,
+				E9EF8ED016592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m */,
+				E9EF8ED21659309E0038DBB1 /* SDL_uikitview+touch.h */,
+				E9EF8ED31659309E0038DBB1 /* SDL_uikitview+touch.m */,
+				E9EF8ED5165937B50038DBB1 /* touch_control.h */,
+				E9EF8ED6165939590038DBB1 /* touch_control_private.h */,
+				E9EF8ED7165939770038DBB1 /* touch_control.cpp */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1322,6 +1347,9 @@
 				05600E1115EEC74E00A7CCD5 /* tsc_cmdtbl.h in Sources */,
 				058E860815EEF911007F72C2 /* vjoy.cpp in Sources */,
 				E9EF8ECD16592B7E0038DBB1 /* platform.cpp in Sources */,
+				E9EF8ED116592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m in Sources */,
+				E9EF8ED41659309E0038DBB1 /* SDL_uikitview+touch.m in Sources */,
+				E9EF8ED8165939780038DBB1 /* touch_control.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

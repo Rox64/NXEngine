@@ -57,9 +57,11 @@ NXEngine-iOS/iOS/deb/CaveStory.deb
 ```
 
 
-# Links:
+# Links and acknowledgment:
 
 Original NXEngine project: http://nxengine.sourceforge.net/
 
 Liberation Mono font: https://fedorahosted.org/liberation-fonts/
+
+Application icons were prepared by Sergey Osminogov (https://plus.google.com/u/0/109504104068874319771). Source image for icons was made by NYAssassin (http://nyassassin.deviantart.com/).
 

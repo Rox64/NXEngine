@@ -72,9 +72,9 @@ void TB_YNJPrompt::Draw()
         //Graphics::DrawRect(YESNO_X + xoff + 4, fCoords.y, YESNO_X + xoff + 4 + 37, fCoords.y + sprites[SPR_YESNO].h, 255, 255, 255);
 	}
     
-    Graphics::DrawRect(yes_rect.x, yes_rect.y, yes_rect.x + yes_rect.w, yes_rect.y + yes_rect.h, 255, 255, 255);
-    Graphics::DrawRect(no_rect.x, no_rect.y, no_rect.x + no_rect.w, no_rect.y + no_rect.h, 255, 255, 255);
-	
+//    Graphics::DrawRect(yes_rect.x, yes_rect.y, yes_rect.x + yes_rect.w, yes_rect.y + yes_rect.h, 255, 255, 255);
+//    Graphics::DrawRect(no_rect.x, no_rect.y, no_rect.x + no_rect.w, no_rect.y + no_rect.h, 255, 255, 255);
+
 	switch(fState)
 	{
 		case STATE_APPEAR:

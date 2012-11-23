@@ -17,6 +17,22 @@ void pause_tick()
 	int cy = (Graphics::SCREEN_HEIGHT / 2) - (sprites[SPR_RESETPROMPT].h / 2);
 	draw_sprite(cx, cy, SPR_RESETPROMPT);
 	
+#ifdef CONFIG_USE_TAPS
+    RectI r = RectI(cx + 60, cy, 82, sprites[SPR_RESETPROMPT].h);
+    debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+    if (VJoy::ModeAware::wasTap(r))
+    {
+        game.pause(false);
+    }
+    
+    r = RectI(cx + 60 + 82, cy, 70, sprites[SPR_RESETPROMPT].h);
+    debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+    if (VJoy::ModeAware::wasTap(r))
+    {
+        game.reset();
+    }
+#endif
+    
 	const char *str = "F3:Options";
 	cx = (Graphics::SCREEN_WIDTH / 2) - (GetFontWidth(str, 0) / 2) - 4;
 	cy = (Graphics::SCREEN_HEIGHT - 8) - GetFontHeight();
@@ -48,7 +64,7 @@ void pause_tick()
 	}
     
 #ifdef CONFIG_USE_TAPS
-    RectI r = RectI(cx, cy, GetFontWidth(str, 0), GetFontHeight());
+    r = RectI(cx, cy, GetFontWidth(str, 0), GetFontHeight());
     debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
     if (VJoy::ModeAware::wasTap(r))
     {

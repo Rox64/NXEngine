@@ -4,6 +4,8 @@
 #include "options.h"
 #include "dialog.h"
 #include "message.h"
+#include "../platform/platform.h"
+
 using namespace Options;
 #include "options.fdh"
 FocusStack optionstack;
@@ -127,8 +129,10 @@ Dialog *dlg = opt.dlg;
 
 	dlg->Clear();
 	
+#ifndef IPHONE
 	dlg->AddItem("Resolution: ", _res_change, _res_get);
 	dlg->AddItem("Controls", EnterControlsMenu);
+#endif
 	dlg->AddItem("Replay", EnterReplayMenu);
 	
 	dlg->AddSeparator();

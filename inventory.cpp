@@ -4,6 +4,10 @@
 #include "nx.h"
 #include "inventory.h"
 #include "inventory.fdh"
+#include "vjoy.h"
+
+#include "debug.h"
+
 
 #define ARMS_X			10
 #define ARMS_Y			8
@@ -183,10 +187,73 @@ int x, y, w, i, c;
 
 static void RunSelector(stSelector *selector)
 {
-int nrows;
-int currow, curcol;
-char toggle = 0;
-
+    bool item_selected = false;
+    bool inv_exited = false;
+    
+#ifdef CONFIG_USE_TAPS
+    int xsel, ysel;
+    
+    stSelector *const selectors[] = {&inv.armssel, &inv.itemsel};
+    struct {int x, y; } const coords[] = {
+        {inv.x +  ARMS_X, inv.y +  ARMS_Y + sprites[ SPR_TEXT_ARMS].h},
+        {inv.x + ITEMS_X, inv.y + ITEMS_Y + sprites[SPR_TEXT_ITEMS].h}
+    };
+    
+    for (int i = 0; i < 2; ++i)
+    {
+        stSelector * const cur = selectors[i];
+        
+        for (int cursel = 0; cursel < cur->nitems; ++cursel)
+        {
+            if (cur->rowlen)
+            {
+                xsel = (cursel % cur->rowlen);
+                ysel = (cursel / cur->rowlen);
+            }
+            else
+                xsel = ysel = 0;
+            
+            int selx = coords[i].x + (xsel * cur->spacing_x);
+            int sely = coords[i].y + (ysel * cur->spacing_y);
+            
+            RectI r = Sprites::get_sprite_rect(selx, sely, cur->sprite);
+            
+            //debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+            
+            if (VJoy::ModeAware::wasTap(r))
+            {
+                if (selector == cur && cursel == cur->cursel)
+                {
+                    item_selected = true;
+                }
+                else
+                {
+                    inv.curselector = cur;
+                    cur->cursel = cursel;
+                    cur->lastsel = -9999;
+                    selector = cur;
+                }
+                
+                break;
+            }
+        }
+    }
+    
+    {
+        int x = inv.x + ITEMS_X;
+        int y = inv.y + ITEMS_Y;
+        RectI r = Sprites::get_sprite_rect(x, y, SPR_TEXT_ITEMS);
+        if (VJoy::ModeAware::wasTap(r))
+        {
+            inv_exited = true;
+        }
+    }
+#else
+ 
+    int nrows;
+    int currow, curcol;
+    char toggle = 0;
+    
 	if (inv.lockinput)
 	{
 		if (GetCurrentScript()==-1) inv.lockinput = 0;
@@ -275,6 +342,18 @@ char toggle = 0;
 		sound(selector->sound);
 		selector->lastsel = -9999;
 	}
+    
+    if (selector == &inv.itemsel)
+    {
+        item_selected = justpushed(JUMPKEY);
+        inv_exited = justpushed(INVENTORYKEY) || justpushed(FIREKEY);
+    }
+    else
+    {
+        item_selected = buttonjustpushed();
+    }
+    
+#endif
 	
 	// bring up scripts
 	if (selector->cursel != selector->lastsel)
@@ -287,7 +366,7 @@ char toggle = 0;
 	
 	if (selector == &inv.armssel)		// selecting a weapon
 	{
-		if (buttonjustpushed())
+		if (item_selected)
 		{	// select the new weapon
 			weapon_slide(LEFT, selector->items[selector->cursel]);
 			ExitInventory();
@@ -295,13 +374,13 @@ char toggle = 0;
 	}
 	else									// selecting an item
 	{
-		if (justpushed(JUMPKEY))
+		if (item_selected)
 		{	// bring up "more info" or "equip" script for this item
 			StartScript(selector->items[selector->cursel] + selector->scriptbase + 1000, SP_ARMSITEM);
 			inv.lockinput = 1;
 		}
 		
-		if (justpushed(INVENTORYKEY) || justpushed(FIREKEY))
+		if (inv_exited)
 			ExitInventory();
 	}
 }

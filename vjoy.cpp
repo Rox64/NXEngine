@@ -477,7 +477,10 @@ namespace ModeAware
     };
     class InventoryModePad : public IModeAwarePad
     {
-        
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::EGESTURE);
+        }
     };
     class MapSystemModePad : public IModeAwarePad
     {

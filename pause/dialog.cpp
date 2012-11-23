@@ -2,6 +2,7 @@
 #include "../nx.h"
 #include "dialog.h"
 #include "dialog.fdh"
+#include "../vjoy.h"
 using namespace Options;
 extern FocusStack optionstack;
 
@@ -170,6 +171,42 @@ void c------------------------------() {}
 
 void Dialog::RunInput()
 {
+    bool pushed_left = false;
+    bool pushed_rigth = false;
+    
+    
+#ifdef CONFIG_USE_TAPS
+    
+    int x = fTextX;
+    int y = (fCoords.y + 18);
+    
+    for (int i = 0;; ++i, y += GetFontHeight())
+    {
+        ODItem *item = (ODItem *)fItems.ItemAt(i);
+		if (!item) break;
+        if (OD_SEPARATOR == item->type) continue;
+        
+        RectI r = RectI(x - 30, y, fCoords.w - 35, GetFontHeight());
+        
+        debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+        if (VJoy::ModeAware::wasTap(r))
+        {
+            if (fCurSel == i)
+            {
+                pushed_rigth = true;
+            }
+            else
+            {
+                fCurSel = i;
+                sound(SND_MENU_MOVE);
+            }
+        }
+        
+        
+    }
+    
+#else
+    
 	if (inputs[UPKEY] || inputs[DOWNKEY])
 	{
 		int dir = (inputs[DOWNKEY]) ? 1 : -1;
@@ -192,12 +229,17 @@ void Dialog::RunInput()
 		}
 		else fRepeatTimer--;
 	}
-	else fRepeatTimer = 0;
+	else
+        fRepeatTimer = 0;
+    
+    pushed_left = justpushed(LEFTKEY);
+    pushed_right = !pushed_left && (buttonjustpushed() || justpushed(RIGHTKEY));
+    
+#endif
 	
-	
-	if (buttonjustpushed() || justpushed(RIGHTKEY) || justpushed(LEFTKEY))
+	if (pushed_left || pushed_rigth)
 	{
-		int dir = (!inputs[LEFTKEY] || buttonjustpushed() || justpushed(RIGHTKEY)) ? 1 : -1;
+		int dir = (pushed_rigth) ? 1 : -1;
 		
 		ODItem *item = ItemAt(fCurSel);
 		if (item)

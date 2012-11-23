@@ -195,6 +195,12 @@ bool Game::pause(int pausemode, int param)
 	
 	if (!game.paused)
 		memset(inputs, 0, sizeof(inputs));
+
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(pausemode);
+    if (!pausemode)
+        VJoy::ModeAware::gameModeChanged(game.mode);
+#endif
 	
 	return 0;
 }

@@ -12,13 +12,20 @@
 
 static char tapOnceAssocKey;
 
-SDL_uikitviewcontroller* viewcontroller = NULL;
+static SDL_uikitviewcontroller* viewcontroller = NULL;
+static bool gesture_enabled = false;
+
 
 void toggle_gesture_recognizer(int enabled)
 {
+    if (gesture_enabled == enabled)
+        return;
+    
     if (viewcontroller)
     {
         UITapGestureRecognizer* tapOnceRecogn = objc_getAssociatedObject(viewcontroller, &tapOnceAssocKey);
+        
+        gesture_enabled = enabled;
         
         if (enabled)
         {

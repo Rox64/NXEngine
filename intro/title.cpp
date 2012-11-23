@@ -298,6 +298,16 @@ static void draw_title()
         cy = (Graphics::SCREEN_HEIGHT - 8) - GetFontHeight();
         int f3wd = font_draw(cx, cy, "F3", 0);
         font_draw(cx + f3wd, cy, ":Options", 0, &bluefont);
+        
+#ifdef CONFIG_USE_TAPS
+        RectI r = RectI(cx, cy, GetFontWidth(str, 0), GetFontHeight());
+        debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+        if (VJoy::ModeAware::wasTap(r))
+        {
+            game.pause(GP_OPTIONS);
+        }
+#endif
+        
     }
 }
 

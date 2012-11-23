@@ -1,6 +1,7 @@
 
 #include "../nx.h"
 #include "pause.fdh"
+#include "../vjoy.h"
 
 bool pause_init(int param)
 {
@@ -45,6 +46,15 @@ void pause_tick()
 		game.running = false;
 		return;
 	}
+    
+#ifdef CONFIG_USE_TAPS
+    RectI r = RectI(cx, cy, GetFontWidth(str, 0), GetFontHeight());
+    debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+    if (VJoy::ModeAware::wasTap(r))
+    {
+        game.pause(GP_OPTIONS);
+    }
+#endif
 }
 
 

@@ -371,6 +371,7 @@ static GestureObserver gestureObserver;
 namespace VJoy {
 namespace ModeAware
 {
+    
     struct IModeAwarePad
     {
         IModeAwarePad() : disable_draw(false) {}
@@ -382,6 +383,8 @@ namespace ModeAware
         
         virtual ~IModeAwarePad() {}
     };
+ 
+    IModeAwarePad* const* ppads = NULL;
     
     class NoneModePad : public IModeAwarePad
     {
@@ -510,11 +513,37 @@ namespace ModeAware
     };
     class PausedModePad : public IModeAwarePad
     {
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::EBOTH);
+        }
         
+        virtual void update_buttons(Point const& p)
+        {
+            ppads[GM_NORMAL]->update_buttons(p);
+        }
+        
+        virtual void draw()
+        {
+            ppads[GM_NORMAL]->draw();
+        }
     };
     class OptionsModePad : public IModeAwarePad
     {
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::EBOTH);
+        }
         
+        virtual void update_buttons(Point const& p)
+        {
+            ppads[GM_NORMAL]->update_buttons(p);
+        }
+        
+        virtual void draw()
+        {
+            ppads[GM_NORMAL]->draw();
+        }
     };
     
     
@@ -580,6 +609,7 @@ namespace ModeAware
     
     void gameModeChanged(int newMode)
     {
+        ppads = pads;
         pads[newMode]->on_enter();
     }
     

@@ -12,5 +12,6 @@
 
 void debugbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b);
 void debug_absbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b);
+void debug(const char *fmt, ...);
 
 #endif

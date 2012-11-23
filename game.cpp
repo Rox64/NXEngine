@@ -153,6 +153,7 @@ bool Game::setmode(int newmode, int param, bool force)
 		tickfunctions[game.mode].OnExit();
 	
 	game.mode = newmode;
+    
 	
 	if (tickfunctions[game.mode].OnEnter)
 	{
@@ -225,6 +226,9 @@ void Game::tick(void)
 		tickfunctions[game.mode].OnTick();
 	}
 	
+    ::debug("1");
+    ::debug("mode %d,%d", game.mode, game.paused);
+    
 	DrawDebug();
 	console.Draw();
 }

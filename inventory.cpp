@@ -201,11 +201,14 @@ static void RunSelector(stSelector *selector)
             {inv.x + ITEMS_X, inv.y + ITEMS_Y + sprites[SPR_TEXT_ITEMS].h}
         };
         
+        bool have_weapons = inv.armssel.nitems > 0;
+        bool was_tap = false;
+        
         for (int i = 0; i < 2; ++i)
         {
             stSelector * const cur = selectors[i];
             
-            for (int cursel = 0; cursel < cur->nitems; ++cursel)
+            for (int cursel = 0; cursel < (cur->nitems ? cur->nitems : 1); ++cursel)
             {
                 if (cur->rowlen)
                 {
@@ -224,6 +227,8 @@ static void RunSelector(stSelector *selector)
                 
                 if (VJoy::ModeAware::wasTap(r))
                 {
+                    was_tap = true;
+                    
                     if (selector == cur && cursel == cur->cursel)
                     {
                         item_selected = true;
@@ -241,14 +246,10 @@ static void RunSelector(stSelector *selector)
             }
         }
         
+        if (!have_weapons && !was_tap && VJoy::ModeAware::wasTap())
         {
-            int x = inv.x + ITEMS_X;
-            int y = inv.y + ITEMS_Y;
-            RectI r = Sprites::get_sprite_rect(x, y, SPR_TEXT_ITEMS);
-            if (VJoy::ModeAware::wasTap(r))
-            {
-                inv_exited = true;
-            }
+            inv_exited = true;
+            item_selected = true;
         }
     }
 #endif

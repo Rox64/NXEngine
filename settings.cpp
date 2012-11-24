@@ -10,7 +10,7 @@
 #include "platform.h"
 
 const char *setfilename = "settings.dat";
-const uint16_t SETTINGS_VERSION = 0x1602;		// serves as both a version and magic
+const uint16_t SETTINGS_VERSION = 0x1607;		// serves as both a version and magic
 
 Settings normal_settings;
 Settings replay_settings;
@@ -60,6 +60,10 @@ bool settings_load(Settings *setfile)
         setfile->tap[Settings::Tap::EOptions]       = Settings::Tap::ETAP;
         setfile->tap[Settings::Tap::EMapSystem]     = Settings::Tap::ETAP;
 		
+        setfile->vjoy_controls = VJoy::getPreset(0);
+        setfile->vjoy_current_preset = 0;
+        VJoy::setUpdated();
+        
 		return 1;
 	}
 	else
@@ -70,6 +74,8 @@ bool settings_load(Settings *setfile)
 		#else
 			input_set_mappings(settings->input_mappings);
 		#endif
+        
+        VJoy::setUpdated();
 	}
 	
 	return 0;

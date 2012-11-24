@@ -26,10 +26,8 @@ void ProcessInput();
     
 Preset const& getPreset(size_t num);
 size_t getPresetsCount();
-size_t getCurrentPresetNum();
-Preset const& getCurrentSet();
-void setCurrentSet(Preset const& preset);
 void setFromPreset(size_t num);
+void setUpdated();
 
 namespace ModeAware
 {

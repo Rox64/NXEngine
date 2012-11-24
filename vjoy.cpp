@@ -155,11 +155,7 @@ namespace VKeys {
             PointF(0.82f, 0.82f),
             0.13f
         }
-    };
-    
-    static size_t current_preset = 0;
-    static VJoy::Preset current_set = presets[current_preset];
-    
+    }; 
     
 namespace Pad
 {
@@ -175,7 +171,7 @@ namespace Pad
     const size_t seg_count = 8;
     TriF segments[seg_count];
     
-    void init(VJoy::Preset const& preset)
+    void init()
     {
         for (int i = 0, p = 7; i < seg_count; ++i, p += 2)
         {
@@ -184,7 +180,7 @@ namespace Pad
             int rc = F(p + 2);
 #undef F
             
-            segments[i] = TriF(preset.pad_center, preset.pad_size, rb, rc);
+            segments[i] = TriF(settings->vjoy_controls.pad_center, settings->vjoy_controls.pad_size, rb, rc);
         }
         
         //seg_size = preset.pad_size;
@@ -195,9 +191,10 @@ namespace Pad
     
     void update_buttons(PointF const& p)
     {
-        PointF vec = p - current_set.pad_center;
+        
+        PointF vec = p - settings->vjoy_controls.pad_center;
         float r2 = vec.x * vec.x + vec.y * vec.y;
-        if (r2 > current_set.pad_size * current_set.pad_size)
+        if (r2 > settings->vjoy_controls.pad_size * settings->vjoy_controls.pad_size)
             return;
         
         // left
@@ -244,7 +241,7 @@ namespace Pad
     
     void draw()
     {
-        PointF const& a = current_set.pad_center;
+        PointF const& a = settings->vjoy_controls.pad_center;
         for (size_t i = 0; i < seg_count; ++i)
         {
             PointF const& b = segments[i].b;
@@ -260,20 +257,19 @@ namespace Pad
     }
 } // namespace Pad
     
-    void init(VJoy::Preset const& preset)
+    void init()
     {
-        current_set = preset;
-        Pad::init(preset);
+        Pad::init();
     }
     
     void update_buttons(PointF const& p)
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
-            if (current_set.positions[i].x < 0)
+            if (settings->vjoy_controls.positions[i].x < 0)
                 continue;
             
-            if (current_set.positions[i].point_in(p))
+            if (settings->vjoy_controls.positions[i].point_in(p))
                 inputs[i] = true;
         }
         
@@ -284,7 +280,7 @@ namespace Pad
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
-            RectF const& vkey = current_set.positions[i];
+            RectF const& vkey = settings->vjoy_controls.positions[i];
             
             if (vkey.x < 0)
                 continue;
@@ -637,41 +633,31 @@ size_t VJoy::getPresetsCount()
     return VKeys::presets_count;
 }
 
-size_t getCurrentPresetNum()
-{
-    return VKeys::current_preset;
-}
-
-Preset const& getCurrentSet()
-{
-    return VKeys::current_set;
-}
-
-void setCurrentSet(Preset const& preset)
-{
-    VKeys::init(preset);
-}
-
 void setFromPreset(size_t num)
 {
-    setCurrentSet(getPreset(num));
-    VKeys::current_preset = num;
+    settings->vjoy_controls = getPreset(num);
+    settings->vjoy_current_preset = num;
+    setUpdated();
+}
+    
+void setUpdated()
+{
+    VKeys::init();
 }
 
-bool  VJoy::Init()
+bool  Init()
 {
     vjoy_enabled = true;
     registerGetureObserver(&gestureObserver);
-    setFromPreset(0);
     return true;
 }
 
-void VJoy::Destroy()
+void Destroy()
 {
     vjoy_enabled = false;
 }
 
-void VJoy::DrawAll()
+void DrawAll()
 {
     if (!(vjoy_enabled && vjoy_visible))
         return;
@@ -690,7 +676,7 @@ void VJoy::DrawAll()
     }
 }
 
-void VJoy::InjectInputEvent(SDL_Event const & evt)
+void InjectInputEvent(SDL_Event const & evt)
 {
     if (!vjoy_enabled)
         return;
@@ -729,7 +715,7 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
         lastFingerPos[evt.tfinger.fingerId] = p;
 }
 
-void VJoy::PreProcessInput()
+void PreProcessInput()
 {
     if (!vjoy_enabled)
         return;
@@ -737,7 +723,7 @@ void VJoy::PreProcessInput()
     gestureObserver.flushEvents();
 }
 
-void VJoy::ProcessInput()
+void ProcessInput()
 {
     if (!vjoy_enabled)
         return;
@@ -752,7 +738,7 @@ void VJoy::ProcessInput()
     }
 }
 
-void VJoy::ignoreAllCurrentFingers()
+void ignoreAllCurrentFingers()
 {
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {

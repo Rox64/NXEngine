@@ -3,6 +3,9 @@
 #define _SETTINGS_H
 
 #include "input.h"
+#include "nx_math.h"
+#include "vjoy.h"
+
 
 struct Settings
 {
@@ -56,6 +59,9 @@ struct Settings
     };
     
     uint8_t tap[Tap::ELASTPLACE];
+    
+    VJoy::Preset vjoy_controls;
+    int vjoy_current_preset;
 };
 
 bool settings_load(Settings *settings=NULL);

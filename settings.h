@@ -27,6 +27,34 @@ struct Settings
 	int reserved[8];
 	
 	int input_mappings[INPUT_COUNT];
+    
+    struct Tap
+    {
+        enum Mode
+        {
+            ETAP,
+            EPAD,
+            EBOTH,
+            
+            EMODELAST
+        };
+        
+        enum Place
+        {
+            EAll,
+            EMovies,
+            ETitle,
+            ESaveLoad,
+            EIngameDialog,
+            EInventory,
+            EPause,
+            EOptions,
+            
+            ELASTPLACE
+        };
+    };
+    
+    uint8_t tap[Tap::ELASTPLACE];
 };
 
 bool settings_load(Settings *settings=NULL);

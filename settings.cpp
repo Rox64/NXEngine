@@ -48,6 +48,16 @@ bool settings_load(Settings *setfile)
 		setfile->displayformat = false;
         
         setfile->show_fps = true;
+        
+        
+        setfile->tap[Settings::Tap::EAll]           = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EMovies]        = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::ETitle]         = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::ESaveLoad]      = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EIngameDialog]  = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EInventory]     = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EPause]         = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EOptions]       = Settings::Tap::ETAP;
 		
 		return 1;
 	}

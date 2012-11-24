@@ -490,6 +490,16 @@ static void _edit_tap_control(ODItem *item, int dir)
 {
     settings->tap[item->id] = (settings->tap[item->id] + 1) % Settings::Tap::EMODELAST;
     sound(SND_MENU_SELECT);
+    
+    if (Settings::Tap::EAll == item->id)
+    {
+        for (int i = Settings::Tap::EAll + 1; i < Settings::Tap::ELASTPLACE; ++i)
+        {
+            settings->tap[i] = settings->tap[Settings::Tap::EAll];
+        }
+        
+        item->parent->UpdateAllItems();
+    }
 }
 
 

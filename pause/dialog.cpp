@@ -29,6 +29,8 @@ Dialog::Dialog()
 	fNumShown = 0;
 	fRepeatTimer = 0;
 	
+    update_all = false;
+    
 	optionstack.AddItem(this);
 }
 
@@ -74,6 +76,7 @@ ODItem *Dialog::AddItem(const char *text, \
 	item->update = update;
 	item->id = id;
 	item->type = type;
+    item->parent = this;
 	
 	fItems.AddItem(item);
 	
@@ -262,6 +265,9 @@ void Dialog::RunInput()
 			}
 		}
 	}
+    
+    if (update_all)
+        UpdateAllItems();
 	
 	/*if (justpushed(ESCKEY))
 	{
@@ -306,6 +312,10 @@ void Dialog::Clear()
 	fCurSel = 0;
 }
 
-
+void Dialog::UpdateAllItems()
+{
+    Refresh();
+    update_all = false;
+}
 
 

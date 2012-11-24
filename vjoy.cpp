@@ -11,6 +11,7 @@
 #include "input.h"
 #include "graphics/graphics.h"
 #include "game_modes.h"
+#include "nx_math.h"
 #include "settings.h"
 
 #include "platform/platform.h"
@@ -26,135 +27,20 @@ namespace VJoy
 
 // Helpers
 namespace  {
-    struct Point
-    {
-        float x, y;
-        Point(float x, float y) : x(x), y(y) {}
-        Point() : x(0), y(0) {}
-        
-        Point operator+(Point const& r) const
-        {
-            return Point(x + r.x, y + r.y);
-        }
-        
-        Point operator-(Point const& r) const
-        {
-            return Point(x - r.x, y - r.y);
-        }
-        
-        Point operator*(float k) const
-        {
-            return Point(k * x, k * y);
-        }
-    };
     
-    struct Rect
+    bool point_in(RectI const& rect, PointF const& p)
     {
-        float x, y;
-        float w, h;
-        
-        static Rect centred(Point const& p, float w, float h)
-        {
-            Rect r = {p.x - w/2, p.y - h/2, w, h};
-            return r;
-        }
-        
-        static Rect fromRectI(RectI const& rect)
-        {
-            Rect r = {(float)rect.x / Graphics::SCREEN_WIDTH,
-                (float)rect.y / Graphics::SCREEN_HEIGHT,
-                (float)rect.w / Graphics::SCREEN_WIDTH,
-                (float)rect.h / Graphics::SCREEN_HEIGHT,
-            };
-            return r;
-        }
-        
-        bool point_in(Point const& p) const
-        {
-            return point_in(p.x, p.y);
-        }
-        
-        bool point_in(float px, float py) const
-        {
-            return !(px < x || x + w < px || py < y || y + h < py);
-        }
-        
-        void to_screen_coord(int& x1, int& y1, int& x2, int& y2) const
-        {
-            x1 = Graphics::SCREEN_WIDTH  *  x;
-            y1 = Graphics::SCREEN_HEIGHT *  y;
-            x2 = Graphics::SCREEN_WIDTH  * (x + w);
-            y2 = Graphics::SCREEN_HEIGHT * (y + h);
-        }
-        
-        void draw_fill_rect(NXColor const& c) const
-        {
-            int x1, y1, x2, y2;
-            to_screen_coord(x1, y1, x2, y2);
-            Graphics::FillRect(x1, y1, x2, y2, c);
-        }
-        
-        void draw_thick_rect(NXColor const& c) const
-        {
-            int x1, y1, x2, y2;
-            to_screen_coord(x1, y1, x2, y2);
-            Graphics::DrawRect(x1, y1, x2, y2, c);
-        }
-        
-        void draw_thin_rect(NXColor const& c) const
-        {
-            int x1, y1, x2, y2;
-            to_screen_coord(x1, y1, x2, y2);
-            Graphics::DrawLine(x1, y1, x2, y1, c);
-            Graphics::DrawLine(x1, y2, x2, y2, c);
-            Graphics::DrawLine(x1, y1, x1, y2, c);
-            Graphics::DrawLine(x2, y1, x2, y2, c);
-        }
-    };
-    
-    struct Tri
-    {
-        Point a;
-        Point b, c;
-        
-        Tri(Point const& a, float size, float rb, float rc) :
-        a(a)
-        {
-#define P(a) (double(a) * M_PI / 8.0)
-            b = Point(cos(P(rb)), sin(P(rb))) * size + a;
-            c = Point(cos(P(rc)), sin(P(rc))) * size + a;
-#undef P
-        }
-        
-        static float sign(Point const& p1, Point const& p2, Point const& p3)
-        {
-            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-        }
-        
-        bool in(Point const& pt) const
-        {
-            bool b1, b2, b3;
-            
-            b1 = sign(pt, a, b) < 0.0f;
-            b2 = sign(pt, b, c) < 0.0f;
-            b3 = sign(pt, c, a) < 0.0f;
-            
-            return ((b1 == b2) && (b2 == b3));
-        }
-    };
-    
-    bool point_in(RectI const& rect, Point const& p)
-    {
-        Rect r = Rect::fromRectI(rect);
+        RectF r = RectF::fromRectI(rect);
         return r.point_in(p);
     }
+    
 }
 
 
 const NXColor col_released(0xff, 0xcf, 0x33);
 const NXColor col_pressed (0xff, 0x00, 0x00);
 
-typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
+typedef std::map<SDL_FingerID, PointF> lastFingerPos_t;
 lastFingerPos_t lastFingerPos;
 
 typedef std::set<SDL_FingerID> ingnoredFinger_t;
@@ -231,33 +117,33 @@ namespace Pad
 {
     bool enabled = false;
     SDL_FingerID finger;
-    Point origin;
-    Point current;
+    PointF origin;
+    PointF current;
     
     const float border = 0.65f;
     const float max_r2 = 0.2*0.2;
     const float min_r2 = 0.02*0.02;
     
     const float seg_size = 0.13f;
-    const Point seg_center(0.82f, 0.82f);
+    const PointF seg_center(0.82f, 0.82f);
     
     const size_t seg_count = 8;
-    Tri segments[seg_count] = {
-        Tri(seg_center, seg_size, -1, 1),
-        Tri(seg_center, seg_size, 1, 3),
-        Tri(seg_center, seg_size, 3, 5),
-        Tri(seg_center, seg_size, 5, 7),
-        Tri(seg_center, seg_size, 7, -7),
-        Tri(seg_center, seg_size, -7, -5),
-        Tri(seg_center, seg_size, -5, -3),
-        Tri(seg_center, seg_size, -3, -1)
+    TriF segments[seg_count] = {
+        TriF(seg_center, seg_size, -1, 1),
+        TriF(seg_center, seg_size, 1, 3),
+        TriF(seg_center, seg_size, 3, 5),
+        TriF(seg_center, seg_size, 5, 7),
+        TriF(seg_center, seg_size, 7, -7),
+        TriF(seg_center, seg_size, -7, -5),
+        TriF(seg_center, seg_size, -5, -3),
+        TriF(seg_center, seg_size, -3, -1)
     };
     
     bool pressed[seg_count];
     
-    void update_buttons(Point const& p)
+    void update_buttons(PointF const& p)
     {
-        Point vec = p - seg_center;
+        PointF vec = p - seg_center;
         float r2 = vec.x * vec.x + vec.y * vec.y;
         if (r2 > seg_size*seg_size)
             return;
@@ -282,7 +168,7 @@ namespace Pad
         if (!enabled)
             return;
         
-        Point vec = current - origin;
+        PointF vec = current - origin;
         float r2 = vec.x * vec.x + vec.y * vec.y;
         if (r2 < min_r2)
             return;
@@ -306,11 +192,11 @@ namespace Pad
     
     void draw()
     {
-        Point const& a = seg_center;
+        PointF const& a = seg_center;
         for (size_t i = 0; i < seg_count; ++i)
         {
-            Point const& b = segments[i].b;
-            Point const& c = segments[i].c;
+            PointF const& b = segments[i].b;
+            PointF const& c = segments[i].c;
             
             NXColor const& color = pressed[i] ? col_pressed : col_released;
             
@@ -323,7 +209,7 @@ namespace Pad
 } // namespace Pad
 
     
-    Rect vkeys[INPUT_COUNT] =
+    RectF vkeys[INPUT_COUNT] =
     {
         {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
         {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
@@ -358,7 +244,7 @@ namespace Pad
         {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
     };
     
-    void update_buttons(Point const& p)
+    void update_buttons(PointF const& p)
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
@@ -376,7 +262,7 @@ namespace Pad
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
-            Rect const& vkey = vkeys[i];
+            RectF const& vkey = vkeys[i];
             
             if (vkey.x < 0)
                 continue;
@@ -392,16 +278,16 @@ namespace Pad
 
 class GestureObserver : public IGestureObserver
 {
-    typedef std::vector<Point> tapLocation_t;
+    typedef std::vector<PointF> tapLocation_t;
 public:
     virtual void tap(float x, float y)
     {
-        taps.push_back(Point(x, y));
+        taps.push_back(PointF(x, y));
     }
     
 public:
     
-    bool wasTap(Rect const& rect)
+    bool wasTap(RectF const& rect)
     {
         for (tapLocation_t::const_iterator it = taps.begin(); it != taps.end(); ++it)
         {
@@ -437,7 +323,7 @@ namespace ModeAware
     {
         DefaultControl() : disable_draw(false) {}
         virtual void on_enter() {}
-        virtual void update_buttons(Point const& p)
+        virtual void update_buttons(PointF const& p)
         {
             if (VjoyMode::EGESTURE == vjoy_mode.getMode())
                 return;
@@ -478,7 +364,7 @@ namespace ModeAware
             vjoy_mode.setMode(VjoyMode::ETOUCH);
         }
         
-        virtual void update_buttons(Point const& p)
+        virtual void update_buttons(PointF const& p)
         {
             if (textbox_mode)
             {
@@ -539,7 +425,7 @@ namespace ModeAware
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EPause));
         }
         
-        virtual void update_buttons(Point const& p)
+        virtual void update_buttons(PointF const& p)
         {
             ppads[GM_NORMAL]->update_buttons(p);
         }
@@ -556,7 +442,7 @@ namespace ModeAware
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EOptions));
         }
         
-        virtual void update_buttons(Point const& p)
+        virtual void update_buttons(PointF const& p)
         {
             ppads[GM_NORMAL]->update_buttons(p);
         }
@@ -593,7 +479,7 @@ namespace ModeAware
         &optionsModePad
     };
     
-    static void dispatch(Point const& p)
+    static void dispatch(PointF const& p)
     {
         pads[getGamemode()]->update_buttons(p);
     }
@@ -609,7 +495,7 @@ namespace ModeAware
         if (VjoyMode::ETOUCH == vjoy_mode.getMode())
             return false;
         
-        return gestureObserver.wasTap(Rect::fromRectI(rect));
+        return gestureObserver.wasTap(RectF::fromRectI(rect));
     }
     
     bool wasTap()
@@ -738,8 +624,8 @@ void VJoy::DrawAll()
     
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {
-        Point const& p = it->second;
-        Rect r = Rect::centred(p, 0.04f, 0.04f);
+        PointF const& p = it->second;
+        RectF r = RectF::centred(p, 0.04f, 0.04f);
         
         const NXColor col(0xff, 0xcf, 0x33);
         r.draw_fill_rect(col);
@@ -778,7 +664,7 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
         }
     }
     
-    Point p((float)evt.tfinger.x / xres, (float)evt.tfinger.y / yres);
+    PointF p((float)evt.tfinger.x / xres, (float)evt.tfinger.y / yres);
     
     
     if (ignoredFingers.end() == ignoredFingers.find(evt.tfinger.fingerId))
@@ -803,7 +689,7 @@ void VJoy::ProcessInput()
     
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {
-        Point const& p = it->second;
+        PointF const& p = it->second;
         ModeAware::dispatch(p);
     }
 }

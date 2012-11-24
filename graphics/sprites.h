@@ -8,7 +8,7 @@
 #include "../siflib/sif.h"
 extern SIFSprite sprites[MAX_SPRITES];
 
-#include "../RectI.h"
+#include "../nx_math.h"
 
 namespace Sprites
 {

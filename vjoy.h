@@ -1,7 +1,7 @@
 #ifndef VJOY_H__
 #define VJOY_H__
 
-#include "RectI.h"
+#include "nx_math.h"
 
 union SDL_Event;
 

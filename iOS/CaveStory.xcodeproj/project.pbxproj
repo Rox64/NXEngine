@@ -157,6 +157,7 @@
 		056D156715EEB8C800CFE45C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 056D156515EEB8C800CFE45C /* InfoPlist.strings */; };
 		058E85FC15EED58E007F72C2 /* game_resources in Resources */ = {isa = PBXBuildFile; fileRef = 058E85FB15EED58E007F72C2 /* game_resources */; };
 		058E860815EEF911007F72C2 /* vjoy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 058E860615EEF910007F72C2 /* vjoy.cpp */; };
+		E91902E41661336300D0DB04 /* nx_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E91902E21661336200D0DB04 /* nx_math.cpp */; };
 		E974C8CD1641B9EF003009AB /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8C11641B98E003009AB /* libSDL2.a */; };
 		E974C8CE1641B9F2003009AB /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */; };
 		E974C8E81641CA07003009AB /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8E71641C9F3003009AB /* libFreetype2.a */; };
@@ -480,6 +481,8 @@
 		058E85FB15EED58E007F72C2 /* game_resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = game_resources; path = ../../game_resources; sourceTree = "<group>"; };
 		058E860615EEF910007F72C2 /* vjoy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vjoy.cpp; path = ../../vjoy.cpp; sourceTree = "<group>"; };
 		058E860715EEF910007F72C2 /* vjoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vjoy.h; path = ../../vjoy.h; sourceTree = "<group>"; };
+		E91902E21661336200D0DB04 /* nx_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nx_math.cpp; path = ../../nx_math.cpp; sourceTree = "<group>"; };
+		E91902E31661336200D0DB04 /* nx_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nx_math.h; path = ../../nx_math.h; sourceTree = "<group>"; };
 		E974C8B61641B98D003009AB /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "deps/SDL/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "deps/SDL_ttf/Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
 		E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = deps/libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
@@ -494,7 +497,6 @@
 		E9A1FC94165A4298007E5AE6 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../iTunesArtwork.png; sourceTree = "<group>"; };
 		E9A1FC95165A4298007E5AE6 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "../iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
-		E9EF8EC916590D320038DBB1 /* RectI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RectI.h; path = ../../RectI.h; sourceTree = "<group>"; };
 		E9EF8ECB16592B730038DBB1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform/platform.h; sourceTree = "<group>"; };
 		E9EF8ECC16592B7E0038DBB1 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform/platform.cpp; sourceTree = "<group>"; };
 		E9EF8ECF16592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h"; path = "../../platform/iOS/SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.h"; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				05600B9A15EEC2B600A7CCD5 /* map.cpp */,
 				05600B9715EEC2B600A7CCD5 /* map_system.cpp */,
 				05600B9E15EEC2B600A7CCD5 /* niku.cpp */,
+				E91902E21661336200D0DB04 /* nx_math.cpp */,
 				05600BA715EEC2C300A7CCD5 /* object.cpp */,
 				05600BAA15EEC2C300A7CCD5 /* ObjManager.cpp */,
 				05600BAD15EEC2C300A7CCD5 /* p_arms.cpp */,
@@ -572,6 +575,7 @@
 				05600B9915EEC2B600A7CCD5 /* map_system.h */,
 				05600B9D15EEC2B600A7CCD5 /* maprecord.h */,
 				05600BA015EEC2B600A7CCD5 /* nx.h */,
+				E91902E31661336200D0DB04 /* nx_math.h */,
 				05600BA915EEC2C300A7CCD5 /* object.h */,
 				05600BAC15EEC2C300A7CCD5 /* ObjManager.h */,
 				05600BAF15EEC2C300A7CCD5 /* p_arms.h */,
@@ -600,7 +604,6 @@
 				05600CFC15EEC53C00A7CCD5 /* siflib */,
 				05600D0A15EEC53C00A7CCD5 /* sound */,
 				05600D1715EEC53D00A7CCD5 /* TextBox */,
-				E9EF8EC916590D320038DBB1 /* RectI.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -1398,6 +1401,7 @@
 				E9EF8ED116592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m in Sources */,
 				E9EF8ED41659309E0038DBB1 /* SDL_uikitview+touch.m in Sources */,
 				E9EF8ED8165939780038DBB1 /* touch_control.cpp in Sources */,
+				E91902E41661336300D0DB04 /* nx_math.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

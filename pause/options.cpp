@@ -123,16 +123,24 @@ void DialogDismissed()
 void c------------------------------() {}
 */
 
+static void EnterTapControlsMenu(ODItem *item, int dir);
+
+
 static void EnterMainMenu()
 {
 Dialog *dlg = opt.dlg;
 
 	dlg->Clear();
 	
-#ifndef IPHONE
+#if !defined(IPHONE)
 	dlg->AddItem("Resolution: ", _res_change, _res_get);
 	dlg->AddItem("Controls", EnterControlsMenu);
 #endif
+    
+#ifdef CONFIG_USE_TAPS
+    dlg->AddItem("Tap controls", EnterTapControlsMenu);
+#endif
+    
 	dlg->AddItem("Replay", EnterReplayMenu);
 	
 	dlg->AddSeparator();
@@ -441,8 +449,48 @@ int i;
 }
 
 
+/*
+ void c------------------------------() {}
+ */
 
+static void _get_tap_control(ODItem *item);
+static void _edit_tap_control(ODItem *item, int dir);
 
+static void EnterTapControlsMenu(ODItem *item, int dir)
+{
+    Dialog *dlg = opt.dlg;
+    
+	dlg->Clear();
+	sound(SND_MENU_MOVE);
+	
+	dlg->AddItem("Tap controls", _edit_tap_control, _get_tap_control, Settings::Tap::EAll);
+    
+	dlg->AddSeparator();
+    
+    dlg->AddItem("Movies", _edit_tap_control, _get_tap_control, Settings::Tap::EMovies);
+	dlg->AddItem("Title", _edit_tap_control, _get_tap_control, Settings::Tap::ETitle);
+	dlg->AddItem("Save/load", _edit_tap_control, _get_tap_control, Settings::Tap::ESaveLoad);
+	dlg->AddItem("Dialogs", _edit_tap_control, _get_tap_control, Settings::Tap::EIngameDialog);
+	dlg->AddItem("Inventory", _edit_tap_control, _get_tap_control,  Settings::Tap::EInventory);
+	dlg->AddItem("Pause", _edit_tap_control, _get_tap_control, Settings::Tap::EPause);
+	dlg->AddItem("Options", _edit_tap_control, _get_tap_control, Settings::Tap::EOptions);
+    
+	dlg->AddSeparator();
+	dlg->AddDismissalItem();
+}
+
+static void _get_tap_control(ODItem *item)
+{
+    static char const * const values[Settings::Tap::EMODELAST] = {"Tap only", "Pad only", "Tap/pad"};
+	
+	maxcpy(item->righttext, values[settings->tap[item->id]], sizeof(item->righttext) - 1);
+}
+
+static void _edit_tap_control(ODItem *item, int dir)
+{
+    settings->tap[item->id] = (settings->tap[item->id] + 1) % Settings::Tap::EMODELAST;
+    sound(SND_MENU_SELECT);
+}
 
 
 

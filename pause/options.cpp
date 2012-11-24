@@ -467,13 +467,13 @@ static void EnterTapControlsMenu(ODItem *item, int dir)
     
 	dlg->AddSeparator();
     
-    dlg->AddItem("Movies", _edit_tap_control, _get_tap_control, Settings::Tap::EMovies);
-	dlg->AddItem("Title", _edit_tap_control, _get_tap_control, Settings::Tap::ETitle);
-	dlg->AddItem("Save/load", _edit_tap_control, _get_tap_control, Settings::Tap::ESaveLoad);
-	dlg->AddItem("Dialogs", _edit_tap_control, _get_tap_control, Settings::Tap::EIngameDialog);
-	dlg->AddItem("Inventory", _edit_tap_control, _get_tap_control,  Settings::Tap::EInventory);
-	dlg->AddItem("Pause", _edit_tap_control, _get_tap_control, Settings::Tap::EPause);
-	dlg->AddItem("Options", _edit_tap_control, _get_tap_control, Settings::Tap::EOptions);
+	dlg->AddItem("Movies",      _edit_tap_control, _get_tap_control, Settings::Tap::EMovies);
+	dlg->AddItem("Title",       _edit_tap_control, _get_tap_control, Settings::Tap::ETitle);
+	dlg->AddItem("Save/load",   _edit_tap_control, _get_tap_control, Settings::Tap::ESaveLoad);
+	dlg->AddItem("Dialogs",     _edit_tap_control, _get_tap_control, Settings::Tap::EIngameDialog);
+	dlg->AddItem("Inventory",   _edit_tap_control, _get_tap_control, Settings::Tap::EInventory);
+	dlg->AddItem("Pause",       _edit_tap_control, _get_tap_control, Settings::Tap::EPause);
+	dlg->AddItem("Options",     _edit_tap_control, _get_tap_control, Settings::Tap::EOptions);
     
 	dlg->AddSeparator();
 	dlg->AddDismissalItem();

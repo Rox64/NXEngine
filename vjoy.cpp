@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cmath>
 #include <map>
 #include <stack>
@@ -9,6 +10,7 @@
 #include "input.h"
 #include "graphics/graphics.h"
 #include "game_modes.h"
+#include "settings.h"
 
 #include "platform/platform.h"
 #ifdef IPHONE
@@ -146,6 +148,22 @@ public:
     }
     
     Mode getMode() const { return mode; }
+    
+    static Mode getModeFromSettings(Settings::Tap::Place place)
+    {
+        switch (settings->tap[place])
+        {
+            case Settings::Tap::ETAP:
+                return EGESTURE;
+            case Settings::Tap::EPAD:
+                return ETOUCH;
+            case Settings::Tap::EBOTH:
+                return EBOTH;
+        }
+        
+        assert(false);
+        return EBOTH;
+    }
     
 private:
     Mode mode;
@@ -482,7 +500,7 @@ namespace ModeAware
     {
         virtual void on_enter()
         {
-            vjoy_mode.setMode(VjoyMode::EGESTURE);
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EInventory));
         }
     };
     class MapSystemModePad : public IModeAwarePad
@@ -501,21 +519,21 @@ namespace ModeAware
     {
         virtual void on_enter()
         {
-            vjoy_mode.setMode(VjoyMode::EGESTURE);
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EMovies));
         }
     };
     class TitleModePad : public IModeAwarePad
     {
         virtual void on_enter()
         {
-            vjoy_mode.setMode(VjoyMode::EGESTURE);
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::ETitle));
         }
     };
     class PausedModePad : public IModeAwarePad
     {
         virtual void on_enter()
         {
-            vjoy_mode.setMode(VjoyMode::EBOTH);
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EPause));
         }
         
         virtual void update_buttons(Point const& p)
@@ -532,7 +550,7 @@ namespace ModeAware
     {
         virtual void on_enter()
         {
-            vjoy_mode.setMode(VjoyMode::EBOTH);
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EOptions));
         }
         
         virtual void update_buttons(Point const& p)

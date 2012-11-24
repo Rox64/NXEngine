@@ -177,68 +177,68 @@ void Dialog::RunInput()
     bool pushed_left = false;
     bool pushed_rigth = false;
     
-    
-#ifdef CONFIG_USE_TAPS
-    
-    int x = fTextX;
-    int y = (fCoords.y + 18);
-    
-    for (int i = 0;; ++i, y += GetFontHeight())
+    // tap control
     {
-        ODItem *item = (ODItem *)fItems.ItemAt(i);
-		if (!item) break;
-        if (OD_SEPARATOR == item->type) continue;
+        int x = fTextX;
+        int y = (fCoords.y + 18);
         
-        RectI r = RectI(x - 30, y, fCoords.w - 35, GetFontHeight());
-        
-        debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
-        if (VJoy::ModeAware::wasTap(r))
+        for (int i = 0;; ++i, y += GetFontHeight())
         {
-            if (fCurSel == i)
+            ODItem *item = (ODItem *)fItems.ItemAt(i);
+            if (!item) break;
+            if (OD_SEPARATOR == item->type) continue;
+            
+            RectI r = RectI(x - 30, y, fCoords.w - 35, GetFontHeight());
+            
+            debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+            if (VJoy::ModeAware::wasTap(r))
             {
-                pushed_rigth = true;
+                if (fCurSel == i)
+                {
+                    pushed_rigth = true;
+                }
+                else
+                {
+                    fCurSel = i;
+                    sound(SND_MENU_MOVE);
+                }
             }
-            else
-            {
-                fCurSel = i;
-                sound(SND_MENU_MOVE);
-            }
+            
+            
         }
-        
-        
     }
-    
-#else
-    
-	if (inputs[UPKEY] || inputs[DOWNKEY])
-	{
-		int dir = (inputs[DOWNKEY]) ? 1 : -1;
-		
-		if (!fRepeatTimer)
-		{
-			fRepeatTimer = (lastinputs[UPKEY] || lastinputs[DOWNKEY]) ? REPEAT_RATE : REPEAT_WAIT;
-			sound(SND_MENU_MOVE);
-			
-			int nitems = fItems.CountItems();
-			for(;;)
-			{
-				fCurSel += dir;
-				if (fCurSel < 0) fCurSel = (nitems - 1);
-							else fCurSel %= nitems;
-				
-				ODItem *item = ItemAt(fCurSel);
-				if (item && item->type != OD_SEPARATOR) break;
-			}
-		}
-		else fRepeatTimer--;
-	}
-	else
-        fRepeatTimer = 0;
-    
-    pushed_left = justpushed(LEFTKEY);
-    pushed_right = !pushed_left && (buttonjustpushed() || justpushed(RIGHTKEY));
-    
-#endif
+
+    // pad control
+    {
+        if (inputs[UPKEY] || inputs[DOWNKEY])
+        {
+            int dir = (inputs[DOWNKEY]) ? 1 : -1;
+            
+            if (!fRepeatTimer)
+            {
+                fRepeatTimer = (lastinputs[UPKEY] || lastinputs[DOWNKEY]) ? REPEAT_RATE : REPEAT_WAIT;
+                sound(SND_MENU_MOVE);
+                
+                int nitems = fItems.CountItems();
+                for(;;)
+                {
+                    fCurSel += dir;
+                    if (fCurSel < 0) fCurSel = (nitems - 1);
+                                else fCurSel %= nitems;
+                    
+                    ODItem *item = ItemAt(fCurSel);
+                    if (item && item->type != OD_SEPARATOR) break;
+                }
+            }
+            else fRepeatTimer--;
+        }
+        else
+            fRepeatTimer = 0;
+        
+        pushed_left = pushed_left || justpushed(LEFTKEY);
+        pushed_rigth = pushed_rigth || (!pushed_left && (buttonjustpushed() || justpushed(RIGHTKEY)));
+    }
+
 	
 	if (pushed_left || pushed_rigth)
 	{

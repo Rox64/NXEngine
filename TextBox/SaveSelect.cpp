@@ -75,71 +75,76 @@ void TB_SaveSelect::Run_Input()
     bool button_pushed = false;
 
 #ifdef CONFIG_USE_TAPS
-    int x = fCoords.x + 16;
-	int y = fCoords.y + 15;
-	
-	for(int i=0;i<fNumFiles;i++)
-	{
-        RectI rect = RectI(x, y, fCoords.w, sprites[SPR_SAVESELECTOR_MIDDLE].h);
-		if (VJoy::ModeAware::wasTap(rect))
+    // tap controls
+    {
+        int x = fCoords.x + 16;
+        int y = fCoords.y + 15;
+        
+        for(int i=0;i<fNumFiles;i++)
         {
-            if (fCurSel == i && (fSaving || fHaveProfile[fCurSel]))
+            RectI rect = RectI(x, y, fCoords.w, sprites[SPR_SAVESELECTOR_MIDDLE].h);
+            if (VJoy::ModeAware::wasTap(rect))
             {
-                button_pushed = true;
+                if (fCurSel == i && (fSaving || fHaveProfile[fCurSel]))
+                {
+                    button_pushed = true;
+                }
+                else
+                {
+                    fCurSel = i;
+                    sound(SND_MENU_MOVE);
+                }
+                
+                fPicXOffset = -24;
+                break;
             }
-            else
+
+            
+            y += (sprites[SPR_SAVESELECTOR_MIDDLE].h + 10);
+        }
+    }
+#endif 
+    
+    // pad controls
+    {
+        int start;
+        
+        if (justpushed(DOWNKEY))
+        {
+            start = fCurSel;
+            for(;;)
             {
-                fCurSel = i;
-                sound(SND_MENU_MOVE);
+                fCurSel++;
+                if (fCurSel >= fNumFiles) fCurSel = 0;
+                
+                if (fSaving) break;
+                if (fHaveProfile[fCurSel]) break;
+                if (fCurSel == start) break;
             }
             
+            sound(SND_MENU_MOVE);
             fPicXOffset = -24;
-            break;
         }
-
         
-		y += (sprites[SPR_SAVESELECTOR_MIDDLE].h + 10);
+        if (justpushed(UPKEY))
+        {
+            start = fCurSel;
+            for(;;)
+            {
+                fCurSel--;
+                if (fCurSel < 0) fCurSel = fNumFiles - 1;
+                
+                if (fSaving) break;
+                if (fHaveProfile[fCurSel]) break;
+                if (fCurSel == start) break;
+            }
+            
+            sound(SND_MENU_MOVE);
+            fPicXOffset = -24;
+        }
+        
+        button_pushed = button_pushed || buttonjustpushed();
 	}
-#else
-    int start;
-    
-	if (justpushed(DOWNKEY))
-	{
-		start = fCurSel;
-		for(;;)
-		{
-			fCurSel++;
-			if (fCurSel >= fNumFiles) fCurSel = 0;
-			
-			if (fSaving) break;
-			if (fHaveProfile[fCurSel]) break;
-			if (fCurSel == start) break;
-		}
-		
-		sound(SND_MENU_MOVE);
-		fPicXOffset = -24;
-	}
-	
-	if (justpushed(UPKEY))
-	{
-		start = fCurSel;
-		for(;;)
-		{
-			fCurSel--;
-			if (fCurSel < 0) fCurSel = fNumFiles - 1;
-			
-			if (fSaving) break;
-			if (fHaveProfile[fCurSel]) break;
-			if (fCurSel == start) break;
-		}
-		
-		sound(SND_MENU_MOVE);
-		fPicXOffset = -24;
-	}
-    
-    button_pushed = buttonjustpushed();
-	
-#endif
     
 	if (button_pushed)
 	{

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <map>
+#include <set>
 #include <stack>
 #include <vector>
 #include <SDL.h>
@@ -17,103 +18,147 @@
 # include "platform/iOS/touch_control.h"
 #endif
 
-struct Point
+namespace VJoy
 {
-    float x, y;
-    Point(float x, float y) : x(x), y(y) {}
-    Point() : x(0), y(0) {}
-    
-    Point operator+(Point const& r) const
-    {
-        return Point(x + r.x, y + r.y);
-    }
-    
-    Point operator-(Point const& r) const
-    {
-        return Point(x - r.x, y - r.y);
-    }
-    
-    Point operator*(float k) const
-    {
-        return Point(k * x, k * y);
-    }
-};
-
-struct Rect
-{
-    float x, y;
-    float w, h;
-    
-    static Rect centred(Point const& p, float w, float h)
-    {
-        Rect r = {p.x - w/2, p.y - h/2, w, h};
-        return r;
-    }
-    
-    static Rect fromRectI(RectI const& rect)
-    {
-        Rect r = {(float)rect.x / Graphics::SCREEN_WIDTH,
-            (float)rect.y / Graphics::SCREEN_HEIGHT,
-            (float)rect.w / Graphics::SCREEN_WIDTH,
-            (float)rect.h / Graphics::SCREEN_HEIGHT,
-        };
-        return r;
-    }
-    
-    bool point_in(Point const& p) const
-    {
-        return point_in(p.x, p.y);
-    }
-    
-    bool point_in(float px, float py) const
-    {
-        return !(px < x || x + w < px || py < y || y + h < py);
-    }
-    
-    void to_screen_coord(int& x1, int& y1, int& x2, int& y2) const
-    {
-        x1 = Graphics::SCREEN_WIDTH  *  x;
-        y1 = Graphics::SCREEN_HEIGHT *  y;
-        x2 = Graphics::SCREEN_WIDTH  * (x + w);
-        y2 = Graphics::SCREEN_HEIGHT * (y + h);
-    }
-    
-    void draw_fill_rect(NXColor const& c) const
-    {
-        int x1, y1, x2, y2;
-        to_screen_coord(x1, y1, x2, y2);
-        Graphics::FillRect(x1, y1, x2, y2, c);
-    }
-    
-    void draw_thick_rect(NXColor const& c) const
-    {
-        int x1, y1, x2, y2;
-        to_screen_coord(x1, y1, x2, y2);
-        Graphics::DrawRect(x1, y1, x2, y2, c);
-    }
-    
-    void draw_thin_rect(NXColor const& c) const
-    {
-        int x1, y1, x2, y2;
-        to_screen_coord(x1, y1, x2, y2);
-        Graphics::DrawLine(x1, y1, x2, y1, c);
-        Graphics::DrawLine(x1, y2, x2, y2, c);
-        Graphics::DrawLine(x1, y1, x1, y2, c);
-        Graphics::DrawLine(x2, y1, x2, y2, c);
-    }
-};
-
-bool point_in(RectI const& rect, Point const& p)
-{
-    Rect r = Rect::fromRectI(rect);
-    return r.point_in(p);
+    void ignoreAllCurrentFingers();
 }
+
+
+// Helpers
+namespace  {
+    struct Point
+    {
+        float x, y;
+        Point(float x, float y) : x(x), y(y) {}
+        Point() : x(0), y(0) {}
+        
+        Point operator+(Point const& r) const
+        {
+            return Point(x + r.x, y + r.y);
+        }
+        
+        Point operator-(Point const& r) const
+        {
+            return Point(x - r.x, y - r.y);
+        }
+        
+        Point operator*(float k) const
+        {
+            return Point(k * x, k * y);
+        }
+    };
+    
+    struct Rect
+    {
+        float x, y;
+        float w, h;
+        
+        static Rect centred(Point const& p, float w, float h)
+        {
+            Rect r = {p.x - w/2, p.y - h/2, w, h};
+            return r;
+        }
+        
+        static Rect fromRectI(RectI const& rect)
+        {
+            Rect r = {(float)rect.x / Graphics::SCREEN_WIDTH,
+                (float)rect.y / Graphics::SCREEN_HEIGHT,
+                (float)rect.w / Graphics::SCREEN_WIDTH,
+                (float)rect.h / Graphics::SCREEN_HEIGHT,
+            };
+            return r;
+        }
+        
+        bool point_in(Point const& p) const
+        {
+            return point_in(p.x, p.y);
+        }
+        
+        bool point_in(float px, float py) const
+        {
+            return !(px < x || x + w < px || py < y || y + h < py);
+        }
+        
+        void to_screen_coord(int& x1, int& y1, int& x2, int& y2) const
+        {
+            x1 = Graphics::SCREEN_WIDTH  *  x;
+            y1 = Graphics::SCREEN_HEIGHT *  y;
+            x2 = Graphics::SCREEN_WIDTH  * (x + w);
+            y2 = Graphics::SCREEN_HEIGHT * (y + h);
+        }
+        
+        void draw_fill_rect(NXColor const& c) const
+        {
+            int x1, y1, x2, y2;
+            to_screen_coord(x1, y1, x2, y2);
+            Graphics::FillRect(x1, y1, x2, y2, c);
+        }
+        
+        void draw_thick_rect(NXColor const& c) const
+        {
+            int x1, y1, x2, y2;
+            to_screen_coord(x1, y1, x2, y2);
+            Graphics::DrawRect(x1, y1, x2, y2, c);
+        }
+        
+        void draw_thin_rect(NXColor const& c) const
+        {
+            int x1, y1, x2, y2;
+            to_screen_coord(x1, y1, x2, y2);
+            Graphics::DrawLine(x1, y1, x2, y1, c);
+            Graphics::DrawLine(x1, y2, x2, y2, c);
+            Graphics::DrawLine(x1, y1, x1, y2, c);
+            Graphics::DrawLine(x2, y1, x2, y2, c);
+        }
+    };
+    
+    struct Tri
+    {
+        Point a;
+        Point b, c;
+        
+        Tri(Point const& a, float size, float rb, float rc) :
+        a(a)
+        {
+#define P(a) (double(a) * M_PI / 8.0)
+            b = Point(cos(P(rb)), sin(P(rb))) * size + a;
+            c = Point(cos(P(rc)), sin(P(rc))) * size + a;
+#undef P
+        }
+        
+        static float sign(Point const& p1, Point const& p2, Point const& p3)
+        {
+            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+        }
+        
+        bool in(Point const& pt) const
+        {
+            bool b1, b2, b3;
+            
+            b1 = sign(pt, a, b) < 0.0f;
+            b2 = sign(pt, b, c) < 0.0f;
+            b3 = sign(pt, c, a) < 0.0f;
+            
+            return ((b1 == b2) && (b2 == b3));
+        }
+    };
+    
+    bool point_in(RectI const& rect, Point const& p)
+    {
+        Rect r = Rect::fromRectI(rect);
+        return r.point_in(p);
+    }
+}
+
 
 const NXColor col_released(0xff, 0xcf, 0x33);
 const NXColor col_pressed (0xff, 0x00, 0x00);
 
 typedef std::map<SDL_FingerID, Point> lastFingerPos_t;
 lastFingerPos_t lastFingerPos;
+
+typedef std::set<SDL_FingerID> ingnoredFinger_t;
+ingnoredFinger_t ignoredFingers;
 
 class VjoyMode
 {
@@ -178,6 +223,10 @@ VjoyMode vjoy_mode;
 float xres = -1.0f;
 float yres = -1.0f;
 
+
+// VKeys
+namespace VKeys {
+    
 namespace Pad
 {
     bool enabled = false;
@@ -188,37 +237,6 @@ namespace Pad
     const float border = 0.65f;
     const float max_r2 = 0.2*0.2;
     const float min_r2 = 0.02*0.02;
-    
-    struct Tri
-    {
-        Point a;
-        Point b, c;
-        
-        Tri(Point const& a, float size, float rb, float rc) :
-        a(a)
-        {
-#define P(a) (double(a) * M_PI / 8.0)
-            b = Point(cos(P(rb)), sin(P(rb))) * size + a;
-            c = Point(cos(P(rc)), sin(P(rc))) * size + a;
-#undef P
-        }
-        
-        static float sign(Point const& p1, Point const& p2, Point const& p3)
-        {
-            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-        }
-        
-        bool in(Point const& pt) const
-        {
-            bool b1, b2, b3;
-            
-            b1 = sign(pt, a, b) < 0.0f;
-            b2 = sign(pt, b, c) < 0.0f;
-            b3 = sign(pt, c, a) < 0.0f;
-            
-            return ((b1 == b2) && (b2 == b3));
-        }
-    };
     
     const float seg_size = 0.13f;
     const Point seg_center(0.82f, 0.82f);
@@ -236,31 +254,6 @@ namespace Pad
     };
     
     bool pressed[seg_count];
-    
-    void insert_event(SDL_Event const& evt, Point const& p)
-    {
-        // if (evt.type == SDL_FINGERUP && Pad::enabled && evt.tfinger.fingerId == finger)
-        // {
-        //    if (enabled && evt.tfinger.fingerId == Pad::finger)
-        //    {
-        //       enabled = false;
-        //    }
-        // }
-        // else
-        // {
-        //    if (!enabled && evt.type == SDL_FINGERDOWN && p.x > border)
-        //    {
-        //       enabled = true;
-        //       origin = p;
-        //       finger = evt.tfinger.fingerId;
-        //    }
-        
-        //    if (enabled && evt.tfinger.fingerId == finger)
-        //    {
-        //       current = p;
-        //    }
-        // }
-    }
     
     void update_buttons(Point const& p)
     {
@@ -326,26 +319,76 @@ namespace Pad
             Graphics::DrawLine(b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT,
                                c.x * Graphics::SCREEN_WIDTH, c.y * Graphics::SCREEN_HEIGHT, color);
         }
-        
-        // if (!enabled)
-        //    return;
-        
-        // const NXColor origin_color(0xff, 0xcf, 0x33);
-        // const NXColor current_color(0x89, 0xf5, 0x25);
-        
-        // const float size = 0.05f;
-        
-        // int x1, y1, x2, y2;
-        // Rect o = {origin.x - size / 2, origin.y - size/2, size, size};
-        // Rect c = {current.x - size / 2, current.y - size/2, size, size};
-        
-        // o.to_screen_coord(x1, y1, x2, y2);
-        // Graphics::FillRect(x1, y1, x2, y2, origin_color);
-        
-        // c.to_screen_coord(x1, y1, x2, y2);
-        // Graphics::FillRect(x1, y1, x2, y2, current_color);
     }
-};
+} // namespace Pad
+
+    
+    Rect vkeys[INPUT_COUNT] =
+    {
+        {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
+        {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
+        {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
+        {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
+        
+        {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
+        {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
+        
+        {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
+        {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
+        
+        {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
+        {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
+        
+        {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
+        {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
+        {0.70f, 0.0f, 0.1f, 0.1f}, // F2KEY
+        {0.85f, 0.0f, 0.1f, 0.1f}, // F3KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F4KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F5KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F6KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F7KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F8KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F9KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F10KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F11KEY
+        {-1.f, -1.f, -1.f, -1.f}, // F12KEY
+        
+        {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
+        {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
+        {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
+    };
+    
+    void update_buttons(Point const& p)
+    {
+        for (int i = 0; i < INPUT_COUNT; ++i)
+        {
+            if (vkeys[i].x < 0)
+                continue;
+            
+            if (vkeys[i].point_in(p))
+                inputs[i] = true;
+        }
+        
+        Pad::update_buttons(p);
+    }
+    
+    void draw()
+    {
+        for (int i = 0; i < INPUT_COUNT; ++i)
+        {
+            Rect const& vkey = vkeys[i];
+            
+            if (vkey.x < 0)
+                continue;
+            
+            NXColor const& c = inputs[i] ? col_pressed : col_released;
+            vkey.draw_thin_rect(c);
+        }
+        
+        Pad::draw();
+    }
+    
+} // namespace Vkeys
 
 class GestureObserver : public IGestureObserver
 {
@@ -390,64 +433,38 @@ namespace VJoy {
 namespace ModeAware
 {
     
-    struct IModeAwarePad
+    struct DefaultControl
     {
-        IModeAwarePad() : disable_draw(false) {}
+        DefaultControl() : disable_draw(false) {}
         virtual void on_enter() {}
-        virtual void update_buttons(Point const& p) {}
-        virtual void draw() {}
+        virtual void update_buttons(Point const& p)
+        {
+            VKeys::update_buttons(p);
+        }
+        virtual void draw()
+        {
+            if (VjoyMode::EGESTURE == vjoy_mode.getMode())
+                return;
+            
+            VKeys::draw();
+        }
         
         bool disable_draw;
         
-        virtual ~IModeAwarePad() {}
+        virtual ~DefaultControl() {}
     };
  
-    IModeAwarePad* const* ppads = NULL;
+    DefaultControl* const* ppads = NULL;
     
-    class NoneModePad : public IModeAwarePad
+    class NoneModePad : public DefaultControl
     {
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::ETOUCH);
         }
     };    
-    class NormalModePad : public IModeAwarePad
-    {
-        const Rect vkeys[INPUT_COUNT] =
-        {
-            {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
-            {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
-            {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
-            {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
-            
-            {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
-            {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
-            
-            {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
-            {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
-            
-            {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
-            {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
-            
-            {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
-            {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F2KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F3KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F4KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F5KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F6KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F7KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F8KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F9KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F10KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F11KEY
-            {-1.f, -1.f, -1.f, -1.f}, // F12KEY
-            
-            {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
-            {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
-            {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
-        };
-        
+    class NormalModePad : public DefaultControl
+    { 
     public:
         bool textbox_mode;
 
@@ -467,69 +484,49 @@ namespace ModeAware
             }
             else
             {
-                for (int i = 0; i < INPUT_COUNT; ++i)
-                {
-                    if (vkeys[i].x < 0)
-                        continue;
-                    
-                    if (vkeys[i].point_in(p))
-                        inputs[i] = true;
-                }
-                
-                Pad::update_buttons(p);
+                DefaultControl::update_buttons(p);
             }
         }
         
-        virtual void draw()
-        {
-            for (int i = 0; i < INPUT_COUNT; ++i)
-            {
-                Rect const& vkey = vkeys[i];
-                
-                if (vkey.x < 0)
-                    continue;
-                
-                NXColor const& c = inputs[i] ? col_pressed : col_released;
-                vkey.draw_thin_rect(c);
-            }
-            
-            Pad::draw();
-        }
+//        virtual void draw()
+//        {
+//            DefaultControl::draw();
+//        }
     };
-    class InventoryModePad : public IModeAwarePad
+    class InventoryModePad : public DefaultControl
     {
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EInventory));
         }
     };
-    class MapSystemModePad : public IModeAwarePad
+    class MapSystemModePad : public DefaultControl
     {
         
     };
-    class IslandModePad : public IModeAwarePad
+    class IslandModePad : public DefaultControl
     {
         
     };
-    class CreditsModePad : public IModeAwarePad
+    class CreditsModePad : public DefaultControl
     {
         
     };
-    class IntroModePad : public IModeAwarePad
+    class IntroModePad : public DefaultControl
     {
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EMovies));
         }
     };
-    class TitleModePad : public IModeAwarePad
+    class TitleModePad : public DefaultControl
     {
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::ETitle));
         }
     };
-    class PausedModePad : public IModeAwarePad
+    class PausedModePad : public DefaultControl
     {
         virtual void on_enter()
         {
@@ -546,7 +543,7 @@ namespace ModeAware
             ppads[GM_NORMAL]->draw();
         }
     };
-    class OptionsModePad : public IModeAwarePad
+    class OptionsModePad : public DefaultControl
     {
         virtual void on_enter()
         {
@@ -576,7 +573,7 @@ namespace ModeAware
     PausedModePad pausedModePad;
     OptionsModePad optionsModePad;    
     
-    IModeAwarePad* const pads[NUM_GAMEMODES] =
+    DefaultControl* const pads[NUM_GAMEMODES] =
     {
         &noneModePad,
         &normalModePad,
@@ -593,35 +590,27 @@ namespace ModeAware
     static void dispatch(Point const& p)
     {
         pads[getGamemode()]->update_buttons(p);
-        //pads[GM_NORMAL]->update_buttons(p);
     }
     
     static void draw()
     {
         if (!pads[getGamemode()]->disable_draw)
             pads[getGamemode()]->draw();
-        //pads[GM_NORMAL]->draw();
     }
-    
-//    bool isPressedInCurrentMode(RectI rect)
-//    {
-//        bool res = false;
-//        for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end() && !res; ++it)
-//        {
-//            Point const& p = it->second;
-//            res = point_in(rect, p);
-//        }
-//        
-//        return res;
-//    }
 
     bool wasTap(RectI rect)
     {
+        if (VjoyMode::ETOUCH == vjoy_mode.getMode())
+            return false;
+        
         return gestureObserver.wasTap(Rect::fromRectI(rect));
     }
     
     bool wasTap()
     {
+        if (VjoyMode::ETOUCH == vjoy_mode.getMode())
+            return false;
+        
         return gestureObserver.wasTap();
     }
     
@@ -629,10 +618,13 @@ namespace ModeAware
     {
         ppads = pads;
         pads[newMode]->on_enter();
+        
+        ignoreAllCurrentFingers();
     }
     
     void specScreenChanged(SpecScreens newScreen, bool enter)
     {
+        ignoreAllCurrentFingers();
         
         {
             struct state_t
@@ -681,35 +673,32 @@ namespace ModeAware
         switch (newScreen) {
             case ETextBox:
             {
-                vjoy_mode.setMode(VjoyMode::EBOTH);
-                pads[getGamemode()]->disable_draw = true;
-                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = true;
+                vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EIngameDialog));
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = (vjoy_mode.getMode() != VjoyMode::ETOUCH);
                 break;
             }
             case ESaveLoad:
             {
-                vjoy_mode.setMode(VjoyMode::EGESTURE);
-                pads[getGamemode()]->disable_draw = true;
+                vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::ESaveLoad));
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = false;
                 break;
             }
             case EYesNo:
             {
-                vjoy_mode.setMode(VjoyMode::EGESTURE);
-                pads[getGamemode()]->disable_draw = true;
+                vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EIngameDialog));
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = false;
                 break;
             }
             case EStageSelect1:
             {
-                vjoy_mode.setMode(VjoyMode::EGESTURE);
-                pads[getGamemode()]->disable_draw = true;
+                vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EIngameDialog));
                 static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = false;
                 break;
             }
             case EStageSelect2:
             {
-                vjoy_mode.setMode(VjoyMode::EBOTH);
-                pads[getGamemode()]->disable_draw = true;
-                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = true;
+                vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EIngameDialog));
+                static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = (vjoy_mode.getMode() != VjoyMode::ETOUCH);
                 break;
             }
         }
@@ -756,6 +745,19 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
     if (!vjoy_enabled)
         return;
     
+    if (evt.type == SDL_FINGERUP)
+    {
+        lastFingerPos_t::iterator it = lastFingerPos.find(evt.tfinger.fingerId);
+        if (it != lastFingerPos.end())
+        {
+            lastFingerPos.erase(it);
+        }
+        
+        ignoredFingers.erase(evt.tfinger.fingerId);
+        
+        return;
+    }
+    
     if (vjoy_mode.getMode() == VjoyMode::EGESTURE)
         return;
     
@@ -776,20 +778,8 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
     Point p((float)evt.tfinger.x / xres, (float)evt.tfinger.y / yres);
     
     
-    if (evt.type == SDL_FINGERUP)
-    {
-        lastFingerPos_t::iterator it = lastFingerPos.find(evt.tfinger.fingerId);
-        if (it != lastFingerPos.end())
-        {
-            lastFingerPos.erase(it);
-        }
-    }
-    else
-    {
+    if (ignoredFingers.end() == ignoredFingers.find(evt.tfinger.fingerId))
         lastFingerPos[evt.tfinger.fingerId] = p;
-    }
-    
-    Pad::insert_event(evt, p);
 }
 
 void VJoy::PreProcessInput()
@@ -806,7 +796,7 @@ void VJoy::ProcessInput()
         return;
     
     memset(inputs, 0, sizeof(inputs));
-    memset(Pad::pressed, 0, sizeof(Pad::pressed));
+    memset(VKeys::Pad::pressed, 0, sizeof(VKeys::Pad::pressed));
     
     for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
     {
@@ -815,3 +805,12 @@ void VJoy::ProcessInput()
     }
 }
 
+void VJoy::ignoreAllCurrentFingers()
+{
+    for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
+    {
+        ignoredFingers.insert(it->first);
+    }
+    
+    lastFingerPos.clear();
+}

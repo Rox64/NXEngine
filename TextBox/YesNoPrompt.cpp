@@ -106,32 +106,36 @@ void TB_YNJPrompt::Draw()
 		{
             bool accept = false;
 #ifdef CONFIG_USE_TAPS
-            if (VJoy::ModeAware::wasTap(yes_rect))
+            // taps controls
             {
-                if (fState == STATE_YES_SELECTED)
-                    accept = true;
-                else
-                    fState = STATE_YES_SELECTED;
+                if (VJoy::ModeAware::wasTap(yes_rect))
+                {
+                    if (fState == STATE_YES_SELECTED)
+                        accept = true;
+                    else
+                        fState = STATE_YES_SELECTED;
+                }
+                if (VJoy::ModeAware::wasTap(no_rect))
+                {
+                    if (fState == STATE_NO_SELECTED)
+                        accept = true;
+                    else
+                        fState = STATE_NO_SELECTED;
+                }
             }
-            if (VJoy::ModeAware::wasTap(no_rect))
-            {
-                if (fState == STATE_NO_SELECTED)
-                    accept = true;
-                else
-                    fState = STATE_NO_SELECTED;
-            }
-#else
-            
-            
-			if (justpushed(LEFTKEY) || justpushed(RIGHTKEY))
-			{
-				sound(SND_MENU_MOVE);
-				
-				fState = (fState == STATE_YES_SELECTED) ?
-							STATE_NO_SELECTED : STATE_YES_SELECTED;
-			}
-            accept = justpushed(JUMPKEY);
 #endif
+            
+            // pad control
+            {
+                if (justpushed(LEFTKEY) || justpushed(RIGHTKEY))
+                {
+                    sound(SND_MENU_MOVE);
+                    
+                    fState = (fState == STATE_YES_SELECTED) ?
+                                STATE_NO_SELECTED : STATE_YES_SELECTED;
+                }
+                accept = accept || justpushed(JUMPKEY);
+            }
 			
 			if (accept)
 			{

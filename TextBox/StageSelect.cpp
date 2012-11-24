@@ -110,12 +110,13 @@ void c------------------------------() {}
 
 void TB_StageSelect::HandleInput()
 {
-bool button_down;
+    bool button_down = false;
 
 	if (textbox.YesNoPrompt.IsVisible() || fMadeSelection)
 		return;
 	
 #ifdef CONFIG_USE_TAPS
+    // taps control
     {
         int nslots = CountActiveSlots();
         int total_spacing = ((nslots - 1) * LOCS_SPACING);
@@ -148,19 +149,22 @@ bool button_down;
             x += (sprites[SPR_STAGEIMAGE].w + LOCS_SPACING);
         }
     }
-#else
-    if (justpushed(LEFTKEY))
-	{
-		MoveSelection(LEFT);
-	}
-	else if (justpushed(RIGHTKEY))
-	{
-		MoveSelection(RIGHT);
-	}
-	
-	// when user picks a location return the new script to execute
-	button_down = buttondown();
-#endif
+#endif 
+    
+    // pad control
+    {
+        if (justpushed(LEFTKEY))
+        {
+            MoveSelection(LEFT);
+        }
+        else if (justpushed(RIGHTKEY))
+        {
+            MoveSelection(RIGHT);
+        }
+        
+        // when user picks a location return the new script to execute
+        button_down = button_down || buttondown();
+    }
     
 	if (button_down && !fLastButtonDown)
 	{

@@ -151,49 +151,53 @@ static void handle_input()
 {
     bool button_pressed = false;
 #ifdef CONFIG_USE_TAPS
-    int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
-	int cy = (Graphics::SCREEN_HEIGHT / 2) - 8;
-    for(int i=0;i<sprites[SPR_MENU].nframes;i++)
-	{
-		RectI r = Sprites::get_sprite_rect(cx, cy, SPR_MENU, i);
-        if (VJoy::ModeAware::wasTap(r))
+    // tap controls
+    {
+        int cx = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_MENU].w / 2) - 8;
+        int cy = (Graphics::SCREEN_HEIGHT / 2) - 8;
+        for(int i=0;i<sprites[SPR_MENU].nframes;i++)
         {
-            if (title.cursel == i)
+            RectI r = Sprites::get_sprite_rect(cx, cy, SPR_MENU, i);
+            if (VJoy::ModeAware::wasTap(r))
             {
-                button_pressed = true;
+                if (title.cursel == i)
+                {
+                    button_pressed = true;
+                    
+                }
+                else
+                {
+                    sound(SND_MENU_MOVE);
+                    title.cursel = i;
+                }
                 
+                break;
             }
-            else
-            {
-                sound(SND_MENU_MOVE);
-                title.cursel = i;
-            }
-            
-            //title.cursel = i;
-            //button_pressed = true;
-            
-            break;
-        }
 
-		cy += (sprites[SPR_MENU].h + 18);
-	}
-#else
-	if (justpushed(DOWNKEY))
-	{
-		sound(SND_MENU_MOVE);
-		if (++title.cursel >= sprites[SPR_MENU].nframes)
-			title.cursel = 0;
-	}
-	else if (justpushed(UPKEY))
-	{
-		sound(SND_MENU_MOVE);
-		if (--title.cursel < 0)
-			title.cursel = sprites[SPR_MENU].nframes - 1;
+            cy += (sprites[SPR_MENU].h + 18);
+        }
+    }
+#endif
+    
+    // pad control
+    {
+        if (justpushed(DOWNKEY))
+        {
+            sound(SND_MENU_MOVE);
+            if (++title.cursel >= sprites[SPR_MENU].nframes)
+                title.cursel = 0;
+        }
+        else if (justpushed(UPKEY))
+        {
+            sound(SND_MENU_MOVE);
+            if (--title.cursel < 0)
+                title.cursel = sprites[SPR_MENU].nframes - 1;
+        }
+        
+        button_pressed = button_pressed || buttonjustpushed();
 	}
     
-    button_pressed = buttonjustpushed();
-#endif // CONFIG_USE_TAPS
-	
+    
 	if (button_pressed)
 	{
 		sound(SND_MENU_SELECT);
@@ -336,15 +340,5 @@ void run_konami_code()
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
 
 

@@ -474,6 +474,7 @@ static void EnterTapControlsMenu(ODItem *item, int dir)
 	dlg->AddItem("Inventory",   _edit_tap_control, _get_tap_control, Settings::Tap::EInventory);
 	dlg->AddItem("Pause",       _edit_tap_control, _get_tap_control, Settings::Tap::EPause);
 	dlg->AddItem("Options",     _edit_tap_control, _get_tap_control, Settings::Tap::EOptions);
+	dlg->AddItem("MapSystem",   _edit_tap_control, _get_tap_control, Settings::Tap::EMapSystem);
     
 	dlg->AddSeparator();
 	dlg->AddDismissalItem();

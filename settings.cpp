@@ -58,6 +58,7 @@ bool settings_load(Settings *setfile)
         setfile->tap[Settings::Tap::EInventory]     = Settings::Tap::ETAP;
         setfile->tap[Settings::Tap::EPause]         = Settings::Tap::ETAP;
         setfile->tap[Settings::Tap::EOptions]       = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EMapSystem]     = Settings::Tap::ETAP;
 		
 		return 1;
 	}

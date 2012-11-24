@@ -502,7 +502,10 @@ namespace ModeAware
     };
     class MapSystemModePad : public DefaultControl
     {
-        
+        virtual void on_enter()
+        {
+            vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EMapSystem));
+        }
     };
     class IslandModePad : public DefaultControl
     {

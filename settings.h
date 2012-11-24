@@ -49,6 +49,7 @@ struct Settings
             EInventory,
             EPause,
             EOptions,
+            EMapSystem,
             
             ELASTPLACE
         };

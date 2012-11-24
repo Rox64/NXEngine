@@ -4,6 +4,8 @@
 #include "map_system.h"
 #include "map_system.fdh"
 
+#include "vjoy.h"
+
 #define MS_EXPANDING		0
 #define MS_DISPLAYED		1
 #define MS_CONTRACTING		2
@@ -108,6 +110,9 @@ void ms_tick(void)
 		if (++ms.timer & 8)
 			draw_sprite(ms.px, ms.py, SPR_MAP_PIXELS, 4);
 		
+        if (VJoy::ModeAware::wasTap())
+            ms.state = MS_CONTRACTING;
+        
 		// dismissal
 		if (ms.lastbuttondown)
 		{

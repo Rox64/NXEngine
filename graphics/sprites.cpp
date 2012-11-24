@@ -106,6 +106,11 @@ void Sprites::draw_sprite(int x, int y, int s, int frame, uint8_t dir)
 	BlitSprite(x, y, s, frame, dir, 0, 0, sprites[s].w, sprites[s].h);
 }
 
+RectI Sprites::get_sprite_rect(int x, int y, int s, int/* frame*/, uint8_t/* dir*/)
+{
+    return RectI(x, y, sprites[s].w, sprites[s].h);
+}
+
 // draw sprite "s", place it's draw point at [x,y] instead of it's upper-left corner.
 void Sprites::draw_sprite_at_dp(int x, int y, int s, int frame, uint8_t dir)
 {
@@ -113,7 +118,6 @@ void Sprites::draw_sprite_at_dp(int x, int y, int s, int frame, uint8_t dir)
 	y -= sprites[s].frame[frame].dir[dir].drawpoint.y;
 	BlitSprite(x, y, s, frame, dir, 0, 0, sprites[s].w, sprites[s].h);
 }
-
 
 // draw a portion of a sprite, such as a sprite in the middle of "teleporting".
 // only the area between clipy1 (inclusive) and clipy2 (exclusive) are visible.

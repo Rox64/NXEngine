@@ -6,7 +6,7 @@
 
 #include "config.h"
 #include "platform.h"
-#include "common/basics.h"
+#include "../common/basics.h"
 
 char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";
@@ -91,6 +91,10 @@ bool setup_path(int argc, char** argv)
     {
         sandboxed = true;
     }
+
+#if TARGET_IPHONE_SIMULATOR
+    sandboxed = true;
+#endif
     
     if (sandboxed)
     {

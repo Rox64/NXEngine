@@ -328,6 +328,10 @@ uchar r, g, b;
 			case DM_BOX:
 				DrawRect(x, y, x2, y2, r, g, b);
 			break;
+                
+            case DM_ABS_BOX:
+                DrawRect(debugmarks[i].x, debugmarks[i].y, debugmarks[i].x2, debugmarks[i].y2, r, g, b);
+                break;
 		}
 	}
 	
@@ -383,6 +387,11 @@ void debugHline(int y, uchar r, uchar g, uchar b)
 void debugbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b)
 {
 	AddDebugMark(x1, y1, x2, y2, DM_BOX, r, g, b);
+}
+
+void debug_absbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b)
+{
+	AddDebugMark(x1, y1, x2, y2, DM_ABS_BOX, r, g, b);
 }
 
 void debugtile(int x, int y, uchar r, uchar g, uchar b)

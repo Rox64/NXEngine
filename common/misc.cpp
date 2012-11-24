@@ -9,7 +9,7 @@
 
 #include "basics.h"
 
-#include "../platform.h"
+#include "../platform/platform.h"
 
 char *GetStaticStr(void);
 

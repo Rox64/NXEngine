@@ -4,6 +4,10 @@
 #include "nx.h"
 #include "inventory.h"
 #include "inventory.fdh"
+#include "vjoy.h"
+
+#include "debug.h"
+
 
 #define ARMS_X			10
 #define ARMS_Y			8
@@ -183,98 +187,177 @@ int x, y, w, i, c;
 
 static void RunSelector(stSelector *selector)
 {
-int nrows;
-int currow, curcol;
-char toggle = 0;
+    bool item_selected = false;
+    bool inv_exited = false;
+    
+#ifdef CONFIG_USE_TAPS
+    // tap control
+    {
+        int xsel, ysel;
+        
+        stSelector *const selectors[] = {&inv.armssel, &inv.itemsel};
+        struct {int x, y; } const coords[] = {
+            {inv.x +  ARMS_X, inv.y +  ARMS_Y + sprites[ SPR_TEXT_ARMS].h},
+            {inv.x + ITEMS_X, inv.y + ITEMS_Y + sprites[SPR_TEXT_ITEMS].h}
+        };
+        
+        for (int i = 0; i < 2; ++i)
+        {
+            stSelector * const cur = selectors[i];
+            
+            for (int cursel = 0; cursel < cur->nitems; ++cursel)
+            {
+                if (cur->rowlen)
+                {
+                    xsel = (cursel % cur->rowlen);
+                    ysel = (cursel / cur->rowlen);
+                }
+                else
+                    xsel = ysel = 0;
+                
+                int selx = coords[i].x + (xsel * cur->spacing_x);
+                int sely = coords[i].y + (ysel * cur->spacing_y);
+                
+                RectI r = Sprites::get_sprite_rect(selx, sely, cur->sprite);
+                
+                //debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+                
+                if (VJoy::ModeAware::wasTap(r))
+                {
+                    if (selector == cur && cursel == cur->cursel)
+                    {
+                        item_selected = true;
+                    }
+                    else
+                    {
+                        inv.curselector = cur;
+                        cur->cursel = cursel;
+                        cur->lastsel = -9999;
+                        selector = cur;
+                    }
+                    
+                    break;
+                }
+            }
+        }
+        
+        {
+            int x = inv.x + ITEMS_X;
+            int y = inv.y + ITEMS_Y;
+            RectI r = Sprites::get_sprite_rect(x, y, SPR_TEXT_ITEMS);
+            if (VJoy::ModeAware::wasTap(r))
+            {
+                inv_exited = true;
+            }
+        }
+    }
+#endif
 
-	if (inv.lockinput)
-	{
-		if (GetCurrentScript()==-1) inv.lockinput = 0;
-		else return;
-	}
-	
-	if (selector->nitems)
-	{
-		nrows = (selector->nitems - 1) / selector->rowlen;
-		currow = (selector->cursel / selector->rowlen);
-		curcol = (selector->cursel % selector->rowlen);
-	}
-	else
-	{
-		nrows = currow = curcol = 0;
-	}
-	
-	if (justpushed(LEFTKEY))
-	{
-		sound(selector->sound);
-		
-		// at beginning of row?
-		if (curcol == 0)
-		{	// wrap to end of row
-			if (currow < nrows)
-				selector->cursel += (selector->rowlen - 1);
-			else if (selector->nitems > 0)
-				selector->cursel = selector->nitems - 1;
-		}
-		else selector->cursel--;
-	}
-	
-	if (justpushed(RIGHTKEY))
-	{
-		sound(selector->sound);
-		
-		// at end of row?
-		if (curcol==selector->rowlen-1 || selector->cursel+1 >= selector->nitems)
-		{	// wrap to beginning of row
-			selector->cursel = (currow * selector->rowlen);
-		}
-		else selector->cursel++;
-	}
-	
-	if (justpushed(DOWNKEY))
-	{
-		// on last row?
-		if (currow >= nrows) toggle = 1;
-		else
-		{
-			selector->cursel += selector->rowlen;
-			
-			// don't go past last item
-			if (selector->cursel >= selector->nitems)
-				selector->cursel = (selector->nitems - 1);
-				
-			sound(selector->sound);
-		}
-	}
-	
-	if (justpushed(UPKEY))
-	{
-		// on top row?
-		if (currow == 0) toggle = 1;
-		else
-		{
-			selector->cursel -= selector->rowlen;
-			sound(selector->sound);
-		}
-	}
-	
-	// switch to other selector
-	if (toggle)
-	{
-		if (selector == &inv.itemsel)
-		{
-			selector = &inv.armssel;
-		}
-		else
-		{
-			selector = &inv.itemsel;
-		}
-		
-		inv.curselector = selector;
-		
-		sound(selector->sound);
-		selector->lastsel = -9999;
-	}
+    // pad control
+    {
+        int nrows;
+        int currow, curcol;
+        char toggle = 0;
+        
+        if (inv.lockinput)
+        {
+            if (GetCurrentScript()==-1) inv.lockinput = 0;
+            else return;
+        }
+        
+        if (selector->nitems)
+        {
+            nrows = (selector->nitems - 1) / selector->rowlen;
+            currow = (selector->cursel / selector->rowlen);
+            curcol = (selector->cursel % selector->rowlen);
+        }
+        else
+        {
+            nrows = currow = curcol = 0;
+        }
+        
+        if (justpushed(LEFTKEY))
+        {
+            sound(selector->sound);
+            
+            // at beginning of row?
+            if (curcol == 0)
+            {	// wrap to end of row
+                if (currow < nrows)
+                    selector->cursel += (selector->rowlen - 1);
+                else if (selector->nitems > 0)
+                    selector->cursel = selector->nitems - 1;
+            }
+            else selector->cursel--;
+        }
+        
+        if (justpushed(RIGHTKEY))
+        {
+            sound(selector->sound);
+            
+            // at end of row?
+            if (curcol==selector->rowlen-1 || selector->cursel+1 >= selector->nitems)
+            {	// wrap to beginning of row
+                selector->cursel = (currow * selector->rowlen);
+            }
+            else selector->cursel++;
+        }
+        
+        if (justpushed(DOWNKEY))
+        {
+            // on last row?
+            if (currow >= nrows) toggle = 1;
+            else
+            {
+                selector->cursel += selector->rowlen;
+                
+                // don't go past last item
+                if (selector->cursel >= selector->nitems)
+                    selector->cursel = (selector->nitems - 1);
+                    
+                sound(selector->sound);
+            }
+        }
+        
+        if (justpushed(UPKEY))
+        {
+            // on top row?
+            if (currow == 0) toggle = 1;
+            else
+            {
+                selector->cursel -= selector->rowlen;
+                sound(selector->sound);
+            }
+        }
+        
+        // switch to other selector
+        if (toggle)
+        {
+            if (selector == &inv.itemsel)
+            {
+                selector = &inv.armssel;
+            }
+            else
+            {
+                selector = &inv.itemsel;
+            }
+            
+            inv.curselector = selector;
+            
+            sound(selector->sound);
+            selector->lastsel = -9999;
+        }
+        
+        if (selector == &inv.itemsel)
+        {
+            item_selected = item_selected || justpushed(JUMPKEY);
+            inv_exited = inv_exited || justpushed(INVENTORYKEY) || justpushed(FIREKEY);
+        }
+        else
+        {
+            item_selected = item_selected || buttonjustpushed();
+        }
+    }
 	
 	// bring up scripts
 	if (selector->cursel != selector->lastsel)
@@ -287,7 +370,7 @@ char toggle = 0;
 	
 	if (selector == &inv.armssel)		// selecting a weapon
 	{
-		if (buttonjustpushed())
+		if (item_selected)
 		{	// select the new weapon
 			weapon_slide(LEFT, selector->items[selector->cursel]);
 			ExitInventory();
@@ -295,13 +378,13 @@ char toggle = 0;
 	}
 	else									// selecting an item
 	{
-		if (justpushed(JUMPKEY))
+		if (item_selected)
 		{	// bring up "more info" or "equip" script for this item
 			StartScript(selector->items[selector->cursel] + selector->scriptbase + 1000, SP_ARMSITEM);
 			inv.lockinput = 1;
 		}
 		
-		if (justpushed(INVENTORYKEY) || justpushed(FIREKEY))
+		if (inv_exited)
 			ExitInventory();
 	}
 }

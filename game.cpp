@@ -11,6 +11,7 @@
 #include "game.h"
 #include "profile.h"
 #include "game.fdh"
+#include "vjoy.h"
 
 static struct TickFunctions
 {
@@ -152,6 +153,7 @@ bool Game::setmode(int newmode, int param, bool force)
 		tickfunctions[game.mode].OnExit();
 	
 	game.mode = newmode;
+    
 	
 	if (tickfunctions[game.mode].OnEnter)
 	{
@@ -162,6 +164,10 @@ bool Game::setmode(int newmode, int param, bool force)
 			return 1;
 		}
 	}
+    
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(newmode);
+#endif
 	
 	return 0;
 }
@@ -190,6 +196,12 @@ bool Game::pause(int pausemode, int param)
 	
 	if (!game.paused)
 		memset(inputs, 0, sizeof(inputs));
+
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(pausemode);
+    if (!pausemode)
+        VJoy::ModeAware::gameModeChanged(game.mode);
+#endif
 	
 	return 0;
 }
@@ -214,8 +226,17 @@ void Game::tick(void)
 		tickfunctions[game.mode].OnTick();
 	}
 	
+    ::debug("1");
+    ::debug("mode %d,%d", game.mode, game.paused);
+    
 	DrawDebug();
 	console.Draw();
+}
+
+
+GameModes getGamemode()
+{
+    return static_cast<GameModes>(game.mode);
 }
 
 

@@ -10,6 +10,7 @@
 #include "TextBox.h"	// for textbox coordinates; MSG_W etc
 #include "SaveSelect.h"
 #include "SaveSelect.fdh"
+#include "../vjoy.h"
 
 // moved here as static data so that the compiler will shut up about a circular dependency
 // that happens if you try to include profile.h from SaveSelect.h.
@@ -27,12 +28,15 @@ void c------------------------------() {}
 
 void TB_SaveSelect::ResetState()
 {
+    if (fVisible != false)
+        VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ESaveLoad, false);
 	fVisible = false;
 }
 
 void TB_SaveSelect::SetVisible(bool enable, bool saving)
 {
 	fVisible = enable;
+    VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ESaveLoad, enable);
 	if (!enable) return;
 	game.showmapnametime = 0;
 	
@@ -68,43 +72,81 @@ void c------------------------------() {}
 
 void TB_SaveSelect::Run_Input()
 {
-int start;
+    bool button_pushed = false;
 
-	if (justpushed(DOWNKEY))
-	{
-		start = fCurSel;
-		for(;;)
-		{
-			fCurSel++;
-			if (fCurSel >= fNumFiles) fCurSel = 0;
-			
-			if (fSaving) break;
-			if (fHaveProfile[fCurSel]) break;
-			if (fCurSel == start) break;
-		}
-		
-		sound(SND_MENU_MOVE);
-		fPicXOffset = -24;
+#ifdef CONFIG_USE_TAPS
+    // tap controls
+    {
+        int x = fCoords.x + 16;
+        int y = fCoords.y + 15;
+        
+        for(int i=0;i<fNumFiles;i++)
+        {
+            RectI rect = RectI(x, y, fCoords.w, sprites[SPR_SAVESELECTOR_MIDDLE].h);
+            if (VJoy::ModeAware::wasTap(rect))
+            {
+                if (fCurSel == i && (fSaving || fHaveProfile[fCurSel]))
+                {
+                    button_pushed = true;
+                }
+                else
+                {
+                    fCurSel = i;
+                    sound(SND_MENU_MOVE);
+                }
+                
+                fPicXOffset = -24;
+                break;
+            }
+
+            
+            y += (sprites[SPR_SAVESELECTOR_MIDDLE].h + 10);
+        }
+    }
+#endif 
+    
+    // pad controls
+    {
+        int start;
+        
+        if (justpushed(DOWNKEY))
+        {
+            start = fCurSel;
+            for(;;)
+            {
+                fCurSel++;
+                if (fCurSel >= fNumFiles) fCurSel = 0;
+                
+                if (fSaving) break;
+                if (fHaveProfile[fCurSel]) break;
+                if (fCurSel == start) break;
+            }
+            
+            sound(SND_MENU_MOVE);
+            fPicXOffset = -24;
+        }
+        
+        if (justpushed(UPKEY))
+        {
+            start = fCurSel;
+            for(;;)
+            {
+                fCurSel--;
+                if (fCurSel < 0) fCurSel = fNumFiles - 1;
+                
+                if (fSaving) break;
+                if (fHaveProfile[fCurSel]) break;
+                if (fCurSel == start) break;
+            }
+            
+            sound(SND_MENU_MOVE);
+            fPicXOffset = -24;
+        }
+        
+        button_pushed = button_pushed || buttonjustpushed();
 	}
-	
-	if (justpushed(UPKEY))
-	{
-		start = fCurSel;
-		for(;;)
-		{
-			fCurSel--;
-			if (fCurSel < 0) fCurSel = fNumFiles - 1;
-			
-			if (fSaving) break;
-			if (fHaveProfile[fCurSel]) break;
-			if (fCurSel == start) break;
-		}
-		
-		sound(SND_MENU_MOVE);
-		fPicXOffset = -24;
-	}
-	
-	if (buttonjustpushed())
+    
+	if (button_pushed)
 	{
 		// when shown in a replay, the box is shown and everything just like what was done
 		// originally, but we won't actually overwrite any save files.

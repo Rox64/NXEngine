@@ -53,6 +53,7 @@ struct TriF
     PointF a;
     PointF b, c;
     
+    TriF() {}
     TriF(PointF const& a, float size, float rb, float rc);
     
     static float sign(PointF const& p1, PointF const& p2, PointF const& p3);

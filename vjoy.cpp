@@ -113,6 +113,54 @@ float yres = -1.0f;
 // VKeys
 namespace VKeys {
     
+    static const size_t presets_count = 1;
+    
+    static const VJoy::Preset presets[presets_count] =
+    {
+        // 0 - default
+        {
+            { // positions
+                {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
+                {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
+                {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
+                {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
+                
+                {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
+                {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
+                
+                {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
+                {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
+                
+                {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
+                {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
+                
+                {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
+                {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
+                {0.70f, 0.0f, 0.1f, 0.1f}, // F2KEY
+                {0.85f, 0.0f, 0.1f, 0.1f}, // F3KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F4KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F5KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F6KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F7KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F8KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F9KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F10KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F11KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F12KEY
+                
+                {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
+                {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
+                {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
+            },
+            PointF(0.82f, 0.82f),
+            0.13f
+        }
+    };
+    
+    static size_t current_preset = 0;
+    static VJoy::Preset current_set = presets[current_preset];
+    
+    
 namespace Pad
 {
     bool enabled = false;
@@ -124,28 +172,32 @@ namespace Pad
     const float max_r2 = 0.2*0.2;
     const float min_r2 = 0.02*0.02;
     
-    const float seg_size = 0.13f;
-    const PointF seg_center(0.82f, 0.82f);
-    
     const size_t seg_count = 8;
-    TriF segments[seg_count] = {
-        TriF(seg_center, seg_size, -1, 1),
-        TriF(seg_center, seg_size, 1, 3),
-        TriF(seg_center, seg_size, 3, 5),
-        TriF(seg_center, seg_size, 5, 7),
-        TriF(seg_center, seg_size, 7, -7),
-        TriF(seg_center, seg_size, -7, -5),
-        TriF(seg_center, seg_size, -5, -3),
-        TriF(seg_center, seg_size, -3, -1)
-    };
+    TriF segments[seg_count];
+    
+    void init(VJoy::Preset const& preset)
+    {
+        for (int i = 0, p = 7; i < seg_count; ++i, p += 2)
+        {
+#define F(p) ((p) % 16) - 8
+            int rb = F(p);
+            int rc = F(p + 2);
+#undef F
+            
+            segments[i] = TriF(preset.pad_center, preset.pad_size, rb, rc);
+        }
+        
+        //seg_size = preset.pad_size;
+        //seg_center = preset.pad_center;
+    }
     
     bool pressed[seg_count];
     
     void update_buttons(PointF const& p)
     {
-        PointF vec = p - seg_center;
+        PointF vec = p - current_set.pad_center;
         float r2 = vec.x * vec.x + vec.y * vec.y;
-        if (r2 > seg_size*seg_size)
+        if (r2 > current_set.pad_size * current_set.pad_size)
             return;
         
         // left
@@ -192,7 +244,7 @@ namespace Pad
     
     void draw()
     {
-        PointF const& a = seg_center;
+        PointF const& a = current_set.pad_center;
         for (size_t i = 0; i < seg_count; ++i)
         {
             PointF const& b = segments[i].b;
@@ -207,51 +259,21 @@ namespace Pad
         }
     }
 } // namespace Pad
-
     
-    RectF vkeys[INPUT_COUNT] =
+    void init(VJoy::Preset const& preset)
     {
-        {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
-        {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
-        {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
-        {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
-        
-        {0.00f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
-        {0.15f, 0.8f, 0.14f, 0.2f}, // FIREKEY
-        
-        {0.00f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
-        {0.15f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
-        
-        {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
-        {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
-        
-        {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
-        {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
-        {0.70f, 0.0f, 0.1f, 0.1f}, // F2KEY
-        {0.85f, 0.0f, 0.1f, 0.1f}, // F3KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F4KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F5KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F6KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F7KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F8KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F9KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F10KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F11KEY
-        {-1.f, -1.f, -1.f, -1.f}, // F12KEY
-        
-        {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
-        {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
-        {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
-    };
+        current_set = preset;
+        Pad::init(preset);
+    }
     
     void update_buttons(PointF const& p)
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
-            if (vkeys[i].x < 0)
+            if (current_set.positions[i].x < 0)
                 continue;
             
-            if (vkeys[i].point_in(p))
+            if (current_set.positions[i].point_in(p))
                 inputs[i] = true;
         }
         
@@ -262,7 +284,7 @@ namespace Pad
     {
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
-            RectF const& vkey = vkeys[i];
+            RectF const& vkey = current_set.positions[i];
             
             if (vkey.x < 0)
                 continue;
@@ -275,6 +297,7 @@ namespace Pad
     }
     
 } // namespace Vkeys
+
 
 class GestureObserver : public IGestureObserver
 {
@@ -598,13 +621,48 @@ namespace ModeAware
     }
     
 } // namespace ModeAware
-} // namespace VJoy
 
+
+    
+Preset const& getPreset(size_t num)
+{
+    if (num >= VKeys::presets_count)
+        num = 0;
+    
+    return VKeys::presets[num];
+}
+
+size_t VJoy::getPresetsCount()
+{
+    return VKeys::presets_count;
+}
+
+size_t getCurrentPresetNum()
+{
+    return VKeys::current_preset;
+}
+
+Preset const& getCurrentSet()
+{
+    return VKeys::current_set;
+}
+
+void setCurrentSet(Preset const& preset)
+{
+    VKeys::init(preset);
+}
+
+void setFromPreset(size_t num)
+{
+    setCurrentSet(getPreset(num));
+    VKeys::current_preset = num;
+}
 
 bool  VJoy::Init()
 {
     vjoy_enabled = true;
     registerGetureObserver(&gestureObserver);
+    setFromPreset(0);
     return true;
 }
 
@@ -703,3 +761,5 @@ void VJoy::ignoreAllCurrentFingers()
     
     lastFingerPos.clear();
 }
+
+} // namespace VJoy

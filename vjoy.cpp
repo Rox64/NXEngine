@@ -439,6 +439,9 @@ namespace ModeAware
         virtual void on_enter() {}
         virtual void update_buttons(Point const& p)
         {
+            if (VjoyMode::EGESTURE == vjoy_mode.getMode())
+                return;
+            
             VKeys::update_buttons(p);
         }
         virtual void draw()
@@ -760,9 +763,6 @@ void VJoy::InjectInputEvent(SDL_Event const & evt)
         
         return;
     }
-    
-    if (vjoy_mode.getMode() == VjoyMode::EGESTURE)
-        return;
     
     if (xres < 0)
     {

@@ -17,6 +17,10 @@ void SetLogFilename(const char *fname)
 {
 	strncpy(logfilename, fname, sizeof(logfilename));
 	remove(logfilename);
+    
+    FILE *fp;
+	fp = fileopenCache(logfilename, "w");
+    fclose(fp);
 }
 
 void writelog(const char *buf, bool append_cr)

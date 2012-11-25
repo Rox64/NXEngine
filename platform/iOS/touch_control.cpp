@@ -21,6 +21,10 @@ void toggleGestureRecognizer(bool enabled)
     toggle_gesture_recognizer(enabled);
 }
 
+void toggleSpecGestureRecognizer(bool enabled)
+{
+    toggle_spec_gesture_recognizer(enabled);
+}
 
 extern "C"
 {
@@ -30,16 +34,16 @@ extern "C"
             sGO->tap(x, y);
     }
     
-    void pan(float dx, float dy)
+    void pan(float x, float y, float dx, float dy)
     {
         if (sGO)
-            sGO->pan(dx, dy);
+            sGO->pan(x, y, dx, dy);
     }
     
-    void pinch(float scale)
+    void pinch(float scale, bool is_end)
     {
         if (sGO)
-            sGO->pinch(scale);
+            sGO->pinch(scale, is_end);
     }
 
 }

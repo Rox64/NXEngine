@@ -103,6 +103,11 @@ public:
         return EBOTH;
     }
     
+    void specialGestures(bool enabled)
+    {
+        toggleSpecGestureRecognizer(enabled);
+    }
+    
 private:
     Mode mode;
 };
@@ -115,6 +120,90 @@ VjoyMode vjoy_mode;
 
 float xres = -1.0f;
 float yres = -1.0f;
+
+
+class GestureObserver : public IGestureObserver
+{
+    typedef std::vector<PointF> tapLocation_t;
+    typedef std::list<std::pair<PointF, PointF> > panTranslation_t;
+public:
+    virtual void tap(float x, float y)
+    {
+        taps.push_back(PointF(x, y));
+    }
+    
+    virtual void pan(float x, float y, float dx, float dy)
+    {
+        pans.push_back(std::make_pair(PointF(x, y), PointF(dx, dy)));
+    }
+    
+    virtual void pinch(float scale, bool is_end)
+    {
+        pinch_scale = scale;
+        was_pinch = true;
+        pinch_ended = is_end;
+    }
+    
+public:
+    
+    bool wasTap(RectF const& rect)
+    {
+        for (tapLocation_t::const_iterator it = taps.begin(); it != taps.end(); ++it)
+        {
+            if (rect.point_in(*it))
+                return true;
+        }
+        
+        return false;
+    }
+    
+    bool wasTap()
+    {
+        return !taps.empty();
+    }
+    
+    bool wasPan(PointF& p, PointF& t)
+    {
+        if (pans.empty())
+            return false;
+        p = pans.front().first;
+        t = pans.front().second;
+        pans.pop_front();
+        return true;
+    }
+    
+    bool wasPinch(float& scale) const
+    {
+        if (!was_pinch)
+            return false;
+        scale = pinch_scale;
+        return true;
+    }
+    
+    bool pinchEnded() const
+    {
+        return pinch_ended;
+    }
+    
+    void flushEvents()
+    {
+        taps.clear();
+        pans.clear();
+        was_pinch = false;
+        pinch_ended = false;
+    }
+    
+private:
+    
+    tapLocation_t taps;
+    panTranslation_t pans;
+    float pinch_scale;
+    bool was_pinch;
+    bool pinch_ended;
+};
+
+static GestureObserver gestureObserver;
+
 
 
 // VKeys
@@ -337,81 +426,10 @@ namespace Pad
         Pad::draw();
     }
     
+    
+    
 } // namespace Vkeys
 
-
-class GestureObserver : public IGestureObserver
-{
-    typedef std::vector<PointF> tapLocation_t;
-    typedef std::list<PointF> panTranslation_t;
-public:
-    virtual void tap(float x, float y)
-    {
-        taps.push_back(PointF(x, y));
-    }
-    
-    virtual void pan(float dx, float dy)
-    {
-        pans.push_back(PointF(dx, dy));
-    }
-    
-    virtual void pinch(float scale)
-    {
-        pinch_scale = scale;
-        was_pinch = true;
-    }
-    
-public:
-    
-    bool wasTap(RectF const& rect)
-    {
-        for (tapLocation_t::const_iterator it = taps.begin(); it != taps.end(); ++it)
-        {
-            if (rect.point_in(*it))
-                return true;
-        }
-        
-        return false;
-    }
-    
-    bool wasTap()
-    {
-        return !taps.empty();
-    }
-    
-    bool wasPan(PointF& t)
-    {
-        if (pans.empty())
-            return false;
-        t = pans.front();
-        pans.pop_front();
-        return true;
-    }
-    
-    bool wasPinch(float& scale)
-    {
-        if (!was_pinch)
-            return false;
-        scale = pinch_scale;
-        return true;
-    }
-    
-    void flushEvents()
-    {
-        taps.clear();
-        pans.clear();
-        was_pinch = false;
-    }
-    
-private:
-    
-    tapLocation_t taps;
-    panTranslation_t pans;
-    float pinch_scale;
-    bool was_pinch;
-};
-
-static GestureObserver gestureObserver;
 
 namespace VJoy {
 namespace ModeAware

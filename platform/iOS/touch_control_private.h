@@ -15,9 +15,9 @@ extern "C"
 #endif
     void tap(float x, float y);
     
-    void pinch(float scale);
+    void pinch(float scale, bool is_end);
     
-    void pan(float dx, float dy);
+    void pan(float x, float y, float dx, float dy);
     
     void toggle_gesture_recognizer(int enabled);
     

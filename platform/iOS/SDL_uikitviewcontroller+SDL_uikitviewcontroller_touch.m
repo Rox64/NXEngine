@@ -107,22 +107,28 @@ void toggle_spec_gesture_recognizer(int enabled)
 
 - (void)handlePan:(UIPanGestureRecognizer *)gesture
 {
+    CGPoint p = [gesture locationInView:gesture.view];
+    
     CGPoint t = [gesture translationInView:gesture.view];
     [gesture setTranslation:CGPointZero inView:gesture.view];
     
     t.x /= gesture.view.bounds.size.width;
     t.y /= gesture.view.bounds.size.height;
     
+    p.x /= gesture.view.bounds.size.width;
+    p.y /= gesture.view.bounds.size.height;
+    
+    
     //NSLog(@"PAN GESTERE %f %f", t.x, t.y);
     
-    pan(t.x, t.y);
+    pan(p.x, p.y, t.x, t.y);
 }
 
 - (void)handlePinch:(UIPinchGestureRecognizer *)gesture
 {
     //NSLog(@"Pinch scale: %f", gesture.scale);
     
-    pinch(gesture.scale);
+    pinch(gesture.scale, gesture.state == UIGestureRecognizerStateEnded);
 }
 
 @end

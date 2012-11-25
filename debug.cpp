@@ -282,6 +282,18 @@ const char *strhex(int value)
 		return stprintf("0x%x", value);
 }
 
+const char *strhex(void const* value, size_t size)
+{
+    char *str = GetStaticStr();
+	if (size > 510)
+        size = 510;
+    size_t i, j;
+    for (i = j = 0; j < size; i+=2, j++)
+    {
+        sprintf(&str[i], "%02x", (unsigned int)(*(((unsigned char const*)value) + j)));
+    }
+    return str;
+}
 
 /*
 void c------------------------------() {}

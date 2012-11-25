@@ -80,7 +80,25 @@ void RectF::draw_thin_rect(NXColor const& c) const
     Graphics::DrawLine(x2, y1, x2, y2, c);
 }
 
+void RectF::move(PointF const& translation)
+{
+    x += translation.x;
+    y += translation.y;
+}
 
+RectF RectF::scale(float factor)
+{
+//    float cx = x + w/2;
+//    float cy = y + h/2;
+//    
+//    float nw = w * factor;
+//    float nh = h * factor;
+//    
+//    RectF r = {cx - 2*nw, cy - 2*nh, nw, nh};
+    
+    RectF r = {x, y, w * factor, h * factor};
+    return r;
+}
 
 
 TriF::TriF(PointF const& a, float size, float rb, float rc) :

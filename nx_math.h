@@ -46,6 +46,10 @@ struct RectF
     void draw_thick_rect(NXColor const& c) const;
     
     void draw_thin_rect(NXColor const& c) const;
+    
+    void move(PointF const& translation);
+    
+    RectF scale(float factor);
 };
 
 struct TriF

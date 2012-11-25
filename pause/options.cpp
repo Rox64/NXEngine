@@ -124,7 +124,7 @@ void c------------------------------() {}
 */
 
 static void EnterTapControlsMenu(ODItem *item, int dir);
-
+static void EnterVjoyControlsMenu(ODItem *item, int dir);
 
 static void EnterMainMenu()
 {
@@ -139,6 +139,10 @@ Dialog *dlg = opt.dlg;
     
 #ifdef CONFIG_USE_TAPS
     dlg->AddItem("Tap controls", EnterTapControlsMenu);
+#endif
+    
+#ifdef CONFIG_USE_VJOY
+    dlg->AddItem("Virtual keys", EnterVjoyControlsMenu);
 #endif
     
 	dlg->AddItem("Replay", EnterReplayMenu);
@@ -503,12 +507,90 @@ static void _edit_tap_control(ODItem *item, int dir)
     }
 }
 
+/*
+ void c------------------------------() {}
+ */
 
+static void _edit_view_preset(ODItem *item, int dir);
+static void _get_view_preset(ODItem *item);
+static void _apply_preset(ODItem *item, int dir);
+static void _enter_edit_buttons(ODItem *item, int dir);
 
+void (*beforeVjoyControlsDisiss)() = NULL;
+struct {
+    VJoy::Preset preset;
+    int num;
+    bool need_restore;
+} preset_restore;
 
+static void _vjoy_controls_menu_dissmiss()
+{
+    if (preset_restore.need_restore)
+    {
+        settings->vjoy_controls = preset_restore.preset;
+        settings->vjoy_current_preset = preset_restore.num;
+        VJoy::setUpdated();
+    }
+    
+    Dialog *dlg = opt.dlg;
+    dlg->ondismiss = beforeVjoyControlsDisiss;
+    EnterMainMenu();
+}
 
+static void EnterVjoyControlsMenu(ODItem *item, int dir)
+{
+    Dialog *dlg = opt.dlg;
+    
+	dlg->Clear();
+	sound(SND_MENU_MOVE);
+	
+	dlg->AddItem("View preset", _edit_view_preset, _get_view_preset);
+    dlg->AddItem("Apply preset", _apply_preset);
+    
+	dlg->AddSeparator();
+    
+    dlg->AddItem("Edit buttons", _enter_edit_buttons);
+    
+	dlg->AddSeparator();
+	dlg->AddDismissalItem();
+    
+    beforeVjoyControlsDisiss = dlg->ondismiss;
+    dlg->ondismiss = _vjoy_controls_menu_dissmiss;
+    
+    preset_restore.preset = settings->vjoy_controls;
+    preset_restore.num = settings->vjoy_current_preset;
+    preset_restore.need_restore = true;
+}
 
+static void _edit_view_preset(ODItem *item, int dir)
+{
+    int newpres = (settings->vjoy_current_preset + dir);
+	if (newpres >= VJoy::getPresetsCount()) newpres = 0;
+	if (newpres < 0) newpres = (VJoy::getPresetsCount() - 1);
+    
+    settings->vjoy_controls = VJoy::getPreset(newpres);
+    settings->vjoy_current_preset = newpres;
+    VJoy::setUpdated();
+    
+    preset_restore.need_restore = true;
+    
+    sound(SND_DOOR);
+}
 
+static void _get_view_preset(ODItem *item)
+{
+    snprintf(item->righttext, sizeof(item->righttext), "%d", settings->vjoy_current_preset);
+}
 
+static void _apply_preset(ODItem *item, int dir)
+{
+    preset_restore.preset = settings->vjoy_controls;
+    preset_restore.num = settings->vjoy_current_preset;
+    preset_restore.need_restore = false;
+    
+    sound(SND_MENU_SELECT);
+}
 
-
+static void _enter_edit_buttons(ODItem *item, int dir)
+{
+}

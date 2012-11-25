@@ -208,6 +208,11 @@ static GestureObserver gestureObserver;
 
 // VKeys
 namespace VKeys {
+    namespace Edit
+    {
+        bool edit_enabled = false;
+        bool pad_selected;
+    }
     
     static const size_t presets_count = 2;
     
@@ -381,7 +386,8 @@ namespace Pad
             PointF const& b = segments[i].b;
             PointF const& c = segments[i].c;
             
-            NXColor const& color = pressed[i] ? col_pressed : col_released;
+            NXColor color = pressed[i] ? col_pressed : col_released;
+            color = (Edit::edit_enabled && Edit::pad_selected) ? col_pressed : color;
             
             Graphics::DrawLine(a.x * Graphics::SCREEN_WIDTH, a.y * Graphics::SCREEN_HEIGHT,
                                b.x * Graphics::SCREEN_WIDTH, b.y * Graphics::SCREEN_HEIGHT, color);
@@ -390,6 +396,217 @@ namespace Pad
         }
     }
 } // namespace Pad
+    
+    namespace Edit
+    {
+        
+        enum State
+        {
+            EBegin,
+            ESelected,
+            ESelectedPad,
+            EPinched,
+            EPinchedPad
+        } state;
+        int selected;
+        RectF beforePinch;
+        float padBeforePinch;
+        
+        VJoy::IEditEventHandler* editEventHandler;
+
+        bool wasTapOnKey(int key)
+        {
+            return gestureObserver.wasTap(settings->vjoy_controls.positions[key]);
+        }
+        
+        int findTappedKey(int begin)
+        {
+            for (int i = begin; i < INPUT_COUNT; ++i)
+            {
+                if (settings->vjoy_controls.positions[i].x < 0)
+                    continue;
+                
+                if (wasTapOnKey(i))
+                {
+                    return i;
+                }
+            }
+            
+            return -1;
+        }
+        
+        RectF getPadRect()
+        {
+            RectF padrect = {
+                settings->vjoy_controls.pad_center.x - settings->vjoy_controls.pad_size,
+                settings->vjoy_controls.pad_center.y - settings->vjoy_controls.pad_size,
+                settings->vjoy_controls.pad_size * 2,
+                settings->vjoy_controls.pad_size * 2
+            };
+            
+            return padrect;
+        }
+        
+        void process()
+        {
+            PointF p, t;
+            float scale = 1.0f;
+            
+            switch (state)
+            {
+                case EBegin:
+                {
+                    // pinch to exit
+                    if (gestureObserver.wasPinch(scale) && scale < 0.4f)
+                    {
+                        if (editEventHandler)
+                            editEventHandler->end();
+                        return;
+                    }
+                    
+                    // tap to select key
+                    int k = findTappedKey(0);
+                    if (k >= 0)
+                    {
+                        selected = k;
+                        state = ESelected;
+                        if (editEventHandler)
+                            editEventHandler->selected(k);
+                    }
+                    
+                    // tap to select pad
+                    if (gestureObserver.wasTap(getPadRect()))
+                    {
+                        state = ESelectedPad;
+                        pad_selected = true;
+                        if (editEventHandler)
+                            editEventHandler->selectedPad(true);
+                    }
+                    
+                    break;
+                }
+                case ESelected:
+                {
+                    // tap to unselect
+                    if (wasTapOnKey(selected))
+                    {
+                        // cycle through buttons
+                        int k = findTappedKey(selected + 1);
+                        if (k < 0)
+                        {
+                            k = findTappedKey(0);
+                            if (k == selected)
+                                k = -1;
+                        }
+                        
+                        if (k < 0)
+                        {
+                            // unselect
+                            selected = -1;
+                            state = EBegin;
+                            if (editEventHandler)
+                                editEventHandler->selected(-1);
+                            break;
+                        }
+                        else
+                        {
+                            // select next
+                            selected = k;
+                            if (editEventHandler)
+                                editEventHandler->selected(k);
+                            break;
+                        }
+                    }
+                    
+                    // pan to move
+                    if (gestureObserver.wasPan(p, t))
+                    {
+                        RectF& r = settings->vjoy_controls.positions[selected];
+                        //r.move(p);
+                        if (p.x - r.w/2.0f >= 0)
+                        {
+                            r.x = p.x - r.w/2.0f;
+                            r.y = p.y - r.h/2.0f;
+                        }
+                    }
+                    
+                    // pinch to scale
+                    if (gestureObserver.wasPinch(scale))
+                    {
+                        beforePinch = settings->vjoy_controls.positions[selected];
+                        state = EPinched;
+                    }
+                    
+                    break;
+                }
+                case ESelectedPad:
+                {
+                    // tap to unselect pad
+                    if (gestureObserver.wasTap(getPadRect()))
+                    {
+                        state = EBegin;
+                        pad_selected = false;
+                        if (editEventHandler)
+                            editEventHandler->selectedPad(false);
+                    }
+                    
+                    // pan to move
+                    if (gestureObserver.wasPan(p, t))
+                    {
+                        //RectF& r = settings->vjoy_controls.positions[selected];
+                        //r.move(p);
+                        //r.x = p.x - r.w/2.0f;
+                        //r.y = p.y - r.h/2.0f;
+                        settings->vjoy_controls.pad_center.x = p.x;
+                        settings->vjoy_controls.pad_center.y = p.y;
+                        VKeys::Pad::init();
+                    }
+                    
+                    // pinch to scale
+                    if (gestureObserver.wasPinch(scale))
+                    {
+                        padBeforePinch = settings->vjoy_controls.pad_size ;
+                        state = EPinchedPad;
+                    }
+                    
+                    break;
+                }
+                case EPinched:
+                {
+                    if (gestureObserver.wasPinch(scale))
+                    {
+                        settings->vjoy_controls.positions[selected] = beforePinch.scale(scale);
+                        //stat("scale = %f", scale);
+                    }
+                    if (gestureObserver.pinchEnded())
+                    {
+                        state = ESelected;
+                        //stat("Pinch ended");
+                    }
+                    break;
+                }
+                case EPinchedPad:
+                {
+                    if (gestureObserver.wasPinch(scale))
+                    {
+                        settings->vjoy_controls.pad_size = padBeforePinch * scale;
+                        //stat("scale = %f", scale);
+                        VKeys::Pad::init();
+                    }
+                    if (gestureObserver.pinchEnded())
+                    {
+                        state = ESelectedPad;
+                        //stat("Pinch ended");
+                    }
+                    break;
+                }
+            } // switch
+            
+        }
+        
+        
+    } // namespace Edit
+    
     
     void init()
     {
@@ -419,7 +636,9 @@ namespace Pad
             if (vkey.x < 0)
                 continue;
             
-            NXColor const& c = inputs[i] ? col_pressed : col_released;
+            NXColor c = inputs[i] ? col_pressed : col_released;
+            c = (Edit::edit_enabled && i == Edit::selected) ? col_pressed : c;
+            
             vkey.draw_thin_rect(c);
         }
         
@@ -697,7 +916,7 @@ namespace ModeAware
                     pads[gm]->disable_draw = gm_draw;
                     static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = normal_textbox_mode;
                     static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = options_vkeys_menu;
-                    static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = options_vkeys_edit;
+                    VKeys::Edit::edit_enabled = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = options_vkeys_edit;
                     ::col_pressed = this->col_pressed;
                     ::col_released = this->col_released;
                 }
@@ -719,6 +938,14 @@ namespace ModeAware
                 s = states.top();
                 s.pop();
                 states.pop();
+                
+                switch (newScreen)
+                {
+                    case EOptsVkeyEdit:
+                        vjoy_mode.specialGestures(false);
+                        break;
+                }
+                
                 return;
             }
         }
@@ -766,9 +993,12 @@ namespace ModeAware
             {
                 vjoy_mode.setMode(VjoyMode::EGESTURE);
                 static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = false;
-                static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = true;
+                VKeys::Edit::edit_enabled = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = true;
                 col_pressed = edit_col_pressed;
                 col_released = edit_col_released;
+                
+                vjoy_mode.specialGestures(true);
+                
                 break;
             }
         }
@@ -895,6 +1125,11 @@ void ProcessInput()
         PointF const& p = it->second;
         ModeAware::dispatch(p);
     }
+    
+    if (VKeys::Edit::edit_enabled)
+    {
+        VKeys::Edit::process();
+    }
 }
 
 void ignoreAllCurrentFingers()
@@ -906,5 +1141,11 @@ void ignoreAllCurrentFingers()
     
     lastFingerPos.clear();
 }
+    
+void setEditEventHandler(IEditEventHandler* handler)
+{
+    VKeys::Edit::editEventHandler = handler;
+}
+    
 
 } // namespace VJoy

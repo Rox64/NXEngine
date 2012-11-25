@@ -50,6 +50,18 @@ namespace ModeAware
     void specScreenChanged(SpecScreens newScreen, bool enter);
 }
     
+    
+    struct IEditEventHandler
+    {
+        virtual void end() = 0;
+        virtual void selected(int key) = 0;
+        virtual void selectedPad(bool enter) = 0;
+    protected:
+        ~IEditEventHandler() {}
+    };
+    
+    void setEditEventHandler(IEditEventHandler* handler);
+    
 } // namespace VJoy
 
 #endif // VJOY_H__

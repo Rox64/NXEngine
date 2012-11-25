@@ -550,14 +550,15 @@ static void _setup_vjoy_controls_menu()
 	sound(SND_MENU_MOVE);
 	
 	dlg->AddItem("View preset", _edit_view_preset, _get_view_preset);
-    dlg->AddItem("Apply preset", _apply_preset);
+    
     
 	dlg->AddSeparator();
     
     dlg->AddItem("Edit buttons", _enter_edit_buttons);
     
 	dlg->AddSeparator();
-	dlg->AddDismissalItem();
+    dlg->AddItem("Apply", _apply_preset);
+	dlg->AddDismissalItem("Cancel");
 }
 
 static void EnterVjoyControlsMenu(ODItem *item, int dir)
@@ -601,6 +602,8 @@ static void _apply_preset(ODItem *item, int dir)
     preset_restore.preset = settings->vjoy_controls;
     preset_restore.num = settings->vjoy_current_preset;
     preset_restore.need_restore = false;
+    
+    _vjoy_controls_menu_dissmiss();
     
     sound(SND_MENU_SELECT);
 }

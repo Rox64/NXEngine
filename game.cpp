@@ -236,6 +236,9 @@ void Game::tick(void)
 
 GameModes getGamemode()
 {
+    if (game.paused)
+        return static_cast<GameModes>(game.paused);
+    
     return static_cast<GameModes>(game.mode);
 }
 

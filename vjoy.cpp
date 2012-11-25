@@ -37,8 +37,14 @@ namespace  {
 }
 
 
-const NXColor col_released(0xff, 0xcf, 0x33);
-const NXColor col_pressed (0xff, 0x00, 0x00);
+const NXColor std_col_released(0xff, 0xcf, 0x33);
+const NXColor std_col_pressed (0xff, 0x00, 0x00);
+
+const NXColor edit_col_released(0xb8, 0xb8, 0xb8);
+const NXColor edit_col_pressed (0x12, 0xe3, 0x24);
+
+NXColor col_released = std_col_released;
+NXColor col_pressed  = std_col_pressed;
 
 typedef std::map<SDL_FingerID, PointF> lastFingerPos_t;
 lastFingerPos_t lastFingerPos;
@@ -494,6 +500,13 @@ namespace ModeAware
     };
     class OptionsModePad : public DefaultControl
     {
+    public:
+        
+        bool vkeys_menu;
+        bool vkeys_edit;
+        
+        OptionsModePad() : vkeys_menu(false), vkeys_edit(false) {}
+        
         virtual void on_enter()
         {
             vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EOptions));
@@ -501,12 +514,38 @@ namespace ModeAware
         
         virtual void update_buttons(PointF const& p)
         {
-            ppads[GM_NORMAL]->update_buttons(p);
+            //ppads[GM_NORMAL]->update_buttons(p);
+            if (vkeys_menu)
+            {
+                //VKeys::draw();
+            }
+            else if (vkeys_edit)
+            {
+                //VKeys::draw();
+            }
+            else
+            {
+                DefaultControl::update_buttons(p);
+            }
         }
         
         virtual void draw()
         {
-            ppads[GM_NORMAL]->draw();
+            //ppads[GM_NORMAL]->draw();
+            
+            if (vkeys_menu)
+            {
+                VKeys::draw();
+            }
+            else if (vkeys_edit)
+            {
+                VKeys::draw();
+            }
+            else
+            {
+                DefaultControl::draw();
+            }
+            
         }
     };
     
@@ -582,6 +621,10 @@ namespace ModeAware
                 GameModes gm;
                 bool gm_draw;
                 bool normal_textbox_mode;
+                bool options_vkeys_menu;
+                bool options_vkeys_edit;
+                NXColor col_pressed;
+                NXColor col_released;
                 
                 void push()
                 {
@@ -589,6 +632,10 @@ namespace ModeAware
                     gm = getGamemode();
                     gm_draw = pads[gm]->disable_draw;
                     normal_textbox_mode = static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode;
+                    options_vkeys_menu = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu;
+                    options_vkeys_edit = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit;
+                    this->col_pressed = ::col_pressed;
+                    this->col_released = ::col_released;
                 }
                 
                 void pop()
@@ -596,6 +643,10 @@ namespace ModeAware
                     vjoy_mode.setMode(mode);
                     pads[gm]->disable_draw = gm_draw;
                     static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = normal_textbox_mode;
+                    static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = options_vkeys_menu;
+                    static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = options_vkeys_edit;
+                    ::col_pressed = this->col_pressed;
+                    ::col_released = this->col_released;
                 }
             };
             
@@ -648,6 +699,23 @@ namespace ModeAware
             {
                 vjoy_mode.setMode(VjoyMode::getModeFromSettings(Settings::Tap::EIngameDialog));
                 static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = (vjoy_mode.getMode() != VjoyMode::ETOUCH);
+                break;
+            }
+            case EOptsVkeyMenu:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = true;
+                col_pressed = edit_col_pressed;
+                col_released = edit_col_released;
+                break;
+            }
+            case EOptsVkeyEdit:
+            {
+                vjoy_mode.setMode(VjoyMode::EGESTURE);
+                static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = false;
+                static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = true;
+                col_pressed = edit_col_pressed;
+                col_released = edit_col_released;
                 break;
             }
         }

@@ -532,6 +532,8 @@ static void _vjoy_controls_menu_dissmiss()
         VJoy::setUpdated();
     }
     
+    VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EOptsVkeyMenu, false);
+    
     Dialog *dlg = opt.dlg;
     dlg->ondismiss = beforeVjoyControlsDisiss;
     EnterMainMenu();
@@ -560,6 +562,8 @@ static void EnterVjoyControlsMenu(ODItem *item, int dir)
     preset_restore.preset = settings->vjoy_controls;
     preset_restore.num = settings->vjoy_current_preset;
     preset_restore.need_restore = true;
+    
+    VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EOptsVkeyMenu, true);
 }
 
 static void _edit_view_preset(ODItem *item, int dir)

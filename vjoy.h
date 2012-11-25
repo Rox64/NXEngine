@@ -37,7 +37,9 @@ namespace ModeAware
         ESaveLoad,
         EYesNo,
         EStageSelect1,
-        EStageSelect2
+        EStageSelect2,
+        EOptsVkeyMenu,
+        EOptsVkeyEdit
     };
     
     

@@ -10,7 +10,7 @@
 #include "platform.h"
 
 const char *setfilename = "settings.dat";
-const uint16_t SETTINGS_VERSION = 0x1607;		// serves as both a version and magic
+const uint16_t SETTINGS_VERSION = 0x1608;		// serves as both a version and magic
 
 Settings normal_settings;
 Settings replay_settings;
@@ -62,6 +62,7 @@ bool settings_load(Settings *setfile)
 		
         setfile->vjoy_controls = VJoy::getPreset(0);
         setfile->vjoy_current_preset = 0;
+        setfile->vjoy_show_mode = 0;
         VJoy::setUpdated();
         
 		return 1;

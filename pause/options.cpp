@@ -516,6 +516,8 @@ static void _edit_tap_control(ODItem *item, int dir)
 
 static void _edit_view_preset(ODItem *item, int dir);
 static void _get_view_preset(ODItem *item);
+static void _edit_show_mode(ODItem *item, int dir);
+static void _get_show_mode(ODItem *item);
 static void _apply_preset(ODItem *item, int dir);
 static void _enter_edit_buttons(ODItem *item, int dir);
 
@@ -557,6 +559,11 @@ static void _setup_vjoy_controls_menu()
     dlg->AddItem("Edit buttons", _enter_edit_buttons);
     
 	dlg->AddSeparator();
+    
+    dlg->AddItem("Keys show mode", _edit_show_mode, _get_show_mode);
+    
+    dlg->AddSeparator();
+    
     dlg->AddItem("Apply", _apply_preset);
 	dlg->AddDismissalItem("Cancel");
 }
@@ -596,6 +603,26 @@ static void _get_view_preset(ODItem *item)
 {
     snprintf(item->righttext, sizeof(item->righttext), "%d", settings->vjoy_current_preset);
 }
+
+static void _edit_show_mode(ODItem *item, int dir)
+{
+    int newmode = (settings->vjoy_show_mode + dir);
+	if (newmode >= VJoy::EShowModeLast) newmode = 0;
+	if (newmode < 0) newmode = (VJoy::EShowModeLast - 1);
+    
+    settings->vjoy_show_mode = newmode;
+    
+    sound(SND_DOOR);
+}
+
+static void _get_show_mode(ODItem *item)
+{
+    static char const * const modes[VJoy::EShowModeLast] = {
+        "Always", "Pressed only", "Unpressed only", "Never"
+    };
+    maxcpy(item->righttext, modes[settings->vjoy_show_mode], sizeof(item->righttext));
+}
+
 
 static void _apply_preset(ODItem *item, int dir)
 {

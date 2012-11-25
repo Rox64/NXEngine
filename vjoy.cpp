@@ -309,6 +309,7 @@ namespace Pad
     
     const size_t seg_count = 8;
     TriF segments[seg_count];
+    bool pressed[seg_count];
     
     void init()
     {
@@ -325,8 +326,6 @@ namespace Pad
         //seg_size = preset.pad_size;
         //seg_center = preset.pad_center;
     }
-    
-    bool pressed[seg_count];
     
     void update_buttons(PointF const& p)
     {
@@ -351,38 +350,48 @@ namespace Pad
         }
     }
     
-    void process()
-    {
-        if (!enabled)
-            return;
-        
-        PointF vec = current - origin;
-        float r2 = vec.x * vec.x + vec.y * vec.y;
-        if (r2 < min_r2)
-            return;
-        // if (r2 > max_r2)
-        //    r2 = max_r2;
-        
-        float t = atan2(vec.y, vec.x);
-        
-#define P(a) (float(double(a) * M_PI / 8.0))
-#define RANGE(a, b) (P(a) <= t && t <= P(b))
-        
-        inputs[0] = (RANGE(-8, -5) || RANGE(5, 8));  // left
-        inputs[1] = (RANGE(-3, 0) || RANGE(0, 3));   // rigth
-        inputs[2] = (RANGE(-7, -1));                 // up
-        inputs[3] = (RANGE(1, 7));                   // down
-        
-#undef RANGE
-#undef P
-        
-    }
+//    void process()
+//    {
+//        if (!enabled)
+//            return;
+//        
+//        PointF vec = current - origin;
+//        float r2 = vec.x * vec.x + vec.y * vec.y;
+//        if (r2 < min_r2)
+//            return;
+//        // if (r2 > max_r2)
+//        //    r2 = max_r2;
+//        
+//        float t = atan2(vec.y, vec.x);
+//        
+//        
+//        
+//#define P(a) (float(double(a) * M_PI / 8.0))
+//#define RANGE(a, b) (P(a) <= t && t <= P(b))
+//        
+//       // pressed[0] = RANGE(-8, -7)
+//        
+//        inputs[0] = (RANGE(-8, -5) || RANGE(5, 8));  // left
+//        inputs[1] = (RANGE(-3, 0) || RANGE(0, 3));   // rigth
+//        inputs[2] = (RANGE(-7, -1));                 // up
+//        inputs[3] = (RANGE(1, 7));                   // down
+//        
+//#undef RANGE
+//#undef P
+//        
+//    }
     
     void draw()
     {
         PointF const& a = settings->vjoy_controls.pad_center;
         for (size_t i = 0; i < seg_count; ++i)
         {
+            if (!Edit::edit_enabled &&
+                ((pressed[i] && settings->vjoy_show_mode == VJoy::EShowUnpressed) ||
+                (!pressed[i] && settings->vjoy_show_mode == VJoy::EShowPressed))
+                )
+                continue;
+            
             PointF const& b = segments[i].b;
             PointF const& c = segments[i].c;
             
@@ -629,11 +638,20 @@ namespace Pad
     
     void draw()
     {
+        if (!Edit::edit_enabled && settings->vjoy_show_mode == VJoy::EShowNever)
+            return;
+        
         for (int i = 0; i < INPUT_COUNT; ++i)
         {
             RectF const& vkey = settings->vjoy_controls.positions[i];
             
             if (vkey.x < 0)
+                continue;
+            
+            if (!Edit::edit_enabled &&
+                ((inputs[i] && settings->vjoy_show_mode == VJoy::EShowUnpressed) ||
+                 (!inputs[i] && settings->vjoy_show_mode == VJoy::EShowPressed))
+                )
                 continue;
             
             NXColor c = inputs[i] ? col_pressed : col_released;
@@ -1148,4 +1166,13 @@ void setEditEventHandler(IEditEventHandler* handler)
 }
     
 
+    void setShowMode(ShowMode newmode)
+    {
+        settings->vjoy_show_mode = newmode;
+    }
+    
+    ShowMode getShowMode()
+    {
+        return static_cast<ShowMode>(settings->vjoy_show_mode);
+    }
 } // namespace VJoy

@@ -62,6 +62,7 @@ struct Settings
     
     VJoy::Preset vjoy_controls;
     int vjoy_current_preset;
+    int vjoy_show_mode;
 };
 
 bool settings_load(Settings *settings=NULL);

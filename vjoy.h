@@ -62,6 +62,19 @@ namespace ModeAware
     
     void setEditEventHandler(IEditEventHandler* handler);
     
+    
+    enum ShowMode
+    {
+        EShowAlways,
+        EShowPressed,
+        EShowUnpressed,
+        EShowNever,
+        
+        EShowModeLast
+    };
+    
+    void setShowMode(ShowMode newmode);
+    ShowMode getShowMode();
 } // namespace VJoy
 
 #endif // VJOY_H__

@@ -113,7 +113,7 @@ float yres = -1.0f;
 // VKeys
 namespace VKeys {
     
-    static const size_t presets_count = 1;
+    static const size_t presets_count = 2;
     
     static const VJoy::Preset presets[presets_count] =
     {
@@ -154,8 +154,46 @@ namespace VKeys {
             },
             PointF(0.82f, 0.82f),
             0.13f
+        },
+        // 1 - swap left-rigth
+        {
+            { // positions
+                {/*0.7f*/-1.f, 0.8f, 0.1f, 0.1f}, // LEFTKEY
+                {/*0.9f*/-1.f, 0.8f, 0.1f, 0.1f}, // RIGHTKEY
+                {/*0.8f*/-1.f, 0.7f, 0.1f, 0.1f}, // UPKEY
+                {/*0.8f*/-1.f, 0.9f, 0.1f, 0.1f}, // DOWNKEY
+                
+                {0.85f, 0.8f, 0.14f, 0.2f}, // JUMPKEY
+                {0.70f, 0.8f, 0.14f, 0.2f}, // FIREKEY
+                
+                {0.74f, 0.55f, 0.1f, 0.1f}, // PREVWPNKEY
+                {0.89f, 0.55f, 0.1f, 0.1f}, // NEXTWPNKEY
+                
+                {0.00f, 0.0f, 0.1f, 0.1f}, // INVENTORYKEY
+                {0.15f, 0.0f, 0.1f, 0.1f}, // MAPSYSTEMKEY
+                
+                {0.40f, 0.0f, 0.1f, 0.1f}, // ESCKEY
+                {0.55f, 0.0f, 0.1f, 0.1f}, // F1KEY
+                {0.70f, 0.0f, 0.1f, 0.1f}, // F2KEY
+                {0.85f, 0.0f, 0.1f, 0.1f}, // F3KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F4KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F5KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F6KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F7KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F8KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F9KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F10KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F11KEY
+                {-1.f, -1.f, -1.f, -1.f}, // F12KEY
+                
+                {-1.f, -1.f, -1.f, -1.f}, // FREEZE_FRAME_KEY
+                {-1.f, -1.f, -1.f, -1.f}, // FRAME_ADVANCE_KEY
+                {-1.f, -1.f, -1.f, -1.f}  // DEBUG_FLY_KEY
+            },
+            PointF(0.19f, 0.82f),
+            0.13f
         }
-    }; 
+    };
     
 namespace Pad
 {

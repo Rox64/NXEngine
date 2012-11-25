@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cmath>
+#include <list>
 #include <map>
 #include <set>
 #include <stack>
@@ -342,10 +343,22 @@ namespace Pad
 class GestureObserver : public IGestureObserver
 {
     typedef std::vector<PointF> tapLocation_t;
+    typedef std::list<PointF> panTranslation_t;
 public:
     virtual void tap(float x, float y)
     {
         taps.push_back(PointF(x, y));
+    }
+    
+    virtual void pan(float dx, float dy)
+    {
+        pans.push_back(PointF(dx, dy));
+    }
+    
+    virtual void pinch(float scale)
+    {
+        pinch_scale = scale;
+        was_pinch = true;
     }
     
 public:
@@ -366,14 +379,36 @@ public:
         return !taps.empty();
     }
     
+    bool wasPan(PointF& t)
+    {
+        if (pans.empty())
+            return false;
+        t = pans.front();
+        pans.pop_front();
+        return true;
+    }
+    
+    bool wasPinch(float& scale)
+    {
+        if (!was_pinch)
+            return false;
+        scale = pinch_scale;
+        return true;
+    }
+    
     void flushEvents()
     {
         taps.clear();
+        pans.clear();
+        was_pinch = false;
     }
     
 private:
     
     tapLocation_t taps;
+    panTranslation_t pans;
+    float pinch_scale;
+    bool was_pinch;
 };
 
 static GestureObserver gestureObserver;

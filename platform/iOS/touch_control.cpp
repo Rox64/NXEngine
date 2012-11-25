@@ -29,5 +29,17 @@ extern "C"
         if (sGO)
             sGO->tap(x, y);
     }
+    
+    void pan(float dx, float dy)
+    {
+        if (sGO)
+            sGO->pan(dx, dy);
+    }
+    
+    void pinch(float scale)
+    {
+        if (sGO)
+            sGO->pinch(scale);
+    }
 
 }

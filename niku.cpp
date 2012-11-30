@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "niku.fdh"
-#include "platform.h"
+#include "platform/platform.h"
 
 /*
 	290.rec contains the tick value 4 times, followed by the 4 byte key

@@ -1,7 +1,7 @@
 
 #include "../nx.h"
 #include "title.fdh"
-#include "vjoy.h"
+#include "../vjoy.h"
 
 // music and character selections for the different Counter times
 static struct

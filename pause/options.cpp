@@ -522,7 +522,7 @@ static void _apply_preset(ODItem *item, int dir);
 static void _enter_edit_buttons(ODItem *item, int dir);
 
 void (*beforeVjoyControlsDisiss)() = NULL;
-struct {
+static struct {
     VJoy::Preset preset;
     int num;
     bool need_restore;

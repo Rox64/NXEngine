@@ -7,7 +7,7 @@
 #include "settings.h"
 #include "replay.h"
 #include "settings.fdh"
-#include "platform.h"
+#include "platform/platform.h"
 
 const char *setfilename = "settings.dat";
 const uint16_t SETTINGS_VERSION = 0x1608;		// serves as both a version and magic

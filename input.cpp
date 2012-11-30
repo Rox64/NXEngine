@@ -177,7 +177,7 @@ int ino, key;
 				else
 				#endif	// __SDLSHIM__
 				{
-					stat("key event type = %d keycode = %d", (int)evt.type, (int)evt.key.keysym.sym);
+					//stat("key event type = %d keycode = %d", (int)evt.type, (int)evt.key.keysym.sym);
 
 					ino = have_mapping(key);
 					if (ino != 0xff)

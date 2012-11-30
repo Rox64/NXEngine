@@ -1,7 +1,7 @@
 #include <cmath>
 
 #include "nx_math.h"
-#include "graphics.h"
+#include "graphics/graphics.h"
 
 PointF PointF::operator+(PointF const& r) const
 {

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <sys/stat.h>
 
-#include "config.h"
+#include "../config.h"
 #include "platform.h"
 #include "../common/basics.h"
 

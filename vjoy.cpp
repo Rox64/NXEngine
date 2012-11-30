@@ -16,9 +16,7 @@
 #include "settings.h"
 
 #include "platform/platform.h"
-#ifdef IPHONE
-# include "platform/iOS/touch_control.h"
-#endif
+#include "platform/IGestureObserver.hpp"
 
 namespace VJoy
 {
@@ -105,15 +103,17 @@ public:
     
     void specialGestures(bool enabled)
     {
+#ifdef CONFIG_USE_TAPS
         toggleSpecGestureRecognizer(enabled);
+#endif
     }
     
 private:
     Mode mode;
 };
 
-bool vjoy_enabled = true;
-bool vjoy_visible = true;
+bool vjoy_enabled = false;
+bool vjoy_visible = false;
 VjoyMode vjoy_mode;
 
 
@@ -203,7 +203,6 @@ private:
 };
 
 static GestureObserver gestureObserver;
-
 
 
 // VKeys
@@ -899,47 +898,47 @@ namespace ModeAware
         
         ignoreAllCurrentFingers();
     }
+
+    struct state_t
+    {
+        VjoyMode::Mode mode;
+        GameModes gm;
+        bool gm_draw;
+        bool normal_textbox_mode;
+        bool options_vkeys_menu;
+        bool options_vkeys_edit;
+        NXColor col_pressed;
+        NXColor col_released;
+        
+        void push()
+        {
+            mode = vjoy_mode.getMode();
+            gm = getGamemode();
+            gm_draw = pads[gm]->disable_draw;
+            normal_textbox_mode = static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode;
+            options_vkeys_menu = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu;
+            options_vkeys_edit = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit;
+            this->col_pressed = ::col_pressed;
+            this->col_released = ::col_released;
+        }
+        
+        void pop()
+        {
+            vjoy_mode.setMode(mode);
+            pads[gm]->disable_draw = gm_draw;
+            static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = normal_textbox_mode;
+            static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = options_vkeys_menu;
+            VKeys::Edit::edit_enabled = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = options_vkeys_edit;
+            ::col_pressed = this->col_pressed;
+            ::col_released = this->col_released;
+        }
+    };
     
     void specScreenChanged(SpecScreens newScreen, bool enter)
     {
         ignoreAllCurrentFingers();
         
         {
-            struct state_t
-            {
-                VjoyMode::Mode mode;
-                GameModes gm;
-                bool gm_draw;
-                bool normal_textbox_mode;
-                bool options_vkeys_menu;
-                bool options_vkeys_edit;
-                NXColor col_pressed;
-                NXColor col_released;
-                
-                void push()
-                {
-                    mode = vjoy_mode.getMode();
-                    gm = getGamemode();
-                    gm_draw = pads[gm]->disable_draw;
-                    normal_textbox_mode = static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode;
-                    options_vkeys_menu = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu;
-                    options_vkeys_edit = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit;
-                    this->col_pressed = ::col_pressed;
-                    this->col_released = ::col_released;
-                }
-                
-                void pop()
-                {
-                    vjoy_mode.setMode(mode);
-                    pads[gm]->disable_draw = gm_draw;
-                    static_cast<NormalModePad*>(pads[GM_NORMAL])->textbox_mode = normal_textbox_mode;
-                    static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_menu = options_vkeys_menu;
-                    VKeys::Edit::edit_enabled = static_cast<OptionsModePad*>(pads[GP_OPTIONS])->vkeys_edit = options_vkeys_edit;
-                    ::col_pressed = this->col_pressed;
-                    ::col_released = this->col_released;
-                }
-            };
-            
             static std::stack<state_t> states;
         
         
@@ -1035,7 +1034,7 @@ Preset const& getPreset(size_t num)
     return VKeys::presets[num];
 }
 
-size_t VJoy::getPresetsCount()
+size_t getPresetsCount()
 {
     return VKeys::presets_count;
 }
@@ -1055,7 +1054,9 @@ void setUpdated()
 bool  Init()
 {
     vjoy_enabled = true;
+#ifdef CONFIG_USE_TAPS
     registerGetureObserver(&gestureObserver);
+#endif
     return true;
 }
 

@@ -34,7 +34,9 @@ inline void GETWAVEBYTE(stPXWave* wave, int& out)
 {
     if (wave->model_no != MOD_WHITE)
     {
-        volatile unsigned char index = (unsigned char)wave->phaseacc;
+        // The next line is intentionally this long. I tried to overcome UB
+        // from conversion double->uchar. Now, UB is possible only if wave->phaseacc > UINT_MAX
+        unsigned char index = static_cast<unsigned char>(static_cast<unsigned int>(wave->phaseacc) % 256);
         out = wave->model[index];
     }
     else

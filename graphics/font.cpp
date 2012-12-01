@@ -227,8 +227,9 @@ SDL_Rect dstrect;
 		staterr("InitBitmapChars: SDL_AllocFormat failed: %s", SDL_GetError());
 		return 1;
 	}
-	uint32_t transp = SDL_MapRGB(pxformat, 255, 0, 255);
-	
+
+	uint32_t transp = SDL_ALPHA_TRANSPARENT;
+
 	for(int i=1;i<NUM_LETTERS_RENDERED;i++)
 	{
 		str[0] = i;
@@ -604,7 +605,7 @@ static bool create_shade_sfc(void)
 		return 1;
 	}
 	
-	SDL_FillRect(shadesfc, NULL, SDL_MapRGB(pxformat, 0, 0, 0));
+	SDL_FillRect(shadesfc, NULL, SDL_ALPHA_TRANSPARENT);
 
 	Uint8 alpha_value = 128;
 	if (shadesfc->format->Amask) {

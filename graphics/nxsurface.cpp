@@ -303,6 +303,26 @@ void NXSurface::FillRect(int x1, int y1, int x2, int y2, uint8_t r, uint8_t g, u
 		SetAsTarget(false);
 }
 
+void NXSurface::ClearRect(int x1, int y1, int x2, int y2)
+{
+	if (this != screen)
+		SetAsTarget(true);
+
+	SDL_Rect rect;
+
+	rect.x = x1 * SCALE;
+	rect.y = y1 * SCALE;
+	rect.w = ((x2 - x1) + 1) * SCALE;
+	rect.h = ((y2 - y1) + 1) * SCALE;
+	
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
+	SDL_RenderFillRect(renderer, &rect);
+
+	if (this != screen)
+		SetAsTarget(false);
+
+}
+
 void NXSurface::Clear(uint8_t r, uint8_t g, uint8_t b)
 {
 	if (this != screen)
@@ -315,7 +335,6 @@ void NXSurface::Clear(uint8_t r, uint8_t g, uint8_t b)
 	if (this != screen)
 		SetAsTarget(false);
 }
-
 
 void NXSurface::DrawPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
 {

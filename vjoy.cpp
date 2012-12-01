@@ -18,6 +18,10 @@
 #include "platform/platform.h"
 #include "platform/IGestureObserver.hpp"
 
+#ifdef CONFIG_USE_TAPS
+# include "platform/iOS/touch_control.h"
+#endif
+
 namespace VJoy
 {
     void ignoreAllCurrentFingers();

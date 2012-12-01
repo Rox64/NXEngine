@@ -496,6 +496,7 @@
 		E9A1FC8F165A4288007E5AE6 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "../Icon-Small@2x.png"; sourceTree = "<group>"; };
 		E9A1FC94165A4298007E5AE6 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../iTunesArtwork.png; sourceTree = "<group>"; };
 		E9A1FC95165A4298007E5AE6 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "../iTunesArtwork@2x.png"; sourceTree = "<group>"; };
+		E9E3554D166A750500C7F67E /* IGestureObserver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = IGestureObserver.hpp; path = ../../platform/IGestureObserver.hpp; sourceTree = "<group>"; };
 		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
 		E9EF8ECB16592B730038DBB1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform/platform.h; sourceTree = "<group>"; };
 		E9EF8ECC16592B7E0038DBB1 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform/platform.cpp; sourceTree = "<group>"; };
@@ -1117,6 +1118,7 @@
 				E9EF8ECE16592C700038DBB1 /* iOS */,
 				E9EF8ECC16592B7E0038DBB1 /* platform.cpp */,
 				E9EF8ECB16592B730038DBB1 /* platform.h */,
+				E9E3554D166A750500C7F67E /* IGestureObserver.hpp */,
 			);
 			name = platform;
 			sourceTree = "<group>";

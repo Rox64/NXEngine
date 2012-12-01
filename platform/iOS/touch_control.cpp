@@ -8,6 +8,7 @@
 
 #include "touch_control.h"
 #include "touch_control_private.h"
+#include "IGestureObserver.hpp"
 
 static IGestureObserver* sGO = 0;
 

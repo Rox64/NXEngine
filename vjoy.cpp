@@ -1058,6 +1058,7 @@ void setUpdated()
 bool  Init()
 {
     vjoy_enabled = true;
+    vjoy_visible = true;
 #ifdef CONFIG_USE_TAPS
     registerGetureObserver(&gestureObserver);
 #endif

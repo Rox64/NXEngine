@@ -62,6 +62,7 @@ class NXSurface
 public:
 	NXSurface();
 	NXSurface(int wd, int ht, NXFormat *format = screen->Format());
+	static NXSurface* createScreen(int wd, int ht, Uint32 pixel_format);
 	//NXSurface(SDL_Surface *from_sfc, bool freesurface=true);
 	// NXSurface(SDL_Renderer *renderer);
 	~NXSurface();

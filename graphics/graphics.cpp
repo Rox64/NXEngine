@@ -243,9 +243,9 @@ bool Graphics::InitVideo()
 	
 	SDL_ShowCursor(is_fullscreen == false);
 
+	screen = NXSurface::createScreen(Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE, 
+		info.texture_formats[0]);
 	
-	screen = new NXSurface(/*renderer*/);
-	screen->setPixelFormat(info.texture_formats[0]);
 	if (!drawtarget) drawtarget = screen;
 	return 0;
 }

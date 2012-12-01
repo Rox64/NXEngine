@@ -35,6 +35,15 @@ NXSurface::NXSurface(int wd, int ht, NXFormat *format) :
 	setFormat(format);
 }
 
+NXSurface* NXSurface::createScreen(int wd, int ht, Uint32 pixel_format)
+{
+	NXSurface* s = new NXSurface();
+	s->tex_w = wd;
+	s->tex_h = ht;
+	s->setPixelFormat(pixel_format);
+	return s;
+}
+
 NXSurface::~NXSurface()
 {
 	Free();

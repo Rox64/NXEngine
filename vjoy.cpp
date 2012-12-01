@@ -1077,15 +1077,16 @@ void DrawAll()
     
     ModeAware::draw();
     
-    
-    
-    for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
+    if (settings->vjoy_show_mode != VJoy::EShowNever)
     {
-        PointF const& p = it->second;
-        RectF r = RectF::centred(p, 0.04f, 0.04f);
-        
-        const NXColor col(0xff, 0xcf, 0x33);
-        r.draw_fill_rect(col);
+        for (lastFingerPos_t::const_iterator it = lastFingerPos.begin(); it != lastFingerPos.end(); ++it)
+        {
+            PointF const& p = it->second;
+            RectF r = RectF::centred(p, 0.04f, 0.04f);
+            
+            const NXColor col(0xff, 0xcf, 0x33);
+            r.draw_fill_rect(col);
+        }
     }
 }
 

@@ -181,7 +181,7 @@ void debug_draw(void)
 		if (!text) break;
 		
 		int x = (Graphics::SCREEN_WIDTH - 8) - GetFontWidth(text, 0, true);
-		int y = 4 + (i * (GetFontHeight() + 1));
+		int y = 14 + (i * (GetFontHeight() + 1));
 		font_draw_shaded(x, y, text, 0, &greenfont);
 	}
 }

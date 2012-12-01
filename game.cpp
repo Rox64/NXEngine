@@ -226,8 +226,7 @@ void Game::tick(void)
 		tickfunctions[game.mode].OnTick();
 	}
 	
-    ::debug("1");
-    ::debug("mode %d,%d", game.mode, game.paused);
+    //::debug("mode %d,%d", game.mode, game.paused);
     
 	DrawDebug();
 	console.Draw();

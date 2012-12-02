@@ -2,6 +2,8 @@ This is iOS port of the complete open-source clone/rewrite of Doukutsu Monogatar
 
 Demonstration: http://youtu.be/jH2xsjXx28U
 
+Cydia source: http://pilin.github.com/NXEngine-iOS/repo/
+
 Game has been tested on jailbroken iPhone 4S (iOS 5.1.1) and non-jailbroken iPad 2 (iOS 5.1.1).
 
 # Biggest changes:

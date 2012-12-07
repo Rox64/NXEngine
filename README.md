@@ -1,10 +1,18 @@
 This is iOS port of the complete open-source clone/rewrite of Doukutsu Monogatari (also known as Cave Story) originally created by rogueeve (kty@lavabit.com).
 
 Demonstration: http://youtu.be/jH2xsjXx28U
-
-Cydia source: http://pilin.github.com/NXEngine-iOS/repo/
-
 Game has been tested on jailbroken iPhone 4S (iOS 5.1.1) and non-jailbroken iPad 2 (iOS 5.1.1).
+
+# How to install development build:
+
+tl;dr video tutorial http://youtu.be/scSGqTP4AFs
+
+0. You need __jailbroken__ device with Cydia. I have no apple developer profile so I unable to build package for non-jailbroken devices.
+1. Open Cydia.
+2. Go to "Manage" - "Sources"
+3. Press "Edit" - "Add"
+4. Enter link to Cydia source: http://pilin.github.com/NXEngine-iOS/repo/
+5. New source "NXEngine-iOS dev" must appear. Install package from it.
 
 # Biggest changes:
 - Original engine has been transfered to SDL2.
@@ -14,7 +22,7 @@ Game has been tested on jailbroken iPhone 4S (iOS 5.1.1) and non-jailbroken iPad
 - Primitive virtual joypad has been implemented.
 - Touch control of in-game buttons, dialogs, e.t.c. 
 
-# Requiremetns:
+# Build dependencies:
 1. SDL2
 2. SDL_ttf 2
 3. Freetype 2

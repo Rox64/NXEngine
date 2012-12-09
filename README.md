@@ -1,6 +1,7 @@
 This is iOS port of the complete open-source clone/rewrite of Doukutsu Monogatari (also known as Cave Story) originally created by rogueeve (kty@lavabit.com).
 
 Demonstration: http://youtu.be/jH2xsjXx28U
+
 Game has been tested on jailbroken iPhone 4S (iOS 5.1.1) and non-jailbroken iPad 2 (iOS 5.1.1).
 
 # How to install development build:

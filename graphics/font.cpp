@@ -74,10 +74,10 @@ bool error = false;
 		
 		uint32_t fgindex = SDL_MapRGB(sheet->format, 255, 255, 255);
 		
-		error |= whitefont.InitBitmapChars(sheet, fgindex, 0xffffff);
-		error |= greenfont.InitBitmapChars(sheet, fgindex, 0x00ff80);
-		error |= bluefont.InitBitmapChars(sheet, fgindex, 0xa0b5de);
-		error |= shadowfont.InitBitmapCharsShadowed(sheet, fgindex, 0xffffff, 0x000000);
+		error = error || whitefont.InitBitmapChars(sheet, fgindex, 0xffffff);
+		error = error || greenfont.InitBitmapChars(sheet, fgindex, 0x00ff80);
+		error = error || bluefont.InitBitmapChars(sheet, fgindex, 0xa0b5de);
+		error = error || shadowfont.InitBitmapCharsShadowed(sheet, fgindex, 0xffffff, 0x000000);
 	}
 	#ifdef CONFIG_ENABLE_TTF
 	else
@@ -102,21 +102,21 @@ bool error = false;
 			return 1;
 		}
 		
-		error |= whitefont.InitChars(font, 0xffffff);
-		error |= greenfont.InitChars(font, 0x00ff80);
-		error |= bluefont.InitChars(font, 0xa0b5de);
-		error |= shadowfont.InitCharsShadowed(font, 0xffffff, 0x000000);
+		error = error || whitefont.InitChars(font, 0xffffff);
+		error = error || greenfont.InitChars(font, 0x00ff80);
+		error = error || bluefont.InitChars(font, 0xa0b5de);
+		error = error || shadowfont.InitCharsShadowed(font, 0xffffff, 0x000000);
 		
 		TTF_CloseFont(font);
 	}
 	#endif
 
-	error |= whitefont.InitTextures();
-	error |= greenfont.InitTextures();
-	error |= bluefont.InitTextures();
-	error |= shadowfont.InitTextures();
+	error = error || whitefont.InitTextures();
+	error = error || greenfont.InitTextures();
+	error = error || bluefont.InitTextures();
+	error = error || shadowfont.InitTextures();
 	
-	error |= create_shade_sfc();
+	error = error || create_shade_sfc();
 	if (error) return 1;
 	
 	fontheight = (whitefont.letters['M']->h / SCALE);

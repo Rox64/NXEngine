@@ -8,6 +8,10 @@
 #include "main.fdh"
 #include "vjoy.h"
 
+
+#include <exception>
+#include <stdexcept>
+
 const char *data_dir = "data";
 const char *stage_dir = "data/Stage";
 const char *pic_dir = "endpic";
@@ -23,20 +27,28 @@ int framecount = 0;
 bool freezeframe = false;
 int flipacceltime = 0;
 
+
+// On iOS it seems to a bad idea to return from main. The screen is left to be just black.
+// Make sure to have fatal() before every return. At least, it will make crash.
+
 int main(int argc, char *argv[])
 {
 bool inhibit_loadfade = false;
 bool error = false;
 bool freshstart;
-    
-    
-    if (!setup_path(argc, argv))
-        return 1;
+	
+	
+	if (!setup_path(argc, argv))
+	{
+		fatal("failed to setup path");
+		return 1;
+	}
 	
 	SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		staterr("ack, sdl_init failed: %s.", SDL_GetError());
+		fatal("sdl_init fail");
 		return 1;
 	}
 	atexit(SDL_Quit);
@@ -48,8 +60,8 @@ bool freshstart;
 	// so we know the initial screen resolution.
 	settings_load();
 	
-	if (Graphics::init(settings->resolution)) { staterr("Failed to initialize graphics."); return 1; }
-	if (font_init()) { staterr("Failed to load font."); return 1; }
+	if (Graphics::init(settings->resolution)) { fatal("Failed to initialize graphics."); return 1; }
+	if (font_init()) { fatal("Failed to load font."); return 1; }
 	
 	//speed_test();
 	//return 1;
@@ -61,6 +73,7 @@ bool freshstart;
 		{
 			Graphics::close();
 			font_close();
+			fatal("extract_main() error");
 			return 0;
 		}
 		else
@@ -71,10 +84,7 @@ bool freshstart;
 	}
 	#endif
 	
-	if (check_data_exists())
-	{
-		return 1;
-	}
+	if (check_data_exists()) { fatal("check_data_exists() error"); return 1; }
 	
 	//Graphics::ShowLoadingScreen();
 	if (sound_init()) { fatal("Failed to initialize sound."); return 1; }
@@ -88,7 +98,7 @@ bool freshstart;
 	VJoy::Init();
 #endif
 
-	if (game.init()) return 1;
+	if (game.init()) { fatal("game.init() error"); return 1; }
 	game.setmode(GM_NORMAL);
 	// set null stage just to have something to do while we go to intro
 	game.switchstage.mapno = 0;
@@ -188,7 +198,7 @@ bool freshstart;
 		}
 		
 		// start the level
-		if (game.initlevel()) return 1;
+		if (game.initlevel()) { fatal("game.initlevel() error"); return 1; }
 		
 		if (freshstart)
 			weapon_introslide();
@@ -342,11 +352,11 @@ static int frameskip = 0;
 
 		VJoy::DrawAll();
 		
-        // This will issue flush for old events.
-        // New events will be acquired from inside screen flip (there ui message
-        // pump) or on next cycle in input_poll()
-        VJoy::PreProcessInput();
-        
+		// This will issue flush for old events.
+		// New events will be acquired from inside screen flip (there ui message
+		// pump) or on next cycle in input_poll()
+		VJoy::PreProcessInput();
+		
 		if (!flipacceltime)
 		{
 			//platform_sync_to_vblank();
@@ -452,6 +462,13 @@ void c------------------------------() {}
 static void fatal(const char *str)
 {
 	staterr("fatal: '%s'", str);
+	
+#ifdef IPHONE
+	// Crash an application on ios. This will not left user with blank screen
+	// and there will be stack trace in crash report. Using this stack trace it
+	// will be possible to find, where from fatal() was called.
+	abort();
+#endif
 	
 	if (!safemode::init())
 	{

@@ -44,9 +44,6 @@ NXFont greenfont;
 NXFont bluefont;		// used for "F3:Options" text on pause screen
 NXFont shadowfont;		// white letters w/ drop shadow
 
-// point sizes for each valid scaling factor
-int pointsize[] = { -1,  8, 17, 26 };
-
 extern SDL_Renderer * renderer;
 
 /*
@@ -85,8 +82,12 @@ bool error = false;
 	#ifdef CONFIG_ENABLE_TTF
 	else
 	{
-		stat("fonts: using truetype at %dpt", pointsize[SCALE]);
-		
+		// It will get size 8, 17, 26, 35, ...
+		// Hope ot will look nice on higher resolutions
+		int pointsize = 8 + 9 * (SCALE - 1);
+        
+		stat("fonts: using truetype at %dpt", pointsize);
+
 		// initilize normal TTF fonts
 		if (TTF_Init() < 0)
 		{
@@ -94,7 +95,7 @@ bool error = false;
 			return 1;
 		}
 		
-		TTF_Font *font = TTF_OpenFontRW(SDL_RWFromFP(fileopenRO(ttffontfile), SDL_TRUE), 1, pointsize[SCALE]);
+		TTF_Font *font = TTF_OpenFontRW(SDL_RWFromFP(fileopenRO(ttffontfile), SDL_TRUE), 1, pointsize);
 		if (!font)
 		{
 			staterr("Couldn't open font: '%s'", ttffontfile);

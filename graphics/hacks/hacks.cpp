@@ -7,7 +7,7 @@
 using namespace GraphicHacks;
 
 
-//#define HACK_OPENGL
+#define HACK_OPENGL
 //#define HACK_GLES
 
 
@@ -86,7 +86,60 @@ bool GraphicHacks::BatchAddCopy(SDL_Renderer * renderer, SDL_Texture * texture,
 	if (!working_hack)
 		return true;
 
+    SDL_Rect real_srcrect = { 0, 0, 0, 0 };
+    SDL_Rect real_dstrect = { 0, 0, 0, 0 };
+    SDL_FRect frect;
 
+    if (renderer != texture->renderer) {
+        SDL_SetError("Texture was not created with this renderer");
+        return true;
+    }
+
+    real_srcrect.x = 0;
+    real_srcrect.y = 0;
+    real_srcrect.w = texture->w;
+    real_srcrect.h = texture->h;
+    if (srcrect) {
+        if (!SDL_IntersectRect(srcrect, &real_srcrect, &real_srcrect)) {
+            return 0;
+        }
+    }
+
+    SDL_RenderGetViewport(renderer, &real_dstrect);
+    real_dstrect.x = 0;
+    real_dstrect.y = 0;
+    if (dstrect) {
+        if (!SDL_IntersectRect(dstrect, &real_dstrect, &real_dstrect)) {
+            return 0;
+        }
+        /* Clip srcrect by the same amount as dstrect was clipped */
+        if (dstrect->w != real_dstrect.w) {
+            int deltax = (real_dstrect.x - dstrect->x);
+            int deltaw = (real_dstrect.w - dstrect->w);
+            real_srcrect.x += (deltax * real_srcrect.w) / dstrect->w;
+            real_srcrect.w += (deltaw * real_srcrect.w) / dstrect->w;
+        }
+        if (dstrect->h != real_dstrect.h) {
+            int deltay = (real_dstrect.y - dstrect->y);
+            int deltah = (real_dstrect.h - dstrect->h);
+            real_srcrect.y += (deltay * real_srcrect.h) / dstrect->h;
+            real_srcrect.h += (deltah * real_srcrect.h) / dstrect->h;
+        }
+    }
+
+    if (texture->native) {
+        texture = texture->native;
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
+    frect.x = real_dstrect.x * renderer->scale.x;
+    frect.y = real_dstrect.y * renderer->scale.y;
+    frect.w = real_dstrect.w * renderer->scale.x;
+    frect.h = real_dstrect.h * renderer->scale.y;
 
 
 	return working_hack->BatchAddCopy(renderer, texture, &real_srcrect, &frect);

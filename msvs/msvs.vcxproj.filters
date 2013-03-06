@@ -224,6 +224,12 @@
     <ClInclude Include="..\graphics\hacks\hacks_internal.hpp">
       <Filter>graphics\hacks</Filter>
     </ClInclude>
+    <ClInclude Include="..\graphics\hacks\opengl\glfuncs.h">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\hacks\opengl\glfuncs_list.h">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\caret.cpp" />
@@ -598,6 +604,12 @@
     <ClCompile Include="..\nx_math.cpp" />
     <ClCompile Include="..\graphics\hacks\hacks.cpp">
       <Filter>graphics\hacks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\hacks\opengl\hack_gl.cpp">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\hacks\opengl\glfuncs.c">
+      <Filter>graphics\hacks\opengl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

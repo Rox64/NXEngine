@@ -527,6 +527,9 @@ int x, y;
 int mapx, mapy;
 int blit_x, blit_y, blit_x_start;
 int scroll_x, scroll_y;
+
+	const int max_x = (Graphics::SCREEN_WIDTH  / TILE_W) + MAP_DRAW_EXTRA_X;
+	const int max_y = (Graphics::SCREEN_HEIGHT / TILE_H) + MAP_DRAW_EXTRA_Y;
 	
 	scroll_x = (map.displayed_xscroll >> CSF);
 	scroll_y = (map.displayed_yscroll >> CSF);
@@ -536,24 +539,30 @@ int scroll_x, scroll_y;
 	
 	blit_y = -(scroll_y % TILE_H);
 	blit_x_start = -(scroll_x % TILE_W);
+
+	Tileset::draw_tilegrid_begin(max_x * max_y);
 	
 	// MAP_DRAW_EXTRA_Y etc is 1 if resolution is changed to
 	// something not a multiple of TILE_H.
-	for(y=0; y <= (Graphics::SCREEN_HEIGHT / TILE_H)+MAP_DRAW_EXTRA_Y; y++)
+	for(y=0; y <= max_y; y++)
 	{
 		blit_x = blit_x_start;
 		
-		for(x=0; x <= (Graphics::SCREEN_WIDTH / TILE_W)+MAP_DRAW_EXTRA_X; x++)
+		for(x=0; x <= max_x; x++)
 		{
 			int t = map.tiles[mapx+x][mapy+y];
 			if ((tileattr[t] & TA_FOREGROUND) == foreground)
-				draw_tile(blit_x, blit_y, t);
+			{
+				Tileset::draw_tilegrid_add(blit_x, blit_y, t);
+			}
 			
 			blit_x += TILE_W;
 		}
 		
 		blit_y += TILE_H;
 	}
+
+	Tileset::draw_tilegrid_end();
 }
 
 

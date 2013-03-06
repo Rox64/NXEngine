@@ -68,6 +68,28 @@ void Tileset::draw_tile(int x, int y, int t)
 	DrawSurface(tileset, x, y, srcx, srcy, TILE_W, TILE_H);
 }
 
+#if defined(CONFIG_FAST_TILEGRID)
+void Tileset::draw_tilegrid_begin(size_t count)
+{
+
+}
+
+void Tileset::draw_tilegrid_add(int x, int y, int t)
+{
+
+}
+
+void Tileset::draw_tilegrid_end()
+{
+
+}
+
+#else
+void Tileset::draw_tilegrid_begin(size_t) {}
+void Tileset::draw_tilegrid_add(int x, int y, int t) { return draw_tile(x, y, t); }
+void Tileset::draw_tilegrid_end() {}
+#endif
+
 void Tileset::Reload()
 {
 	if (current_tileset != -1)

@@ -21,4 +21,8 @@
 
 #define CONFIG_USE_TAPS
 
+
+// #define CONFIG_FAST_TILEGRID
+
+
 #endif

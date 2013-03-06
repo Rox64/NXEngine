@@ -2,11 +2,16 @@
 #include <SDL.h>
 #include <cerrno>
 #include <cstdio>
+#include <cstring>
 #include <sys/stat.h>
 
 #include "../config.h"
 #include "platform.h"
 #include "../common/basics.h"
+
+#if defined(WIN32)
+# include <direct.h>
+#endif
 
 char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";
@@ -42,6 +47,20 @@ FILE *fileopenCache(const char *fname, const char *mode)
 	return fileopen(fname, mode, ca_filesys_path);
 }
 
+
+#if defined(WIN32)
+typedef int mode_t;
+int make_dir(const char* path, mode_t) { return mkdir(path); }
+
+#define S_ISDIR(B) ((B)&_S_IFDIR)
+
+#else
+
+int make_dir(const char* path, mode_t mode) { return mkdir(path, mode); }
+
+#endif // WIN32
+
+
 bool is_dir(char const* path)
 {
     struct stat sb;
@@ -59,7 +78,7 @@ bool check_mkdir(const char* path, mode_t mode = 0755)
 {
     if (!is_dir(path))
     {
-        if (mkdir(path, mode))
+        if (make_dir(path, mode))
         {
             int saved_errno = errno;
             char* err = strerror(saved_errno);

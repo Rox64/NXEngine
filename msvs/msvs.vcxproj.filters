@@ -17,7 +17,6 @@
     <ClInclude Include="..\object.h" />
     <ClInclude Include="..\ObjManager.h" />
     <ClInclude Include="..\p_arms.h" />
-    <ClInclude Include="..\platform.h" />
     <ClInclude Include="..\player.h" />
     <ClInclude Include="..\profile.h" />
     <ClInclude Include="..\replay.h" />
@@ -211,6 +210,14 @@
     <ClInclude Include="..\common\misc.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\platform\IGestureObserver.hpp">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\platform.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vjoy.h" />
+    <ClInclude Include="..\nx_math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\caret.cpp" />
@@ -227,7 +234,6 @@
     <ClCompile Include="..\object.cpp" />
     <ClCompile Include="..\ObjManager.cpp" />
     <ClCompile Include="..\p_arms.cpp" />
-    <ClCompile Include="..\platform.cpp" />
     <ClCompile Include="..\player.cpp" />
     <ClCompile Include="..\playerstats.cpp" />
     <ClCompile Include="..\profile.cpp" />
@@ -579,6 +585,11 @@
     <ClCompile Include="..\TextBox\YesNoPrompt.cpp">
       <Filter>TextBox</Filter>
     </ClCompile>
+    <ClCompile Include="..\platform\platform.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vjoy.cpp" />
+    <ClCompile Include="..\nx_math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ai">
@@ -661,6 +672,9 @@
     </Filter>
     <Filter Include="TextBox">
       <UniqueIdentifier>{16575333-ebf2-42ff-8f80-871cb9d01e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{9ef377d3-954a-401b-b7de-963238a3fd9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

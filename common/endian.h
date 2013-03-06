@@ -9,12 +9,16 @@
 #ifndef CaveStory_endian_h
 #define CaveStory_endian_h
 
-#include <endian.h>
+#if !defined(WIN32)
+# include <endian.h>
+#endif
 
 #if !defined(htole16)
 # if defined(__APPLE__)
 #  include <CoreFoundation/CoreFoundation.h>
 #  define htole16(x) CFSwapInt16HostToLittle(x)
+# elif defined(WIN32)
+#  define htole16(x) x
 # endif
 #endif
 

@@ -7,7 +7,6 @@
 #if defined(WIN32)
 # define snprintf _snprintf
 # define strcasecmp _stricmp
-# define htole16(x) x
 #endif
 
 #if defined (__APPLE__)

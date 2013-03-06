@@ -1,7 +1,7 @@
 #ifndef CaveStory_nx_math_h
 #define CaveStory_nx_math_h
 
-class NXColor;
+struct NXColor;
 
 struct RectI
 {

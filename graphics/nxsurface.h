@@ -76,6 +76,10 @@ public:
 	void DrawSurface(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht);
 	void BlitPatternAcross(NXSurface *src, int x_dst, int y_dst, int y_src, int height);
 	
+	void DrawBatchBegin(size_t max_count);
+	void DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht);
+	void DrawBatchEnd();
+
 	// graphics primitives
 	void DrawLine(int x1, int y1, int x2, int y2, NXColor color);
 

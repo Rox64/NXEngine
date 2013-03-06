@@ -21,8 +21,9 @@
 
 #define CONFIG_USE_TAPS
 
+#define CONFIG_FAST_TILEGRID
 
-// #define CONFIG_FAST_TILEGRID
+#define CONFIG_BATCH_RENDERING
 
 
 #endif

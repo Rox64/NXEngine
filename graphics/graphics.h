@@ -41,6 +41,9 @@ namespace Graphics
 	
 	void BlitPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src, int height);
 	
+	void DrawBatchBegin(size_t max_count);
+	void DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht);
+	void DrawBatchEnd();
 	
 	void ClearScreen(NXColor color);
 	void ClearScreen(uint8_t r, uint8_t g, uint8_t b);

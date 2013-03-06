@@ -433,6 +433,23 @@ void Graphics::BlitPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src
 	drawtarget->BlitPatternAcross(sfc, x_dst, y_dst, y_src, height);
 }
 
+
+void Graphics::DrawBatchBegin(size_t max_count)
+{
+	drawtarget->DrawBatchBegin(max_count);
+}
+
+void Graphics::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
+{
+	drawtarget->DrawBatchAdd(src, dstx, dsty, srcx, srcy, wd, ht);
+}
+
+void Graphics::DrawBatchEnd()
+{
+	drawtarget->DrawBatchEnd();
+}
+
+
 /*
 void c------------------------------() {}
 */

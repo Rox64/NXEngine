@@ -14,7 +14,7 @@ namespace Tileset
 	void Reload();
 	void draw_tile(int x, int y, int t);
 
-	void draw_tilegrid_begin(size_t count);
+	void draw_tilegrid_begin(size_t max_count);
 	void draw_tilegrid_add(int x, int y, int t);
 	void draw_tilegrid_end();
 	

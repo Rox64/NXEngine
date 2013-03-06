@@ -245,6 +245,39 @@ void NXSurface::BlitPatternAcross(NXSurface *src,
 		SetAsTarget(false);
 }
 
+/*
+void c------------------------------() {}
+*/
+
+#if defined(CONFIG_BATCH_RENDERING)
+
+void NXSurface::DrawBatchBegin(size_t max_count)
+{
+
+}
+
+void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
+{
+}
+
+void NXSurface::DrawBatchEnd()
+{
+
+}
+
+#else
+
+void NXSurface::DrawBatchBegin(size_t) { }
+
+void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
+{
+	this->DrawSurface(src, dstx, dsty, srcx, srcy, wd, ht);
+}
+
+void NXSurface::DrawBatchEnd() { }
+
+#endif
+
 
 /*
 void c------------------------------() {}

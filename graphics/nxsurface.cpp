@@ -9,6 +9,8 @@
 #include "../platform/platform.h"
 
 
+#include "hacks/hacks.hpp"
+
 #ifdef CONFIG_MUTABLE_SCALE
 	int SCALE = 3;
 #endif
@@ -37,10 +39,17 @@ NXSurface::NXSurface(int wd, int ht, NXFormat *format) :
 
 NXSurface* NXSurface::createScreen(int wd, int ht, Uint32 pixel_format)
 {
+	if (GraphicHacks::Init(renderer))
+	{
+		staterr("unable to init GraphicHacks");
+		return NULL;
+	}
+
 	NXSurface* s = new NXSurface();
 	s->tex_w = wd;
 	s->tex_h = ht;
 	s->setPixelFormat(pixel_format);
+
 	return s;
 }
 
@@ -253,16 +262,43 @@ void c------------------------------() {}
 
 void NXSurface::DrawBatchBegin(size_t max_count)
 {
+	assert(this == screen);
 
+	bool res = GraphicHacks::BatchBegin(renderer, max_count);
+	assert(!res);
 }
 
 void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
 {
+	assert(this == screen);
+
+	assert(renderer);
+	assert(src->fTexture);
+
+	SDL_Rect srcrect, dstrect;
+
+	srcrect.x = srcx * SCALE;
+	srcrect.y = srcy * SCALE;
+	srcrect.w = wd * SCALE;
+	srcrect.h = ht * SCALE;
+	
+	dstrect.x = dstx * SCALE;
+	dstrect.y = dsty * SCALE;
+	dstrect.w = srcrect.w;
+	dstrect.h = srcrect.h;
+	
+	if (GraphicHacks::BatchAddCopy(renderer, src->fTexture, &srcrect, &dstrect))
+	{
+		staterr("NXSurface::DrawBatchAdd: GraphicHacks::BatchAddCopy failed");
+	}
 }
 
 void NXSurface::DrawBatchEnd()
 {
+	assert(this == screen);
 
+	bool res = GraphicHacks::BatchEnd(renderer);
+	assert(!res);
 }
 
 #else

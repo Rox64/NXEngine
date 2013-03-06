@@ -33,6 +33,8 @@ const NXColor BLACK(0, 0, 0);			// pure black, only works if no colorkey
 static bool is_fullscreen = false;
 static int current_res = -1;
 
+static NXSurface const* current_batch_drawtarget = NULL;
+
 bool Graphics::init(int resolution)
 {
 	if (use_palette)
@@ -436,16 +438,29 @@ void Graphics::BlitPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src
 
 void Graphics::DrawBatchBegin(size_t max_count)
 {
+	if (NULL != current_batch_drawtarget)
+		assert(false && "batch operation already begun");
+
+	current_batch_drawtarget = drawtarget;
+
 	drawtarget->DrawBatchBegin(max_count);
 }
 
 void Graphics::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
 {
+	if (current_batch_drawtarget != drawtarget)
+		assert(false && "drawtarget has been changed during batch operation");
+
 	drawtarget->DrawBatchAdd(src, dstx, dsty, srcx, srcy, wd, ht);
 }
 
 void Graphics::DrawBatchEnd()
 {
+	if (current_batch_drawtarget != drawtarget)
+		assert(false && "drawtarget has been changed during batch operation");
+
+	current_batch_drawtarget = NULL;
+
 	drawtarget->DrawBatchEnd();
 }
 

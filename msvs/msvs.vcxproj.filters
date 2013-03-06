@@ -218,6 +218,12 @@
     </ClInclude>
     <ClInclude Include="..\vjoy.h" />
     <ClInclude Include="..\nx_math.h" />
+    <ClInclude Include="..\graphics\hacks\hacks.hpp">
+      <Filter>graphics\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\hacks\hacks_internal.hpp">
+      <Filter>graphics\hacks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\caret.cpp" />
@@ -590,6 +596,9 @@
     </ClCompile>
     <ClCompile Include="..\vjoy.cpp" />
     <ClCompile Include="..\nx_math.cpp" />
+    <ClCompile Include="..\graphics\hacks\hacks.cpp">
+      <Filter>graphics\hacks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ai">
@@ -675,6 +684,12 @@
     </Filter>
     <Filter Include="platform">
       <UniqueIdentifier>{9ef377d3-954a-401b-b7de-963238a3fd9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\hacks">
+      <UniqueIdentifier>{df7d9b39-2606-4719-88a2-cd2c33316753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\hacks\opengl">
+      <UniqueIdentifier>{4681be64-16d2-451d-ad1d-1ad50b950b7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

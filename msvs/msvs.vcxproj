@@ -122,6 +122,8 @@
     <ClInclude Include="..\game.h" />
     <ClInclude Include="..\graphics\font.h" />
     <ClInclude Include="..\graphics\graphics.h" />
+    <ClInclude Include="..\graphics\hacks\hacks.hpp" />
+    <ClInclude Include="..\graphics\hacks\hacks_internal.hpp" />
     <ClInclude Include="..\graphics\nxsurface.h" />
     <ClInclude Include="..\graphics\palette.h" />
     <ClInclude Include="..\graphics\safemode.h" />
@@ -295,6 +297,7 @@
     <ClCompile Include="..\game.cpp" />
     <ClCompile Include="..\graphics\font.cpp" />
     <ClCompile Include="..\graphics\graphics.cpp" />
+    <ClCompile Include="..\graphics\hacks\hacks.cpp" />
     <ClCompile Include="..\graphics\nxsurface.cpp" />
     <ClCompile Include="..\graphics\palette.cpp" />
     <ClCompile Include="..\graphics\safemode.cpp" />

@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\code\sdl\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\code\sdl\SDL\include;D:\code\sdl\SDL\src\render;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\code\sdl\SDL\VisualC\SDL\Win32\$(Configuration);D:\code\sdl\SDL\VisualC\SDLMain\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

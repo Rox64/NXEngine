@@ -89,7 +89,6 @@ bool NXSurface::AllocNew(int wd, int ht, NXFormat* format)
 bool NXSurface::LoadImage(const char *pbm_name, bool use_colorkey, int use_display_format)
 {
 	stat("NXSurface::LoadImage name = %s, this = %p", pbm_name, this);
-	SDL_Surface *image;
 
 	Free();
 	
@@ -98,12 +97,11 @@ bool NXSurface::LoadImage(const char *pbm_name, bool use_colorkey, int use_displ
 	// 	use_display_format = settings->displayformat;
 	// }
 	
-	image = SDL_LoadBMP_RW(SDL_RWFromFP(fileopenRO(pbm_name), SDL_TRUE), 1);
-	if (!image)
-	{
-		staterr("NXSurface::LoadImage: load failed of '%s'!", pbm_name);
-		return 1;
-	}
+
+	SDL_RWops* rwops = fileopen_SDL_RWops_RO(pbm_name);
+	if (!rwops) { staterr("NXSurface::LoadImage: load failed of '%s'! %s", pbm_name, SDL_GetError()); return 1; }
+	SDL_Surface *image = SDL_LoadBMP_RW(rwops, 1);
+	if (!image) { staterr("NXSurface::LoadImage: load failed of '%s'! %s", pbm_name, SDL_GetError()); return 1; }
 	
 	if (use_colorkey)
 	{

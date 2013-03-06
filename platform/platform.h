@@ -23,8 +23,11 @@ extern "C"
 
 bool setup_path(int argc, char** argv);
 
+struct SDL_RWops;
+
 // Opens file from readonly place
 FILE *fileopenRO(const char *fname);
+SDL_RWops* fileopen_SDL_RWops_RO(const char* filename);
 
 // Opens file from place for permament storage
 FILE *fileopenRW(const char *fname, const char *mode);

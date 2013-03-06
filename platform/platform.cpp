@@ -17,17 +17,35 @@ char const* ro_filesys_path = "./";
 char const* rw_filesys_path = "./";
 char const* ca_filesys_path = "./";
 
+static bool construct_file_path(char const* fname, char const* filesys_path, char* output_buf, const size_t buf_size)
+{
+	int res = snprintf(output_buf, buf_size, "%s%s", filesys_path, fname);
+	if (res < 0 || res >= buf_size)
+		return false;
+
+	return true;
+}
+
 FILE *fileopen(char const* fname, char const* mode, char const* filesys_path)
 {
    //stat("fileopen %s %s %s", fname, mode, filesys_path);
 
    const size_t buf_size = 1024;
    static char buffer[buf_size];
-   int res = snprintf(buffer, buf_size, "%s%s", filesys_path, fname);
-   if (res < 0 || res >= buf_size)
-      return NULL;
+   if (!construct_file_path(fname, filesys_path, buffer, buf_size))
+	   return NULL;
 
    return fopen(buffer, mode);
+}
+
+SDL_RWops* fileopen_SDL_RWops(char const* filename, char const* mode, char const* filesys_path)
+{
+	const size_t buf_size = 1024;
+	static char buffer[buf_size];
+	if (!construct_file_path(filename, filesys_path, buffer, buf_size))
+		return NULL;
+
+	return SDL_RWFromFile(buffer, mode);
 }
 
 FILE *fileopenRO(const char *fname)
@@ -35,15 +53,18 @@ FILE *fileopenRO(const char *fname)
    return fileopen(fname, "rb", ro_filesys_path);
 }
 
+SDL_RWops* fileopen_SDL_RWops_RO(const char* filename)
+{
+	return fileopen_SDL_RWops(filename, "rb", ro_filesys_path);
+}
+
 FILE *fileopenRW(const char *fname, const char *mode)
 {
-   
 	return fileopen(fname, mode, rw_filesys_path);
 }
 
 FILE *fileopenCache(const char *fname, const char *mode)
 {
-    
 	return fileopen(fname, mode, ca_filesys_path);
 }
 

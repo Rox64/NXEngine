@@ -121,11 +121,6 @@ bool vjoy_visible = false;
 VjoyMode vjoy_mode;
 
 
-
-float xres = -1.0f;
-float yres = -1.0f;
-
-
 class GestureObserver : public IGestureObserver
 {
     typedef std::vector<PointF> tapLocation_t;
@@ -1108,21 +1103,8 @@ void InjectInputEvent(SDL_Event const & evt)
         return;
     }
     
-    if (xres < 0)
-    {
-        SDL_Touch const * const state = SDL_GetTouch(evt.tfinger.touchId);
-        if (state)
-        {
-            xres = state->xres;
-            yres = state->yres;
-        }
-        else
-        {
-            return;
-        }
-    }
     
-    PointF p((float)evt.tfinger.x / xres, (float)evt.tfinger.y / yres);
+    PointF p((float)evt.tfinger.x, (float)evt.tfinger.y);
     
     
     if (ignoredFingers.end() == ignoredFingers.find(evt.tfinger.fingerId))

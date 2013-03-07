@@ -1,14 +1,16 @@
 #include "../../config.h"
 #include "../../common/basics.h"
 
+#include <cstdlib>
+
 #include "hacks.hpp"
 #include "hacks_internal.hpp"
 
 using namespace GraphicHacks;
 
 
-#define HACK_OPENGL
-//#define HACK_GLES
+//#define HACK_OPENGL
+#define HACK_GLES
 
 
 #if defined(HACK_OPENGL)

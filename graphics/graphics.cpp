@@ -247,6 +247,12 @@ bool Graphics::InitVideo()
 
 	screen = NXSurface::createScreen(Graphics::SCREEN_WIDTH*SCALE, Graphics::SCREEN_HEIGHT*SCALE, 
 		info.texture_formats[0]);
+    
+    if (!screen)
+    {
+        staterr("Graphics::InitVideo: no screen has been created");
+        return 1;
+    }
 
 	if (!drawtarget) drawtarget = screen;
 	return 0;

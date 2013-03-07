@@ -488,7 +488,7 @@ void NXSurface::Free()
 
 void NXSurface::SetAsTarget(bool enabled)
 {
-	stat("NXSurface::SetAsTarget this = %p, enabled = %d", this, (int)enabled);
+	// stat("NXSurface::SetAsTarget this = %p, enabled = %d", this, (int)enabled);
 
 	if (SDL_SetRenderTarget(renderer, (enabled ? fTexture : NULL)))
 	{

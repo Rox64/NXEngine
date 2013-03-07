@@ -171,6 +171,9 @@
 		E9A1FC93165A4288007E5AE6 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC8F165A4288007E5AE6 /* Icon-Small@2x.png */; };
 		E9A1FC96165A4298007E5AE6 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC94165A4298007E5AE6 /* iTunesArtwork.png */; };
 		E9A1FC97165A4298007E5AE6 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC95165A4298007E5AE6 /* iTunesArtwork@2x.png */; };
+		E9E9AF8B16E81182002FCE9E /* hacks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9E9AF8916E81182002FCE9E /* hacks.cpp */; };
+		E9E9AF9816E813D8002FCE9E /* hack_gles2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9E9AF9416E813D8002FCE9E /* hack_gles2.cpp */; };
+		E9E9AF9916E813D8002FCE9E /* glfuncs.c in Sources */ = {isa = PBXBuildFile; fileRef = E9E9AF9616E813D8002FCE9E /* glfuncs.c */; };
 		E9EF8ECD16592B7E0038DBB1 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ECC16592B7E0038DBB1 /* platform.cpp */; };
 		E9EF8ED116592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ED016592CC20038DBB1 /* SDL_uikitviewcontroller+SDL_uikitviewcontroller_touch.m */; };
 		E9EF8ED41659309E0038DBB1 /* SDL_uikitview+touch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EF8ED31659309E0038DBB1 /* SDL_uikitview+touch.m */; };
@@ -497,6 +500,13 @@
 		E9A1FC94165A4298007E5AE6 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../iTunesArtwork.png; sourceTree = "<group>"; };
 		E9A1FC95165A4298007E5AE6 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "../iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		E9E3554D166A750500C7F67E /* IGestureObserver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = IGestureObserver.hpp; path = ../../platform/IGestureObserver.hpp; sourceTree = "<group>"; };
+		E9E9AF8816E81182002FCE9E /* hacks.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hacks.hpp; path = hacks/hacks.hpp; sourceTree = "<group>"; };
+		E9E9AF8916E81182002FCE9E /* hacks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hacks.cpp; path = hacks/hacks.cpp; sourceTree = "<group>"; };
+		E9E9AF8A16E81182002FCE9E /* hacks_internal.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hacks_internal.hpp; path = hacks/hacks_internal.hpp; sourceTree = "<group>"; };
+		E9E9AF9416E813D8002FCE9E /* hack_gles2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hack_gles2.cpp; path = hacks/gles2/hack_gles2.cpp; sourceTree = "<group>"; };
+		E9E9AF9516E813D8002FCE9E /* glfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfuncs.h; path = hacks/gles2/glfuncs.h; sourceTree = "<group>"; };
+		E9E9AF9616E813D8002FCE9E /* glfuncs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glfuncs.c; path = hacks/gles2/glfuncs.c; sourceTree = "<group>"; };
+		E9E9AF9716E813D8002FCE9E /* glfuncs_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfuncs_list.h; path = hacks/gles2/glfuncs_list.h; sourceTree = "<group>"; };
 		E9EF8EA01658F8B10038DBB1 /* game_modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_modes.h; path = ../../game_modes.h; sourceTree = "<group>"; };
 		E9EF8ECB16592B730038DBB1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../platform/platform.h; sourceTree = "<group>"; };
 		E9EF8ECC16592B7E0038DBB1 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../platform/platform.cpp; sourceTree = "<group>"; };
@@ -908,6 +918,7 @@
 		05600CCD15EEC53C00A7CCD5 /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				E9E9AF8516E81173002FCE9E /* hacks */,
 				05600CD115EEC53C00A7CCD5 /* font.cpp */,
 				05600CD415EEC53C00A7CCD5 /* graphics.cpp */,
 				05600CD715EEC53C00A7CCD5 /* nxsurface.cpp */,
@@ -1110,6 +1121,28 @@
 				E9A1FC84165A41A8007E5AE6 /* Icon.png */,
 			);
 			name = "Application Icons";
+			sourceTree = "<group>";
+		};
+		E9E9AF8516E81173002FCE9E /* hacks */ = {
+			isa = PBXGroup;
+			children = (
+				E9E9AF9316E813C9002FCE9E /* gles2 */,
+				E9E9AF8816E81182002FCE9E /* hacks.hpp */,
+				E9E9AF8916E81182002FCE9E /* hacks.cpp */,
+				E9E9AF8A16E81182002FCE9E /* hacks_internal.hpp */,
+			);
+			name = hacks;
+			sourceTree = "<group>";
+		};
+		E9E9AF9316E813C9002FCE9E /* gles2 */ = {
+			isa = PBXGroup;
+			children = (
+				E9E9AF9416E813D8002FCE9E /* hack_gles2.cpp */,
+				E9E9AF9516E813D8002FCE9E /* glfuncs.h */,
+				E9E9AF9616E813D8002FCE9E /* glfuncs.c */,
+				E9E9AF9716E813D8002FCE9E /* glfuncs_list.h */,
+			);
+			name = gles2;
 			sourceTree = "<group>";
 		};
 		E9EF8ECA16592ABD0038DBB1 /* platform */ = {
@@ -1404,6 +1437,9 @@
 				E9EF8ED41659309E0038DBB1 /* SDL_uikitview+touch.m in Sources */,
 				E9EF8ED8165939780038DBB1 /* touch_control.cpp in Sources */,
 				E91902E41661336300D0DB04 /* nx_math.cpp in Sources */,
+				E9E9AF8B16E81182002FCE9E /* hacks.cpp in Sources */,
+				E9E9AF9816E813D8002FCE9E /* hack_gles2.cpp in Sources */,
+				E9E9AF9916E813D8002FCE9E /* glfuncs.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1496,6 +1532,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/deps/SDL/include",
 					"$(SRCROOT)/deps/SDL_ttf",
+					"$(SRCROOT)/deps/SDL/src/render",
 				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -1515,6 +1552,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/deps/SDL/include",
 					"$(SRCROOT)/deps/SDL_ttf",
+					"$(SRCROOT)/deps/SDL/src/render",
 				);
 				INFOPLIST_FILE = "CaveStory/CaveStory-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;

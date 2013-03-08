@@ -262,16 +262,12 @@ void c------------------------------() {}
 
 void NXSurface::DrawBatchBegin(size_t max_count)
 {
-	assert(this == screen);
-
 	bool res = GraphicHacks::BatchBegin(renderer, max_count);
 	assert(!res);
 }
 
 void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
 {
-	assert(this == screen);
-
 	assert(renderer);
 	assert(src->fTexture);
 
@@ -301,8 +297,6 @@ void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty)
 void NXSurface::DrawBatchAddPatternAcross(NXSurface *src,
                                           int x_dst, int y_dst, int y_src, int height)
 {
-	assert(this == screen);
-    
 	SDL_Rect srcrect, dstrect;
     
 	srcrect.x = 0;
@@ -330,8 +324,6 @@ void NXSurface::DrawBatchAddPatternAcross(NXSurface *src,
 
 void NXSurface::DrawBatchEnd()
 {
-	assert(this == screen);
-
 	bool res = GraphicHacks::BatchEnd(renderer);
 	assert(!res);
 }

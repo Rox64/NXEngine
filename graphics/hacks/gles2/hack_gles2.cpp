@@ -835,7 +835,65 @@ struct hack_gles2_t : public Hack
 
 		if (renderer->target)
 		{
-			assert(false);
+			/* Check if we need to do color mapping between the source and render target textures */
+			if (renderer->target->format != texInfo->format) {
+				switch (texInfo->format)
+				{
+				case SDL_PIXELFORMAT_ABGR8888:
+					switch (renderer->target->format)
+					{
+						case SDL_PIXELFORMAT_ARGB8888:
+						case SDL_PIXELFORMAT_RGB888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ARGB;
+							break;
+						case SDL_PIXELFORMAT_BGR888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ABGR;
+							break;
+					}
+					break;
+				case SDL_PIXELFORMAT_ARGB8888:
+					switch (renderer->target->format)
+					{
+						case SDL_PIXELFORMAT_ABGR8888:
+						case SDL_PIXELFORMAT_BGR888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ARGB;
+							break;
+						case SDL_PIXELFORMAT_RGB888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ABGR;
+							break;
+					}
+					break;
+				case SDL_PIXELFORMAT_BGR888:
+					switch (renderer->target->format)
+					{
+						case SDL_PIXELFORMAT_ABGR8888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_BGR;
+							break;
+						case SDL_PIXELFORMAT_ARGB8888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_RGB;
+							break;
+						case SDL_PIXELFORMAT_RGB888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ARGB;
+							break;
+					}
+					break;
+				case SDL_PIXELFORMAT_RGB888:
+					switch (renderer->target->format)
+					{
+						case SDL_PIXELFORMAT_ABGR8888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ARGB;
+							break;
+						case SDL_PIXELFORMAT_ARGB8888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_BGR;
+							break;
+						case SDL_PIXELFORMAT_BGR888:
+							sourceType = GLES2_IMAGESOURCE_TEXTURE_ARGB;
+							break;
+					}
+					break;
+				}
+			}
+			else sourceType = GLES2_IMAGESOURCE_TEXTURE_ABGR;   // Texture formats match, use the non color mapping shader (even if the formats are not ABGR)
 		}
 		else 
 		{

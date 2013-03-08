@@ -293,6 +293,11 @@ void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int s
 	}
 }
 
+void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty)
+{
+	DrawBatchAdd(src, dstx, dsty, 0, 0, src->Width(), src->Height());
+}
+
 void NXSurface::DrawBatchEnd()
 {
 	assert(this == screen);

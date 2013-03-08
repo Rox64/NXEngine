@@ -398,14 +398,22 @@ int x, y;
 	map.parscroll_y %= backdrop[map.backdrop]->Height();
 	int w = backdrop[map.backdrop]->Width();
 	int h = backdrop[map.backdrop]->Height();
-	
+
+	const int max_x = (Graphics::SCREEN_WIDTH+map.parscroll_x) / w + 1;	
+	const int max_y = (Graphics::SCREEN_HEIGHT+map.parscroll_y) / h + 1;
+
+	Graphics::DrawBatchBegin(max_x * max_y);
+
 	for(y=0;y<Graphics::SCREEN_HEIGHT+map.parscroll_y; y+=h)
 	{
 		for(x=0;x<Graphics::SCREEN_WIDTH+map.parscroll_x; x+=w)
 		{
-			DrawSurface(backdrop[map.backdrop], x - map.parscroll_x, y - map.parscroll_y);
+			//DrawSurface(backdrop[map.backdrop], x - map.parscroll_x, y - map.parscroll_y);
+			Graphics::DrawBatchAdd(backdrop[map.backdrop], x - map.parscroll_x, y - map.parscroll_y);
 		}
 	}
+
+	Graphics::DrawBatchEnd();
 }
 
 // blit OSide's BK_FASTLEFT_LAYERS

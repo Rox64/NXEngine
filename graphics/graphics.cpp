@@ -460,6 +460,14 @@ void Graphics::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int sr
 	drawtarget->DrawBatchAdd(src, dstx, dsty, srcx, srcy, wd, ht);
 }
 
+void Graphics::DrawBatchAdd(NXSurface *src, int x, int y)
+{
+	if (current_batch_drawtarget != drawtarget)
+		assert(false && "drawtarget has been changed during batch operation");
+
+	drawtarget->DrawBatchAdd(src, x, y);
+}
+
 void Graphics::DrawBatchEnd()
 {
 	if (current_batch_drawtarget != drawtarget)

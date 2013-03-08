@@ -428,6 +428,8 @@ int i, x;
 	if (--map.parscroll_x <= -(Graphics::SCREEN_WIDTH*2))
 		map.parscroll_x = 0;
 	
+    Graphics::DrawBatchBegin(nlayers);
+    
 	y1 = x = 0;
 	for(i=0;i<nlayers;i++)
 	{
@@ -439,9 +441,11 @@ int i, x;
 			x %= Graphics::SCREEN_WIDTH;
 		}
 		
-		BlitPatternAcross(backdrop[map.backdrop], x, y1, y1, (y2-y1)+1);
+        Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], x, y1, y1, (y2-y1)+1);
 		y1 = (y2 + 1);
 	}
+    
+    Graphics::DrawBatchEnd();
 }
 
 
@@ -509,6 +513,8 @@ int water_x, water_y;
 	water_x %= Graphics::SCREEN_WIDTH;
 	
 	water_y = (map.waterlevelobject->y >> CSF) - (map.displayed_yscroll >> CSF);
+    
+    Graphics::DrawBatchBegin(0);
 	
 	// draw the surface and just under the surface
 	BlitPatternAcross(backdrop[map.backdrop], water_x, water_y, 0, 16);
@@ -520,9 +526,11 @@ int water_x, water_y;
 	// draw the rest of the pattern all the way down
 	while(water_y < (Graphics::SCREEN_HEIGHT-1))
 	{
-		BlitPatternAcross(backdrop[map.backdrop], water_x, water_y, 16, 32);
+        Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], water_x, water_y, 16, 32);
 		water_y += 32;
 	}
+    
+    Graphics::DrawBatchEnd();
 }
 
 

@@ -298,6 +298,36 @@ void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty)
 	DrawBatchAdd(src, dstx, dsty, 0, 0, src->Width(), src->Height());
 }
 
+void NXSurface::DrawBatchAddPatternAcross(NXSurface *src,
+                                          int x_dst, int y_dst, int y_src, int height)
+{
+	assert(this == screen);
+    
+	SDL_Rect srcrect, dstrect;
+    
+	srcrect.x = 0;
+	srcrect.w = src->tex_w;
+	srcrect.y = (y_src * SCALE);
+	srcrect.h = (height * SCALE);
+    
+	dstrect.w = srcrect.w;
+	dstrect.h = srcrect.h;
+    
+	int x = (x_dst * SCALE);
+	int y = (y_dst * SCALE);
+	int destwd = this->tex_w;
+	
+	do
+	{
+		dstrect.x = x;
+		dstrect.y = y;
+		
+		GraphicHacks::BatchAddCopy(renderer, src->fTexture, &srcrect, &dstrect);
+		x += src->tex_w;
+	}
+	while(x < destwd);
+}
+
 void NXSurface::DrawBatchEnd()
 {
 	assert(this == screen);
@@ -313,6 +343,17 @@ void NXSurface::DrawBatchBegin(size_t) { }
 void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht)
 {
 	this->DrawSurface(src, dstx, dsty, srcx, srcy, wd, ht);
+}
+
+void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty)
+{
+	DrawBatchAdd(src, dstx, dsty, 0, 0, src->Width(), src->Height());
+}
+
+void NXSurface::DrawBatchAddPatternAcross(NXSurface *src,
+                                          int x_dst, int y_dst, int y_src, int height)
+{
+    this->BlitPatternAcross(src, x_dst, y_dst, y_src, height);
 }
 
 void NXSurface::DrawBatchEnd() { }

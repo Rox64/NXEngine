@@ -79,6 +79,7 @@ public:
 	void DrawBatchBegin(size_t max_count);
 	void DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht);
 	void DrawBatchAdd(NXSurface *src, int dstx, int dsty);
+    void DrawBatchAddPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src, int height);
 	void DrawBatchEnd();
 
 	// graphics primitives

@@ -44,6 +44,7 @@ namespace Graphics
 	void DrawBatchBegin(size_t max_count);
 	void DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int srcy, int wd, int ht);
 	void DrawBatchAdd(NXSurface *src, int x, int y);
+    void DrawBatchAddPatternAcross(NXSurface *sfc, int x_dst, int y_dst, int y_src, int height);
 	void DrawBatchEnd();
 	
 	void ClearScreen(NXColor color);

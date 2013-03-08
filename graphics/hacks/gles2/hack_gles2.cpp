@@ -564,6 +564,20 @@ GLES2_SetTexCoords(GLES2_DriverContext * rdata, SDL_bool enabled)
 
 /////////////////
 
+template <typename T>
+static T nextPowerOfTwo(T n)
+{
+	size_t k=1;
+	n--;
+	do {
+		n |= n >> k ;
+		k <<=1;
+	}
+	while (k < sizeof(T)*8);
+	return ++n;
+}
+
+
 struct hack_gles2_t : public Hack
 {
 	virtual char const* name() const { return "opengles2"; }
@@ -579,12 +593,6 @@ struct hack_gles2_t : public Hack
 		return false;
 	}
 
-
-
-
-
-
-
 	struct Coords
 	{
 		struct XY
@@ -598,6 +606,8 @@ struct hack_gles2_t : public Hack
 		
 		XY xya[3];
 		XY xyb[3];
+
+		enum { SIZE = 6 };
 	};
 
 	struct QuadToRender
@@ -608,11 +618,14 @@ struct hack_gles2_t : public Hack
 		size_t count;
 		size_t max_count;
 
+		bool auto_realloc;
+
 		QuadToRender() : 
 			vert(NULL),
 			uv(NULL),
 			count(0),
-			max_count(0)
+			max_count(0),
+			auto_realloc(false)
 		{}
 
 		~QuadToRender() {
@@ -631,22 +644,55 @@ struct hack_gles2_t : public Hack
 			max_count = 0;
 		}
 
-		bool alloc(size_t new_count)
-		{
-			count = 0;
-			if (max_count >= new_count)
+		bool alloc(size_t new_max_count, bool realloc)
+		{            
+			if (max_count >= new_max_count)
 				return false;
 
-			dealloc();
+			if (!realloc)
+				dealloc();
 
-			uv = new Coords[new_count];
-			vert = new Coords[new_count];
+			new_max_count = nextPowerOfTwo(new_max_count);
 
-			if (! (uv && vert))
+			Coords* nuv = new Coords[new_max_count];
+			Coords* nvert = new Coords[new_max_count];
+
+			if (! (nuv && nvert))
 				return true;
 
-			max_count = new_count;
+			if (realloc)
+			{
+				memcpy(nuv,   uv,   sizeof(uv[0])   * count);
+				memcpy(nvert, vert, sizeof(vert[0]) * count);
 
+				size_t old_count = count;
+				dealloc();
+				
+				count = old_count;
+				uv = nuv;
+				vert = nvert;
+			}
+			else
+			{
+				uv = nuv;
+				vert = nvert;
+			}
+
+			max_count = new_max_count;
+
+			return false;
+		}
+
+		bool check(size_t needed)
+		{
+			if (count + needed >= max_count)
+			{
+				if (auto_realloc)
+					return alloc(count + needed, true);
+				else
+					return true;
+			}
+			
 			return false;
 		}
 
@@ -657,9 +703,19 @@ struct hack_gles2_t : public Hack
 
 	virtual bool BatchBegin(SDL_Renderer * renderer, size_t max_count)
 	{
-		quads.alloc(max_count);
-
 		texInfo = NULL;
+		
+		quads.count = 0;
+		
+		if (0 == max_count)
+		{
+			quads.auto_realloc = true;
+			return false;
+		}
+
+		quads.auto_realloc = false;
+		if (quads.alloc(max_count, false))
+			return true;
 
 		return false;
 	}
@@ -667,9 +723,9 @@ struct hack_gles2_t : public Hack
 	virtual bool BatchAddCopy(SDL_Renderer * renderer, SDL_Texture * texture,
 							  const SDL_Rect * srcrect, const SDL_FRect * dstrect)
 	{
-		if (quads.count >= quads.max_count)
+		if (quads.check(1))
 		{
-			staterr("batch operation is bigger than have to be");
+			staterr("no enough memory for batch or batch operation is bigger than have to be");
 			assert(false);
 			return true;
 		}
@@ -836,7 +892,7 @@ struct hack_gles2_t : public Hack
 		//{
 			rdata->glVertexAttribPointer(GLES2_ATTRIBUTE_POSITION, 2, GL_FLOAT, GL_FALSE, 0, quads.vert/* + i*/);
 			rdata->glVertexAttribPointer(GLES2_ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, quads.uv/* + i*/);
-			rdata->glDrawArrays(GL_TRIANGLES, 0, 6 * quads.count);
+			rdata->glDrawArrays(GL_TRIANGLES, 0, Coords::SIZE * quads.count);
 		//}
 
 		return false;

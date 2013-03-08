@@ -14,24 +14,7 @@ using namespace GraphicHacks;
 
 GL_Functions funcs;
 
-struct hack_gl_t : public Hack
-{
-	virtual char const* name() const { return "opengl"; }
-
-
-
-	virtual bool Init(SDL_Renderer * renderer)
-	{
-		if (LoadFunctions(&funcs))
-			return true;
-		
-		return false;
-	}
-
-
-
-//////////////
-
+/////////////////
 	// from sdl
 	typedef struct
 	{
@@ -55,7 +38,34 @@ struct hack_gl_t : public Hack
 	    GL_FBOList *fbo;
 	} GL_TextureData;
 
+//////////////
 
+template <typename T>
+static T nextPowerOfTwo(T n)
+{
+	size_t k=1;
+	n--;
+	do {
+		n |= n >> k ;
+		k <<=1;
+	}
+	while (k < sizeof(T)*8);
+	return ++n;
+}
+
+struct hack_gl_t : public Hack
+{
+	virtual char const* name() const { return "opengl"; }
+
+
+
+	virtual bool Init(SDL_Renderer * renderer)
+	{
+		if (LoadFunctions(&funcs))
+			return true;
+		
+		return false;
+	}
 
 	struct Coords
 	{
@@ -69,6 +79,8 @@ struct hack_gl_t : public Hack
 		};
 		
 		XY xy[4];
+
+		enum { SIZE = 4 };
 	};
 
 	struct QuadToRender
@@ -79,11 +91,14 @@ struct hack_gl_t : public Hack
 		size_t count;
 		size_t max_count;
 
+		bool auto_realloc;
+
 		QuadToRender() : 
 			vert(NULL),
 			uv(NULL),
 			count(0),
-			max_count(0)
+			max_count(0),
+			auto_realloc(false)
 		{}
 
 		~QuadToRender() {
@@ -102,22 +117,55 @@ struct hack_gl_t : public Hack
 			max_count = 0;
 		}
 
-		bool alloc(size_t new_count)
-		{
-			count = 0;
-			if (max_count >= new_count)
+		bool alloc(size_t new_max_count, bool realloc)
+		{            
+			if (max_count >= new_max_count)
 				return false;
 
-			dealloc();
+			if (!realloc)
+				dealloc();
 
-			uv = new Coords[new_count];
-			vert = new Coords[new_count];
+			new_max_count = nextPowerOfTwo(new_max_count);
 
-			if (! (uv && vert))
+			Coords* nuv = new Coords[new_max_count];
+			Coords* nvert = new Coords[new_max_count];
+
+			if (! (nuv && nvert))
 				return true;
 
-			max_count = new_count;
+			if (realloc)
+			{
+				memcpy(nuv,   uv,   sizeof(uv[0])   * count);
+				memcpy(nvert, vert, sizeof(vert[0]) * count);
 
+				size_t old_count = count;
+				dealloc();
+				
+				count = old_count;
+				uv = nuv;
+				vert = nvert;
+			}
+			else
+			{
+				uv = nuv;
+				vert = nvert;
+			}
+
+			max_count = new_max_count;
+
+			return false;
+		}
+
+		bool check(size_t needed)
+		{
+			if (count + needed >= max_count)
+			{
+				if (auto_realloc)
+					return alloc(count + needed, true);
+				else
+					return true;
+			}
+			
 			return false;
 		}
 
@@ -128,9 +176,19 @@ struct hack_gl_t : public Hack
 
 	virtual bool BatchBegin(SDL_Renderer * renderer, size_t max_count)
 	{
-		quads.alloc(max_count);
-
 		texInfo = NULL;
+		
+		quads.count = 0;
+		
+		if (0 == max_count)
+		{
+			quads.auto_realloc = true;
+			return false;
+		}
+
+		quads.auto_realloc = false;
+		if (quads.alloc(max_count, false))
+			return true;
 
 		return false;
 	}
@@ -138,9 +196,9 @@ struct hack_gl_t : public Hack
 	virtual bool BatchAddCopy(SDL_Renderer * renderer, SDL_Texture * texture,
 	                          const SDL_Rect * srcrect, const SDL_FRect * dstrect)
 	{
-		if (quads.count >= quads.max_count)
+		if (quads.check(1))
 		{
-			staterr("batch operation is bigger than have to be");
+			staterr("no enough memory for batch or batch operation is bigger than have to be");
 			assert(false);
 			return true;
 		}
@@ -250,7 +308,7 @@ struct hack_gl_t : public Hack
 		funcs.glTexCoordPointer(2, GL_FLOAT, 0, quads.uv);
 		funcs.glVertexPointer(2, GL_FLOAT, 0, quads.vert);
 
-		funcs.glDrawArrays(GL_QUADS, 0, static_cast<GLsizei>(quads.count * 4));
+		funcs.glDrawArrays(GL_QUADS, 0, static_cast<GLsizei>(quads.count * Coords::SIZE));
 
 		funcs.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		funcs.glDisableClientState(GL_VERTEX_ARRAY);

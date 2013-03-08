@@ -21,7 +21,8 @@ namespace Sprites
 	static void BlitSprite(int x, int y, int s, int frame, uint8_t dir, \
 						int xoff, int yoff, int wd, int ht);
 
-
+    void draw_in_batch(bool enabled);
+    
 	void draw_sprite(int x, int y, int s, int frame=0, uint8_t dir=0);
 	void draw_sprite_at_dp(int x, int y, int s, int frame=0, uint8_t dir=0);
 	void draw_sprite_clipped(int x, int y, int s, int frame, uint8_t dir, int clipx1, int clipx2, int clipy1, int clipy2);

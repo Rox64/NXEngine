@@ -22,6 +22,8 @@ static StringList sheetfiles;
 SIFSprite sprites[MAX_SPRITES];
 int num_sprites;
 
+static bool batch_draw_enabled = false;
+
 
 bool Sprites::Init()
 {
@@ -78,6 +80,10 @@ static void Sprites::LoadSheetIfNeeded(int sheetno)
 	}
 }
 
+void Sprites::draw_in_batch(bool enabled)
+{
+    batch_draw_enabled = enabled;
+}
 
 // master sprite drawing function
 static void Sprites::BlitSprite(int x, int y, int s, int frame, uint8_t dir, \
@@ -88,11 +94,22 @@ static void Sprites::BlitSprite(int x, int y, int s, int frame, uint8_t dir, \
 	dir %= sprites[s].ndirs;
 	SIFDir *sprdir = &sprites[s].frame[frame].dir[dir];
 	
-	DrawSurface(spritesheet[sprites[s].spritesheet], \
-				x, y, \
-				(sprdir->sheet_offset.x + xoff), \
-				(sprdir->sheet_offset.y + yoff), \
-				wd, ht);
+    if (batch_draw_enabled)
+    {
+        DrawBatchAdd(spritesheet[sprites[s].spritesheet], \
+                     x, y, \
+                     (sprdir->sheet_offset.x + xoff), \
+                     (sprdir->sheet_offset.y + yoff), \
+                     wd, ht);
+    }
+    else
+    {
+        DrawSurface(spritesheet[sprites[s].spritesheet], \
+                    x, y, \
+                    (sprdir->sheet_offset.x + xoff), \
+                    (sprdir->sheet_offset.y + yoff), \
+                    wd, ht);
+    }
 }
 
 /*

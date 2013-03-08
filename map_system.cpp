@@ -179,12 +179,20 @@ static void draw_row(int y)
 int x;
 
 	Graphics::SetDrawTarget(ms.sfc);
-	
+    
+    Graphics::DrawBatchBegin(map.xsize);
+	Sprites::draw_in_batch(true);
+    
+    
 	for(x=0;x<map.xsize;x++)
 	{
 		int tc = tilecode[map.tiles[x][y]];
 		draw_sprite(x, y, SPR_MAP_PIXELS, get_color(tc));
+        
 	}
+
+    Sprites::draw_in_batch(false);
+    Graphics::DrawBatchEnd();
 	
 	Graphics::SetDrawTarget(screen);
 }

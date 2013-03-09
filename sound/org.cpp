@@ -481,7 +481,17 @@ int i;
 		if (note_channel[i].outbuffer) free(note_channel[i].outbuffer);
 	
 	for(i=0;i<2;i++)
-		if (final_buffer[i].samples) free(final_buffer[i].samples);
+	{
+		if (final_buffer[i].samples)
+		{
+			// final_buffer's are passed to SSLib, where they are used 
+			// by other thread in mixaudio().
+			// Here we are telling SSLib to forget this final_buffer because 
+			// we are going to free it.
+			SSAbortChannelByUserData(i);
+			free(final_buffer[i].samples);
+		}
+	}
 }
 
 

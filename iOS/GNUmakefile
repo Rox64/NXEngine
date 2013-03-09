@@ -7,6 +7,10 @@ DEB_CONTROL := $(DEB_DIR)/DEBIAN/control
 SITE_DIR := $(WORK_DIR)/site
 REPO_DIR := $(SITE_DIR)/repo
 
+# DEPICTION := http://192.168.1.16:8000/repo/CaveStory.html
+DEPICTION := http://pilin.github.com/NXEngine-iOS/repo/CaveStory.html
+
+
 PERL := /usr/bin/perl
 
 INFO_PLIST := $(DEB_DIR)/Applications/CaveStory.app/Info.plist
@@ -30,7 +34,13 @@ $(dir $(DEB_CONTROL)):
 	mkdir -p $@
 
 control: control.m4 $(dir $(DEB_CONTROL))
-	m4 -DPACKAGE_ID="$(BUNDLE_ID)" -DPACKAGE_VERSION="$(VERSION)" control.m4 > $(DEB_CONTROL)
+	m4  -DPACKAGE_ID="$(BUNDLE_ID)" \
+		-DPACKAGE_VERSION="$(VERSION)" \
+		-DDEPICTION="$(DEPICTION)" \
+		control.m4 > $(DEB_CONTROL)
+
+$(REPO_DIR)/CaveStory.html : changelog.m4  CaveStory.html.m4 $(dir $(REPO_DIR))
+	m4 changelog.m4 CaveStory.html.m4 > $@
 
 deb: control
 	cd $(WORK_DIR); dpkg -b $(DEB_NAME)
@@ -41,13 +51,13 @@ $(SITE_DIR):
 $(REPO_DIR): $(SITE_DIR)
 	mkdir -p $(REPO_DIR)
 
-prepare_deploy: $(REPO_DIR)
+prepare_deploy: $(REPO_DIR) $(REPO_DIR)/CaveStory.html
 	#cd $(SITE_DIR); git pull origin gh-pages
-
-deploy: prepare_deploy
 	cp -fv $(DEB_OUT) $(REPO_DIR)
 	cp -v dpkg-scanpackages dpkg-gettext.pl $(REPO_DIR) 
 	cd $(REPO_DIR); $(PERL) dpkg-scanpackages -m . /dev/null | bzip2 -zc > Packages.bz2
+
+deploy: prepare_deploy
 	cd $(REPO_DIR); git commit -a --amend -m "Package $(VERSION)"; git push --verbose --force origin gh-pages
 
 

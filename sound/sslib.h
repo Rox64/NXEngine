@@ -35,4 +35,6 @@ struct SSChannel
 	void (*FinishedCB)(int channel, int chunkid);
 };
 
+void SSAbortChannelByUserData(int ud);
+
 #endif

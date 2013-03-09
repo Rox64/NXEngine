@@ -184,6 +184,9 @@ int x, y;
 		ClearScreen(DK_BLUE);
 		return;
 	}
+    
+    Graphics::DrawBatchBegin(0);
+    Sprites::draw_in_batch(true);
 	
 	int frame = fade.curframe;
 	switch(fade.sweepdir)
@@ -223,6 +226,9 @@ int x, y;
 		}
 		break;
 	}
+    
+    Graphics::DrawBatchEnd();
+    Sprites::draw_in_batch(false);
 	
 	if (fade.fadedir == FADE_OUT)
 	{

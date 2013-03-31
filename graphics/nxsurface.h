@@ -105,6 +105,8 @@ public:
 	void set_clip_rect(int x, int y, int w, int h);
 	void set_clip_rect(NXRect *rect);
 	void clear_clip_rect();
+	bool is_set_clip() const;
+	void clip(SDL_Rect& srcrect, SDL_Rect& dstrect) const;
 	
 	int Width();
 	int Height();
@@ -136,6 +138,10 @@ private:
 	int tex_h;
 	NXFormat tex_format;
 	//bool fFreeSurface;
+
+	bool need_clip;
+	SDL_Rect clip_rect;
+
 };
 
 void inline

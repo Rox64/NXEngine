@@ -200,6 +200,8 @@ void NXSurface::DrawSurface(NXSurface *src, \
 	dstrect.y = dsty * SCALE;
 	dstrect.w = srcrect.w;
 	dstrect.h = srcrect.h;
+
+	if (need_clip) clip(srcrect, dstrect);
 	
 	if (SDL_RenderCopy(renderer, src->fTexture, &srcrect, &dstrect))
 	{
@@ -239,6 +241,8 @@ void NXSurface::BlitPatternAcross(NXSurface *src,
 	int x = (x_dst * SCALE);
 	int y = (y_dst * SCALE);
 	int destwd = this->tex_w;
+	
+	assert(!need_clip && "clip for blitpattern is not implemented");
 	
 	do
 	{
@@ -282,6 +286,8 @@ void NXSurface::DrawBatchAdd(NXSurface *src, int dstx, int dsty, int srcx, int s
 	dstrect.y = dsty * SCALE;
 	dstrect.w = srcrect.w;
 	dstrect.h = srcrect.h;
+
+	if (need_clip) clip(srcrect, dstrect);
 	
 	if (GraphicHacks::BatchAddCopy(renderer, src->fTexture, &srcrect, &dstrect))
 	{
@@ -310,6 +316,8 @@ void NXSurface::DrawBatchAddPatternAcross(NXSurface *src,
 	int x = (x_dst * SCALE);
 	int y = (y_dst * SCALE);
 	int destwd = this->tex_w;
+	
+	assert(!need_clip && "clip for blitpattern is not implemented");
 	
 	do
 	{
@@ -479,18 +487,62 @@ void c------------------------------() {}
 
 void NXSurface::set_clip_rect(int x, int y, int w, int h)
 {
-	NXRect rect(x * SCALE, y * SCALE, w * SCALE, h * SCALE);
-	// SDL_SetClipRect(fSurface, &rect);
+	need_clip = true;
+
+	clip_rect.x = x * SCALE;
+	clip_rect.y = y * SCALE;
+	clip_rect.w = w * SCALE;
+	clip_rect.h = h * SCALE;
 }
 
 void NXSurface::set_clip_rect(NXRect *rect)
 {
-	// SDL_SetClipRect(fSurface, rect);
+	assert(false && "not implemented");
 }
 
 void NXSurface::clear_clip_rect()
 {
-	// SDL_SetClipRect(fSurface, NULL);
+	need_clip = false;
+}
+
+bool NXSurface::is_set_clip() const
+{
+	return need_clip;
+}
+
+void NXSurface::clip(SDL_Rect& srcrect, SDL_Rect& dstrect) const
+{
+	
+	int w = srcrect.w;
+	int h = srcrect.h;
+	
+    int dx, dy;
+
+    // Code is from SDL_UpperBlit().
+    // This is how SDL performs clip on surface.
+
+    dx = clip_rect.x - dstrect.x;
+    if (dx > 0) {
+        w -= dx;
+        dstrect.x += dx;
+        srcrect.x += dx;
+    }
+    dx = dstrect.x + w - clip_rect.x - clip_rect.w;
+    if (dx > 0)
+        w -= dx;
+
+    dy = clip_rect.y - dstrect.y;
+    if (dy > 0) {
+        h -= dy;
+        dstrect.y += dy;
+        srcrect.y += dy;
+    }
+    dy = dstrect.y + h - clip_rect.y - clip_rect.h;
+    if (dy > 0)
+        h -= dy;
+
+    dstrect.w = srcrect.w = w;
+    dstrect.h = srcrect.h = h;
 }
 
 /*

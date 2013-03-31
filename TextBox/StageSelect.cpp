@@ -27,17 +27,27 @@ TB_StageSelect::TB_StageSelect()
 void c------------------------------() {}
 */
 
+void setSpecScreenState(int active_slots, bool enable)
+{
+	// EStageSelect1 - for the level selection
+	// EStageSelect2 - like normal textbox mode and used when level is selected or
+	// there are no levels to select.
+	
+	VJoy::ModeAware::SpecScreens s = active_slots ? VJoy::ModeAware::EStageSelect1 : VJoy::ModeAware::EStageSelect2;
+	VJoy::ModeAware::specScreenChanged(s, enable);
+}
+
 void TB_StageSelect::ResetState()
 {
 	if (fVisible != false)
-		VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EStageSelect1, false);
+		setSpecScreenState(CountActiveSlots(), false);
 	fVisible = false;
 }
 
 void TB_StageSelect::SetVisible(bool enable)
 {
 	if (fVisible != enable)
-		VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EStageSelect1, enable);
+		setSpecScreenState(CountActiveSlots(), enable);
 	
 	fVisible = enable;
 	fWarpY = WARP_Y_START;

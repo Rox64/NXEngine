@@ -559,6 +559,16 @@ void Graphics::clear_clip_rect()
 	drawtarget->clear_clip_rect();
 }
 
+bool Graphics::is_set_clip()
+{
+	return drawtarget->is_set_clip();
+}
+
+void Graphics::clip(SDL_Rect& srcrect, SDL_Rect& dstrect)
+{
+	drawtarget->clip(srcrect, dstrect);
+}
+
 /*
 void c------------------------------() {}
 */

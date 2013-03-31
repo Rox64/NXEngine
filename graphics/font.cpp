@@ -494,6 +494,7 @@ static int text_draw(int x, int y, const char *text, int spacing, NXFont *font)
 int orgx = x;
 int i;
 SDL_Rect dstrect;
+SDL_Rect srcrect;
 	
 	for(i=0;text[i];i++)
 	{
@@ -517,10 +518,16 @@ SDL_Rect dstrect;
 			dstrect.y = y;
 			dstrect.w = letter->w;
 			dstrect.h = letter->h;
+
+			srcrect.x = 0;
+			srcrect.y = 0;
+			srcrect.w = dstrect.w;
+			srcrect.h = dstrect.h;
+
+			if (Graphics::is_set_clip())
+				Graphics::clip(srcrect, dstrect);
 			
-			// TODO FONT
-			//SDL_BlitSurface(letter, NULL, sdl_screen, &dstrect);
-			SDL_RenderCopy(renderer, tletter, NULL, &dstrect);
+			SDL_RenderCopy(renderer, tletter, &srcrect, &dstrect);
 		}
 		
 		if (spacing != 0)
@@ -667,6 +674,9 @@ int wd;
 	
 	// TODO FONT
 	//SDL_BlitSurface(shadesfc, &srcrect, sdl_screen, &dstrect);
+
+	if (Graphics::is_set_clip())
+		Graphics::clip(srcrect, dstrect);
 
 	SDL_RenderCopy(renderer, tshadesfc, &srcrect, &dstrect);
 	

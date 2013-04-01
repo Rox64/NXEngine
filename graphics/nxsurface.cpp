@@ -22,7 +22,8 @@ NXSurface::NXSurface() :
 	fTexture(NULL),
 	tex_w(0),
 	tex_h(0),
-	tex_format()
+	tex_format(),
+	need_clip(false)
 {
 }
 
@@ -31,7 +32,8 @@ NXSurface::NXSurface(int wd, int ht, NXFormat *format) :
 	fTexture(NULL),
 	tex_w(0),
 	tex_h(0),
-	tex_format()
+	tex_format(),
+	need_clip(false)
 {
 	AllocNew(wd, ht, format);
 	setFormat(format);

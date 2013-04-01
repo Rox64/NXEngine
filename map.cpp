@@ -517,10 +517,10 @@ int water_x, water_y;
     Graphics::DrawBatchBegin(0);
 	
 	// draw the surface and just under the surface
-	BlitPatternAcross(backdrop[map.backdrop], water_x, water_y, 0, 16);
+	Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], water_x, water_y, 0, 16);
 	water_y += 16;
 	
-	BlitPatternAcross(backdrop[map.backdrop], water_x, water_y, 32, 16);
+	Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], water_x, water_y, 32, 16);
 	water_y += 16;
 	
 	// draw the rest of the pattern all the way down

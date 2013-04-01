@@ -98,6 +98,8 @@ bool freshstart;
 	VJoy::Init();
 #endif
 
+	//org_test_miniloop();
+
 	if (game.init()) { fatal("game.init() error"); return 1; }
 	game.setmode(GM_NORMAL);
 	// set null stage just to have something to do while we go to intro
@@ -606,6 +608,10 @@ void org_test_miniloop(void)
 uint32_t start = 0, curtime;
 uint32_t counter;
 
+const bool autochange = false;
+const uint32_t change_time = 500;
+uint32_t last_change = 0;
+
 	stat("Starting org test");
 	
 	font_draw(5, 5, "ORG test in progress...", 0, &greenfont);
@@ -634,6 +640,13 @@ uint32_t counter;
 				
 				if (last_sdl_key != -1)
 					return;
+			}
+
+			if (autochange && (curtime - last_change) >= change_time)
+			{
+				last_change = curtime;
+				int newsong = random(1, 42);
+				music(newsong);
 			}
 		}
 	}

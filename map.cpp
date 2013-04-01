@@ -425,7 +425,9 @@ int nlayers = 6;
 int y1, y2;
 int i, x;
 
-	if (--map.parscroll_x <= -(Graphics::SCREEN_WIDTH*2))
+	const int W = backdrop[map.backdrop]->Width();
+	
+	if (--map.parscroll_x <= -(W*2))
 		map.parscroll_x = 0;
 	
     Graphics::DrawBatchBegin(0);
@@ -438,7 +440,7 @@ int i, x;
 		if (i)	// not the static moon layer?
 		{
 			x = (map.parscroll_x * move_spd[i]) >> 1;
-			x %= Graphics::SCREEN_WIDTH;
+			x %= W;
 		}
 		
         Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], x, y1, y1, (y2-y1)+1);

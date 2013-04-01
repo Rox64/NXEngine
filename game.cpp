@@ -208,8 +208,6 @@ bool Game::pause(int pausemode, int param)
 
 void Game::tick(void)
 {
-	debug_clear();
-	
 	if (game.paused)
 	{
 		tickfunctions[game.paused].OnTick();
@@ -229,6 +227,10 @@ void Game::tick(void)
     //::debug("mode %d,%d", game.mode, game.paused);
     
 	DrawDebug();
+	
+	debug_clear();
+	//debug_timer_begin();
+
 	console.Draw();
 }
 

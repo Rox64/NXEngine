@@ -17,4 +17,7 @@ void debug(const char *fmt, ...);
 
 const char *strhex(void const* value, size_t size);
 
+void debug_timer_begin();
+void debug_timer_point(char const* msg);
+
 #endif

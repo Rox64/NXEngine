@@ -1,5 +1,6 @@
 
 #include "nx.h"
+#include <cassert>
 #include <stdarg.h>
 #include <string.h>
 
@@ -419,3 +420,21 @@ int x1, y1, x2, y2;
 	AddDebugMark(x1, y1, x2, y2, DM_BOX, r, g, b);
 }
 
+
+Uint32 debug_timer_b = 0;
+Uint32 debug_timer_l = 0;
+void debug_timer_begin() 
+{
+	Uint32 now = SDL_GetTicks();
+	debug("last frame %10d", now - debug_timer_b);
+	debug_timer_l = debug_timer_b = now;
+}
+
+void debug_timer_point(char const* msg)
+{
+	Uint32 now = SDL_GetTicks();
+
+	debug("%s %10d %10d", msg, now - debug_timer_l, now - debug_timer_b);
+
+	debug_timer_l = now;
+}

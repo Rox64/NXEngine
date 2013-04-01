@@ -5,6 +5,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "../config.h"
+
 #if !defined(WIN32)
 # include <endian.h>
 #endif
@@ -27,33 +29,45 @@
 	#define drumK		30050
 #endif
 
+// main thread only
+static int OrgVolume;
+
 static bool org_inited = false;
+
+// gen thread only
+
+// main and gen treads
 
 static stNoteChannel note_channel[16];
 
 static stSong song;
 
-static int cache_ahead_time = 2000;		// approximate number of ms to cache ahead (is rounded to a # of beats)
-
 static int buffer_beats;				// # of beats to cache ahead in each buffer
 static int buffer_samples;				// how many samples are in each outbuffer
-static int outbuffer_size_bytes;		// length of each outbuffer, and of final_buffer, in bytes
+
+static const int FINAL_BUFFER_COUNT = 2; 	// Be aware to change this value - lots 
+											// of places depend on it
 
 static struct
 {
 	signed short *samples;		// pointer to the raw PCM sound data
 	int firstbeat;				// beat # of the first beat contained in this chunk
-} final_buffer[2];
+} final_buffer[FINAL_BUFFER_COUNT];
 
 static uint8_t current_buffer;
+#ifdef CONFIG_ORG_MUSIC_THREADED
+static int buffers_full;
+#else 
 static bool buffers_full;
+#endif
 
-static int OrgVolume;
+// Next tables are written in main thread
 
-static struct
+static struct wavetable_t
 {
 	signed short samples[256];
-} wavetable[100];
+} __w__wavetable[100];
+
 
 #ifdef DRUM_PXT
 	// sound effect numbers which correspond to the drums
@@ -71,13 +85,46 @@ static struct
 	};
 #endif
 
-static struct
+static struct drumtable_t
 {
 	signed short *samples;
 	int nsamples;
-} drumtable[NUM_DRUMS];
+} __w__drumtable[NUM_DRUMS];
 
-static int pitch[NUM_NOTES];
+static int __w__pitch[NUM_NOTES];
+
+// Next tables are read in gen thread, so no need to sync access
+
+static wavetable_t const* const wavetable = __w__wavetable;
+static drumtable_t const* const drumtable = __w__drumtable;
+static int const* const pitch = __w__pitch;
+
+static const int cache_ahead_time = 2000;		// approximate number of ms to cache ahead (is rounded to a # of beats)
+
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef CONFIG_ORG_MUSIC_THREADED
+
+static SDL_Thread* gen_music_thread = NULL;
+static SDL_cond* gen_music_condvar = NULL;
+static SDL_mutex* gen_music_lock = NULL;
+
+static bool should_stop = false;
+
+static int gen_music_thread_fn(void*);
+
+class LockGuard
+{
+	SDL_mutex* lock;
+public:
+	LockGuard(SDL_mutex* lock) : lock(lock) { SDL_LockMutex(lock); }
+	~LockGuard() { SDL_UnlockMutex(lock); }
+};
+
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+
 
 
 static void init_pitch(void)
@@ -86,7 +133,7 @@ static void init_pitch(void)
 	
 	for(int i=0;i<NUM_NOTES;i++)
 	{
-		pitch[i] = (int)(441.0*(pow(2.0,((i-19.0)/12.0))));
+		__w__pitch[i] = (int)(441.0*(pow(2.0,((i-19.0)/12.0))));
 	}
 }
 
@@ -142,9 +189,9 @@ uint16_t version;
 			{
 				for(d=0;d<NUM_DRUMS;d++)
 				{
-					drumtable[d].nsamples = fgetl(fp);
-					drumtable[d].samples = (signed short *)malloc(drumtable[d].nsamples * 2);
-					fread(drumtable[d].samples, drumtable[d].nsamples*2, 1, fp);
+					__w__drumtable[d].nsamples = fgetl(fp);
+					__w__drumtable[d].samples = (signed short *)malloc(__w__drumtable[d].nsamples * 2);
+					fread(__w__drumtable[d].samples, __w__drumtable[d].nsamples*2, 1, fp);
 				}
 				fclose(fp);
 				stat("-- Drums loaded from cache");
@@ -173,8 +220,8 @@ uint16_t version;
 			fwrite(&version, sizeof(version), 1, fp);
 			for(d=0;d<NUM_DRUMS;d++)
 			{
-				fputl(drumtable[d].nsamples, fp);
-				fwrite(drumtable[d].samples, drumtable[d].nsamples*2, 1, fp);
+				fputl(__w__drumtable[d].nsamples, fp);
+				fwrite(__w__drumtable[d].samples, __w__drumtable[d].nsamples*2, 1, fp);
 			}
 			fclose(fp);
 		}
@@ -205,21 +252,21 @@ signed short *abuf;
 	}
 	
 	//stat("chunk: %d bytes in chunk", chunk->alen);
-	drumtable[d].nsamples = chunk->alen / 2 / 2;	// 16-bit stereo sound
-	drumtable[d].samples = malloc(drumtable[d].nsamples * 2);
+	__w__drumtable[d].nsamples = chunk->alen / 2 / 2;	// 16-bit stereo sound
+	__w__drumtable[d].samples = malloc(drumtable[d].nsamples * 2);
 	
 	#ifndef QUIET
-		stat("drum0%X [%s]: %d samples", d, fname, drumtable[d].nsamples);
+		stat("drum0%X [%s]: %d samples", d, fname, __w__drumtable[d].nsamples);
 	#endif
 	
 	read_pt = 0;
 	abuf = (signed short *)chunk->abuf;
-	for(i=0;i<drumtable[d].nsamples;i++)
+	for(i=0;i<__w__drumtable[d].nsamples;i++)
 	{
 		left = abuf[read_pt++]; right = abuf[read_pt++];
 		
-		drumtable[d].samples[i] = (left + right) / 2;
-		drumtable[d].samples[i] += drumtable[d].samples[i];		// make drums louder--sounds better
+		__w__drumtable[d].samples[i] = (left + right) / 2;
+		__w__drumtable[d].samples[i] += __w__drumtable[d].samples[i];		// make drums louder--sounds better
 	}
 	
 	Mix_FreeChunk(chunk);
@@ -239,22 +286,22 @@ stPXSound snd;
 	if (pxt_load(fname, &snd)) return 1;
 	pxt_Render(&snd);
 	
-	drumtable[d].nsamples = snd.final_size;
-	drumtable[d].samples = (signed short *)malloc(snd.final_size * 2);		// *2 - it is 16-bit
+	__w__drumtable[d].nsamples = snd.final_size;
+	__w__drumtable[d].samples = (signed short *)malloc(snd.final_size * 2);		// *2 - it is 16-bit
 	
 	#ifndef QUIET
-		stat("drum0%X [%s]: %d samples", d, fname, drumtable[d].nsamples);
+		stat("drum0%X [%s]: %d samples", d, fname, __w__drumtable[d].nsamples);
 	#endif
 	
 	// read data out of pxt's render result and put it into our drum sample table
-	for(i=0;i<drumtable[d].nsamples;i++)
+	for(i=0;i<__w__drumtable[d].nsamples;i++)
 	{
 		sample = snd.final_buffer[i];
 		//i'm upscaling the 8-bit value to 16-bit;
 		//but this also sets volume of drums relative to music
 		sample *= 200;
 		
-		drumtable[d].samples[i] = sample;
+		__w__drumtable[d].samples[i] = sample;
 	}
 	
 	FreePXTBuf(&snd);
@@ -290,7 +337,7 @@ signed char *ptr;
 		for(sampl=0;sampl<256;sampl++)
 		{
 			// 256 = (32768 / 128)-- convert to 16-bit
-			wavetable[wav].samples[sampl] = (signed short)((int)(*ptr++) << 8);
+			__w__wavetable[wav].samples[sampl] = (signed short)((int)(*ptr++) << 8);
 		}
 	}
 	
@@ -311,7 +358,7 @@ int i;
 	
 	// set all buffer pointers and things to NULL, so if something fails to load,
 	// we won't crash on org_close.
-	memset(drumtable, 0, sizeof(drumtable));
+	memset(__w__drumtable, 0, sizeof(__w__drumtable));
 	for(i=0;i<16;i++) note_channel[i].outbuffer = NULL;
 	for(i=0;i<2;i++) final_buffer[i].samples = NULL;
 	
@@ -321,6 +368,22 @@ int i;
 	
 	song.playing = false;
 	org_inited = true;
+
+#ifdef CONFIG_ORG_MUSIC_THREADED
+
+	should_stop = false;
+
+	gen_music_condvar = SDL_CreateCond(); 
+	if (!gen_music_condvar) return 1;
+
+	gen_music_lock = SDL_CreateMutex(); 
+	if (!gen_music_lock) return 1;
+
+	gen_music_thread = SDL_CreateThread(gen_music_thread_fn, "gen_music", NULL);
+	if (!gen_music_thread) return 1;
+
+#endif
+
 	return 0;
 }
 
@@ -330,6 +393,26 @@ void org_close(void)
 int d;
 
 	org_stop();
+
+#ifdef CONFIG_ORG_MUSIC_THREADED
+
+	{
+		LockGuard guard(gen_music_lock);
+
+		should_stop = true;
+		SDL_CondSignal(gen_music_condvar);
+	}
+
+
+
+	SDL_WaitThread(gen_music_thread, NULL);
+	gen_music_thread = NULL;
+
+	SDL_DestroyCond(gen_music_condvar);
+	SDL_DestroyMutex(gen_music_lock);
+
+#endif
+
 	free_buffers();
 	
 	for(d=0;d<NUM_DRUMS;d++)
@@ -337,22 +420,16 @@ int d;
 }
 
 
-char org_load(char *fname)
+char org_load_song(FILE* fp)
 {
-static const char *magic = "Org-02";
-char buf[8];
-FILE *fp;
-int i, j;
+	int i, j;
+	
+#ifdef CONFIG_ORG_MUSIC_THREADED
+	LockGuard guard(gen_music_lock);
+#endif
 
-	fp = fileopenRO(fname);
-	if (!fp) { visible_warning("org_load: no such file: '%s'", fname); return 1; }
-	
-	for(i=0;i<6;i++) { buf[i] = fgetc(fp); } buf[i] = 0;
-	if (strcmp(buf, magic)) { visible_warning("org-load: not an org file (got '%s')", buf); fclose(fp); return 1; }
-	stat("%s: %s detected", fname, magic);
-	
-	fseek(fp, 0x06, SEEK_SET);
-	
+	song.playing = false;
+
 	song.ms_per_beat = fgeti(fp);
 	song.steps_per_bar = fgetc(fp);
 	song.beats_per_step = fgetc(fp);
@@ -365,7 +442,6 @@ int i, j;
 	if (song.loop_end < song.loop_start)
 	{
 		visible_warning("org_load: loop end is before loop start");
-		fclose(fp);
 		return 1;
 	}
 	
@@ -423,8 +499,33 @@ int i, j;
 		for(j=0;j<song.instrument[i].nnotes;j++) song.instrument[i].note[j].volume = fgetc(fp);
 		for(j=0;j<song.instrument[i].nnotes;j++) song.instrument[i].note[j].panning = fgetc(fp);
 	}
+
+	return 0;
+}
+
+char org_load(char *fname)
+{
+static const char *magic = "Org-02";
+char buf[8];
+FILE *fp;
+int i, j;
+
+	fp = fileopenRO(fname);
+	if (!fp) { visible_warning("org_load: no such file: '%s'", fname); return 1; }
+	
+	for(i=0;i<6;i++) { buf[i] = fgetc(fp); } buf[i] = 0;
+	if (strcmp(buf, magic)) { visible_warning("org-load: not an org file (got '%s')", buf); fclose(fp); return 1; }
+	stat("%s: %s detected", fname, magic);
+	
+	fseek(fp, 0x06, SEEK_SET);
+
+	char res = org_load_song(fp);
 	
 	fclose(fp);
+
+	if (res)
+		return res;
+
 	return init_buffers();
 }
 
@@ -436,6 +537,8 @@ void c------------------------------() {}
 static bool init_buffers(void)
 {
 int i;
+
+
 
 	// free the old buffers, as we're probably going to change their size here in a sec
 	free_buffers();
@@ -452,7 +555,8 @@ int i;
 	// now figure out how many samples that is.
 	buffer_samples = (buffer_beats * song.samples_per_beat);
 	// now figure out how many bytes THAT is.
-	outbuffer_size_bytes = buffer_samples * 2 * 2;		// @ 16-bits, and stereo sound
+	int outbuffer_size_bytes = 		// length of each outbuffer, and of final_buffer, in bytes
+		buffer_samples * 2 * 2;		// @ 16-bits, and stereo sound
 	
 	
 	// initialize the per-channel output buffers
@@ -504,33 +608,50 @@ void c------------------------------() {}
 bool org_start(int startbeat)
 {
 	org_stop();		// stop any old music
-	
-	// set all the note-tracking stuff to starting values
-	song.beat = startbeat;
-	song.haslooped = false;
-	
-	for(int i=0;i<16;i++)
+
 	{
-		song.instrument[i].curnote = 0;
-		note_channel[i].volume = ORG_MAX_VOLUME;
-		note_channel[i].panning = ORG_PAN_CENTERED;
-		note_channel[i].length = 0;
+#ifdef CONFIG_ORG_MUSIC_THREADED
+		LockGuard guard(gen_music_lock);
+#endif
+
+		// set all the note-tracking stuff to starting values
+		song.beat = startbeat;
+		song.haslooped = false;
+		
+		for(int i=0;i<16;i++)
+		{
+			song.instrument[i].curnote = 0;
+			note_channel[i].volume = ORG_MAX_VOLUME;
+			note_channel[i].panning = ORG_PAN_CENTERED;
+			note_channel[i].length = 0;
+		}
+		
+		// fill the first buffer and play it to jumpstart the playback cycle
+		//lprintf(" ** org_start: Jumpstarting buffer cycle\n");
+		
+		song.playing = true;
+		song.fading = false;
+		
+		song.volume = OrgVolume;
 	}
+
+	SSSetVolume(ORG_CHANNEL, OrgVolume);
 	
-	// fill the first buffer and play it to jumpstart the playback cycle
-	//lprintf(" ** org_start: Jumpstarting buffer cycle\n");
-	
-	song.playing = true;
-	song.fading = false;
-	
-	song.volume = OrgVolume;
-	SSSetVolume(ORG_CHANNEL, song.volume);
-	
+#ifdef CONFIG_ORG_MUSIC_THREADED
+	{
+		LockGuard guard(gen_music_lock);
+		current_buffer = 0;
+		buffers_full = 0;
+
+		SDL_CondSignal(gen_music_condvar);
+	}
+#else
 	// kickstart the first buffer
 	current_buffer = 0;
 	generate_music();
 	queue_final_buffer();
-	buffers_full = 0;				// tell org_run to generate the other buffer right away
+	buffers_full = false;				// tell org_run to generate the other buffer right away
+#endif
 	
 	return 0;
 }
@@ -539,9 +660,17 @@ bool org_start(int startbeat)
 // pause/stop playback of the current song
 void org_stop(void)
 {
-	if (song.playing)
+	bool was_playing = false;
 	{
+#ifdef CONFIG_ORG_MUSIC_THREADED
+		LockGuard guard(gen_music_lock);
+#endif
+		was_playing = song.playing;
 		song.playing = false;
+	}
+
+	if (was_playing)
+	{
 		// cancel whichever buffer is playing
 		SSAbortChannel(ORG_CHANNEL);
 	}
@@ -549,6 +678,10 @@ void org_stop(void)
 
 bool org_is_playing(void)
 {
+#ifdef CONFIG_ORG_MUSIC_THREADED
+	LockGuard guard(gen_music_lock);
+#endif
+
 	return song.playing;
 }
 
@@ -568,17 +701,30 @@ bool org_is_playing(void)
 void org_fade(void)
 {
 	stat("org_fade");
+
+#ifdef CONFIG_ORG_MUSIC_THREADED
+	LockGuard guard(gen_music_lock);
+#endif
 	song.fading = true;
 	song.last_fade_time = 0;
 }
 
 void org_set_volume(int newvolume)
 {
-	if (newvolume != song.volume)
+	bool volume_changed = false;
 	{
-		song.volume = newvolume;
-		SSSetVolume(ORG_CHANNEL, newvolume);
+#ifdef CONFIG_ORG_MUSIC_THREADED
+		LockGuard guard(gen_music_lock);
+#endif
+		if (newvolume != song.volume)
+		{
+			song.volume = newvolume;
+			volume_changed = true;
+		}
 	}
+
+	if (volume_changed)
+		SSSetVolume(ORG_CHANNEL, newvolume);
 }
 
 static void runfade()
@@ -646,7 +792,17 @@ static void queue_final_buffer(void)
 // callback from sslib when a buffer is finished playing.
 static void OrgBufferFinished(int channel, int buffer_no)
 {
+#ifdef CONFIG_ORG_MUSIC_THREADED
+	LockGuard guard(gen_music_lock);
+	
+	buffers_full--;
+	assert(buffers_full >= 0);
+
+	SDL_CondSignal(gen_music_condvar);
+
+#else
 	buffers_full = false;
+#endif
 }
 
 /*
@@ -904,6 +1060,14 @@ int i;
 
 void org_run(void)
 {
+#ifdef CONFIG_ORG_MUSIC_THREADED
+
+	{
+		if (song.fading) runfade();
+	}
+
+	return;
+#else
 	if (!song.playing)
 		return;
 	
@@ -918,6 +1082,7 @@ void org_run(void)
 	}
 	
 	if (song.fading) runfade();
+#endif
 }
 
 
@@ -1124,6 +1289,36 @@ int org_GetCurrentBuffer(void)
 	return SSGetCurUserData(ORG_CHANNEL);
 }
 
+#ifdef CONFIG_ORG_MUSIC_THREADED
+
+int gen_music_thread_fn(void*)
+{
+	while (true)
+	{
+
+		{
+			LockGuard guard(gen_music_lock);
+
+			while (!(should_stop || (song.playing && buffers_full < FINAL_BUFFER_COUNT)))
+				SDL_CondWait(gen_music_condvar, gen_music_lock);
+
+			if (should_stop)
+			{
+				break;
+			}
+
+			generate_music();
+
+			++buffers_full;
+			assert(buffers_full <= FINAL_BUFFER_COUNT);
+		}
+
+		queue_final_buffer();
+	}
+
+	return 0;
+}
+#endif
 
 // returns the musical name of an org note number
 /*char *org_GetNoteName(int note)

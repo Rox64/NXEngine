@@ -26,4 +26,7 @@
 #define CONFIG_BATCH_RENDERING
 
 
+#define CONFIG_ORG_MUSIC_THREADED
+
+
 #endif

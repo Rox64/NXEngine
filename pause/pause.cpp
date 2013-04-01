@@ -66,6 +66,7 @@ void pause_tick()
 		return;
 	}
 	
+#if !defined(IPHONE)
 	// exit
 	if (justpushed(ESCKEY))
 	{
@@ -73,6 +74,7 @@ void pause_tick()
 		game.running = false;
 		return;
 	}
+#endif
 
 }
 

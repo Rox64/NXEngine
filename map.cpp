@@ -428,7 +428,7 @@ int i, x;
 	if (--map.parscroll_x <= -(Graphics::SCREEN_WIDTH*2))
 		map.parscroll_x = 0;
 	
-    Graphics::DrawBatchBegin(nlayers);
+    Graphics::DrawBatchBegin(0);
     
 	y1 = x = 0;
 	for(i=0;i<nlayers;i++)

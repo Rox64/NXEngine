@@ -1389,6 +1389,16 @@ void PDoRepel(void)
 	
 	// vertical repel doesn't happen normally, but if we get embedded in a
 	// block somehow, it can happen.
+	
+	// Update 2013.04.02: actually, it's quite easy to get embedded into the block.
+	// Jump of the block, descend 2 pixels, boost horyzontally into slope - you will 
+	// get inside the slope. Or, stand in front of 3 blocks high wall and try 
+	// to jump on this wall (easy to reproduce in Arthur's house). When only 
+	// 2-3 pixles left until the top of the wall - unpress jump button - Quote's legs
+	// will be insed the block (1-2 pixels). 
+	// To fix these problems I've enabled repel up. I've not seen any cases where 
+	// repel down would be needed.
+
 	/*
 	// do repel down
 	if (player->CheckAttribute(player->repel_u, player->nrepel_u, TA_SOLID_PLAYER))
@@ -1399,6 +1409,7 @@ void PDoRepel(void)
 			//debug("REPEL [down]");
 		}
 	}
+	*/
 	
 	// do repel up
 	if (player->CheckAttribute(player->repel_d, player->nrepel_d, TA_SOLID_PLAYER))
@@ -1409,7 +1420,6 @@ void PDoRepel(void)
 			//debug("REPEL [up]");
 		}
 	}
-	*/
 }
 
 /*

@@ -25,7 +25,7 @@ bool justpushed(int k);
 void DrawDebug(void);
 void DrawBoundingBoxes();
 void DrawAttrPoints();
-static void draw_pointlist(Object *o, SIFPointList *points);
+void draw_pointlist(Object *o, SIFPointList *points);
 void debug(const char *fmt, ...);
 void debug_draw(void);
 void debug_clear();

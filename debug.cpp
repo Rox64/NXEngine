@@ -145,7 +145,7 @@ void DrawAttrPoints()
 	}
 }
 
-static void draw_pointlist(Object *o, SIFPointList *points)
+void draw_pointlist(Object *o, SIFPointList *points)
 {
 	int xoff = (o->x >> CSF);
 	int yoff = (o->y >> CSF);

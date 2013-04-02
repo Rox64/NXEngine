@@ -448,7 +448,11 @@ extern int flipacceltime;
 	// draw all floattext (rising damage and XP amounts)
 	FloatText::DrawAll();
 	
-	if (game.debug.DrawBoundingBoxes) DrawBoundingBoxes();
+	if (game.debug.DrawBoundingBoxes) 
+	{
+		DrawBoundingBoxes();
+		DrawAttrPoints();
+	}
 	//if (game.debug.debugmode) DrawAttrPoints();
 }
 

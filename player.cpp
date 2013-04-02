@@ -193,7 +193,8 @@ void HandlePlayer_am(void)
 	//debug("xinertia: %s", strhex(player->xinertia));
 	//debug("yinertia: %s", strhex(player->yinertia));
 	//debug("booststate: %d", player->booststate);
-	//debug("y: %d", player->y>>CSF);
+	//debug("x: %d %d", player->x, player->x>>CSF);
+	//debug("y: %d %d", player->y, player->y>>CSF);
 	//debug("riding %x", player->riding);
 	//debug("block: %d%d%d%d", player->blockl, player->blockr, player->blocku, player->blockd);
 	

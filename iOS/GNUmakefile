@@ -63,7 +63,7 @@ $(CHANGES_DIR)/%.md: changelogs/%.md $(CHANGES_DIR)
 changes: $(SITE_CHANGELOG_FILES)
 	test -f "$(CHANGES_DIR)/$(VERSION).md" || ( echo 'Create changelog file' && false)
 
-prepare_deploy: $(REPO_DIR) $(REPO_DIR)/CaveStory.html changes
+prepare_deploy: $(REPO_DIR) changes
 	#cd $(SITE_DIR); git pull origin gh-pages
 	cp -fv $(DEB_OUT) $(REPO_DIR)
 	cp -v dpkg-scanpackages dpkg-gettext.pl $(REPO_DIR) 

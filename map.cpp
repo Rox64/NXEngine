@@ -421,7 +421,7 @@ static void DrawFastLeftLayered(void)
 {
 static const int layer_ys[] = { 80, 122, 145, 176, 240 };
 static const int move_spd[] = { 0,    1,   2,   4,   8 };
-int nlayers = 6;
+const int nlayers = 5;
 int y1, y2;
 int i, x;
 
@@ -445,6 +445,15 @@ int i, x;
 		
         Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], x, y1, y1, (y2-y1)+1);
 		y1 = (y2 + 1);
+	}
+	
+	if (Graphics::SCREEN_HEIGHT > 240)
+	{
+		// It seems, that texture will be stretched even if gap between last
+		// layer and screen bottom is bigger than 240-217 pixels. So, we don't
+		// have to put loop here.
+		// 217 is the first point without clouds border - clouds below have solid color.
+		Graphics::DrawBatchAddPatternAcross(backdrop[map.backdrop], x, 240, 217, Graphics::SCREEN_HEIGHT - 240);
 	}
     
     Graphics::DrawBatchEnd();

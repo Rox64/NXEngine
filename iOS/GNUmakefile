@@ -6,10 +6,7 @@ DEB_OUT := $(WORK_DIR)/$(DEB_NAME).deb
 DEB_CONTROL := $(DEB_DIR)/DEBIAN/control
 SITE_DIR := $(WORK_DIR)/site
 REPO_DIR := $(SITE_DIR)/repo
-
-# DEPICTION := http://192.168.1.16:8000/repo/CaveStory.html
-DEPICTION := http://pilin.github.com/NXEngine-iOS/repo/CaveStory.html
-
+CHANGES_DIR := $(SITE_DIR)/changelogs
 
 PERL := /usr/bin/perl
 
@@ -26,6 +23,15 @@ VERSION := $(shell git describe --tags | sed 's/\(.*\)-.*/\1/')
 
 $(info $(VERSION) $(BUNDLE_NAME) $(BUNDLE_ID))
 
+# DEPICTION := http://10.0.0.97:8000/changelogs/$(VERSION).html
+DEPICTION := http://pilin.github.io/NXEngine-iOS/changelogs/$(VERSION).html
+
+DEPICTION_LAYOUT :=---\nlayout: cydia\n---
+
+CHANGELOG_FILES := $(wildcard changelogs/*.md)
+SITE_CHANGELOG_FILES := $(patsubst changelogs/%,$(CHANGES_DIR)/%,$(CHANGELOG_FILES))
+
+
 all: 
 
 
@@ -39,9 +45,6 @@ control: control.m4 $(dir $(DEB_CONTROL))
 		-DDEPICTION="$(DEPICTION)" \
 		control.m4 > $(DEB_CONTROL)
 
-$(REPO_DIR)/CaveStory.html : changelog.m4  CaveStory.html.m4 $(dir $(REPO_DIR))
-	m4 changelog.m4 CaveStory.html.m4 > $@
-
 deb: control
 	cd $(WORK_DIR); dpkg -b $(DEB_NAME)
 
@@ -51,14 +54,27 @@ $(SITE_DIR):
 $(REPO_DIR): $(SITE_DIR)
 	mkdir -p $(REPO_DIR)
 
-prepare_deploy: $(REPO_DIR) $(REPO_DIR)/CaveStory.html
+$(CHANGES_DIR): 
+	mkdir -p $@
+
+$(CHANGES_DIR)/%.md: changelogs/%.md $(CHANGES_DIR)
+	(echo "$(DEPICTION_LAYOUT)"; cat $<) > $@
+
+changes: $(SITE_CHANGELOG_FILES)
+	test -f "$(CHANGES_DIR)/$(VERSION).md" || ( echo 'Create changelog file' && false)
+
+prepare_deploy: $(REPO_DIR) $(REPO_DIR)/CaveStory.html changes
 	#cd $(SITE_DIR); git pull origin gh-pages
 	cp -fv $(DEB_OUT) $(REPO_DIR)
 	cp -v dpkg-scanpackages dpkg-gettext.pl $(REPO_DIR) 
 	cd $(REPO_DIR); $(PERL) dpkg-scanpackages -m . /dev/null | bzip2 -zc > Packages.bz2
 
 deploy: prepare_deploy
-	cd $(REPO_DIR); git commit -a --amend -m "Package $(VERSION)"; git push --verbose --force origin gh-pages
+	cd $(SITE_DIR); \
+		git add "changelogs/$(VERSION).md"
+	cd $(REPO_DIR); \
+		git commit -a --amend -m "Package $(VERSION)"; \
+		git push --verbose --force origin gh-pages
 
 
-.PHONY: all control deb prepare_deploy deploy
+.PHONY: all control deb prepare_deploy deploy changes

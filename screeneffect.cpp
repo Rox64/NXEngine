@@ -86,19 +86,19 @@ int rel_x, rel_y;
 	// draw a horizontal bar
 	scr_y1 = (rel_y - star->size) >> CSF;
 	scr_y2 = (rel_y + star->size) >> CSF;
-	FillRect(0, scr_y1, SCREEN_WIDTH, scr_y2, 255, 255, 255);
+	FillRect(0, scr_y1, Graphics::SCREEN_WIDTH, scr_y2, 255, 255, 255);
 	
 	if (star->state == 0)
 	{
 		// draw a vertical bar
 		scr_x1 = (rel_x - starflash.size) >> CSF;
 		scr_x2 = (rel_x + starflash.size) >> CSF;
-		FillRect(scr_x1, 0, scr_x2, SCREEN_HEIGHT, 255, 255, 255);
+		FillRect(scr_x1, 0, scr_x2, Graphics::SCREEN_HEIGHT, 255, 255, 255);
 		
 		// once it's big enough, switch to making it smaller
 		if (star->size > (1280<<CSF))
 		{
-			star->size = (SCREEN_HEIGHT << CSF);
+			star->size = (Graphics::SCREEN_HEIGHT << CSF);
 			star->state = 1;
 		}
 	}
@@ -159,7 +159,7 @@ int x, y;
 		{							\
 			if (frame > FADE_LAST_FRAME) frame = FADE_LAST_FRAME;	\
 			\
-			for(y=0;y<SCREEN_HEIGHT;y+=16)							\
+			for(y=0;y<Graphics::SCREEN_HEIGHT;y+=16)							\
 				draw_sprite(x, y, fade.sprite, frame);		\
 		}		\
 	}
@@ -170,7 +170,7 @@ int x, y;
 		{							\
 			if (frame > FADE_LAST_FRAME) frame = FADE_LAST_FRAME;	\
 			\
-			for(x=0;x<SCREEN_WIDTH;x+=16)							\
+			for(x=0;x<Graphics::SCREEN_WIDTH;x+=16)							\
 				draw_sprite(x, y, fade.sprite, frame);		\
 		}		\
 	}
@@ -184,20 +184,23 @@ int x, y;
 		ClearScreen(DK_BLUE);
 		return;
 	}
+    
+    Graphics::DrawBatchBegin(0);
+    Sprites::draw_in_batch(true);
 	
 	int frame = fade.curframe;
 	switch(fade.sweepdir)
 	{
-		case FADE_RIGHT:for(x=0;x<SCREEN_WIDTH;x+=16)	   	{ DRAW_VCOLUMN; frame++; }	break;
-		case FADE_LEFT: for(x=SCREEN_WIDTH-1;x>=-16;x-=16)  { DRAW_VCOLUMN; frame++; }	break;
-		case FADE_DOWN: for(y=0;y<SCREEN_HEIGHT;y+=16)	  	{ DRAW_HROW; frame++; }	break;
-		case FADE_UP: 	for(y=SCREEN_HEIGHT-1;y>=-16;y-=16) { DRAW_HROW; frame++; }	break;
+		case FADE_RIGHT:for(x=0;x<Graphics::SCREEN_WIDTH;x+=16)	   	{ DRAW_VCOLUMN; frame++; }	break;
+		case FADE_LEFT: for(x=Graphics::SCREEN_WIDTH-1;x>=-16;x-=16)  { DRAW_VCOLUMN; frame++; }	break;
+		case FADE_DOWN: for(y=0;y<Graphics::SCREEN_HEIGHT;y+=16)	  	{ DRAW_HROW; frame++; }	break;
+		case FADE_UP: 	for(y=Graphics::SCREEN_HEIGHT-1;y>=-16;y-=16) { DRAW_HROW; frame++; }	break;
 		
 		case FADE_CENTER:
 		{
 			int startframe = fade.curframe;
-			int centerx = (SCREEN_WIDTH/2)-8;
-			int centery = (SCREEN_HEIGHT/2)-8;
+			int centerx = (Graphics::SCREEN_WIDTH/2)-8;
+			int centery = (Graphics::SCREEN_HEIGHT/2)-8;
 			
 			for(x=0;x<centerx+16;x+=16)
 			{
@@ -223,6 +226,9 @@ int x, y;
 		}
 		break;
 	}
+    
+    Graphics::DrawBatchEnd();
+    Sprites::draw_in_batch(false);
 	
 	if (fade.fadedir == FADE_OUT)
 	{

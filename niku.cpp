@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "niku.fdh"
+#include "platform/platform.h"
 
 /*
 	290.rec contains the tick value 4 times, followed by the 4 byte key
@@ -18,7 +19,7 @@ uint32_t *result = (uint32_t *)buffer;
 int i, j;
 
 	const char *fname = getfname();
-	fp = fileopen(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		stat("niku_load: couldn't open file '%s'", fname);
@@ -87,7 +88,7 @@ uint32_t *buf_dword = (uint32_t *)buf_byte;
 	}
 	
 	const char *fname = getfname();
-	FILE *fp = fileopen(fname, "wb");
+	FILE *fp = fileopenCache(fname, "wb");
 	if (!fp)
 	{
 		staterr("niku_save: failed to open '%s'", fname);

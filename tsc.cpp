@@ -6,6 +6,7 @@
 #include "vararray.h"
 #include "tsc.h"
 #include "tsc.fdh"
+#include "vjoy.h"
 
 #define TRACE_SCRIPT
 
@@ -42,7 +43,7 @@ struct TSCCommandTable
 	const char *mnemonic;
 	int nparams;
 };
-#include "tsc_cmdtbl.cpp"
+#include "tsc_cmdtbl.h"
 
 unsigned char codealphabet[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123+-" };
 unsigned char letter_to_code[256];
@@ -163,7 +164,7 @@ char *tsc_decrypt(const char *fname, int *fsize_out)
 FILE *fp;
 int fsize, i;
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenRO(fname);
 	if (!fp)
 	{
 		staterr("tsc_decrypt: no such file: '%s'!", fname);
@@ -548,7 +549,8 @@ int cmdip;
 			// check them separately to allow holding X while
 			// tapping Z to keep text scrolling fast.
 			if ((inputs[JUMPKEY] && !s->lastjump) || \
-				(inputs[FIREKEY] && !s->lastfire))
+				(inputs[FIREKEY] && !s->lastfire) ||
+                VJoy::ModeAware::wasTap())
 			{
 				// hide the fact that the key was just pushed
 				// so player doesn't jump/fire stupidly when dismissing textboxes

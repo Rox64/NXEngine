@@ -7,6 +7,7 @@
 #include "../nx.h"
 #include "StageSelect.h"
 #include "StageSelect.fdh"
+#include "../vjoy.h"
 
 #define WARP_X			128
 #define WARP_Y			46
@@ -26,13 +27,28 @@ TB_StageSelect::TB_StageSelect()
 void c------------------------------() {}
 */
 
+void setSpecScreenState(int active_slots, bool enable)
+{
+	// EStageSelect1 - for the level selection
+	// EStageSelect2 - like normal textbox mode and used when level is selected or
+	// there are no levels to select.
+	
+	VJoy::ModeAware::SpecScreens s = active_slots ? VJoy::ModeAware::EStageSelect1 : VJoy::ModeAware::EStageSelect2;
+	VJoy::ModeAware::specScreenChanged(s, enable);
+}
+
 void TB_StageSelect::ResetState()
 {
+	if (fVisible != false)
+		setSpecScreenState(CountActiveSlots(), false);
 	fVisible = false;
 }
 
 void TB_StageSelect::SetVisible(bool enable)
 {
+	if (fVisible != enable)
+		setSpecScreenState(CountActiveSlots(), enable);
+	
 	fVisible = enable;
 	fWarpY = WARP_Y_START;
 	
@@ -79,7 +95,7 @@ void TB_StageSelect::Draw(void)
 	int nslots = CountActiveSlots();
 	int total_spacing = ((nslots - 1) * LOCS_SPACING);
 	int total_width = total_spacing + (nslots * sprites[SPR_STAGEIMAGE].w);
-	int x = (SCREEN_WIDTH / 2) - (total_width / 2);
+	int x = (Graphics::SCREEN_WIDTH / 2) - (total_width / 2);
 	
 	for(int i=0;i<nslots;i++)
 	{
@@ -104,22 +120,62 @@ void c------------------------------() {}
 
 void TB_StageSelect::HandleInput()
 {
-bool button_down;
+	bool button_down = false;
 
 	if (textbox.YesNoPrompt.IsVisible() || fMadeSelection)
 		return;
 	
-	if (justpushed(LEFTKEY))
+#ifdef CONFIG_USE_TAPS
+	// taps control
 	{
-		MoveSelection(LEFT);
+		int nslots = CountActiveSlots();
+		int total_spacing = ((nslots - 1) * LOCS_SPACING);
+		int total_width = total_spacing + (nslots * sprites[SPR_STAGEIMAGE].w);
+		int x = (Graphics::SCREEN_WIDTH / 2) - (total_width / 2);
+		
+		for (int i = 0; i < nslots; ++i)
+		{
+			RectI rect = Sprites::get_sprite_rect(x, LOCS_Y, SPR_STAGEIMAGE);
+			if (VJoy::ModeAware::wasTap(rect))
+			{
+				if (fSelectionIndex == i)
+				{
+					button_down = true;
+					fLastButtonDown = false;
+					
+					VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EStageSelect1, false);
+					VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::EStageSelect2, true);
+				}
+				else
+				{
+					fSelectionIndex = i;
+					sound(SND_MENU_MOVE);
+					UpdateText();
+				}
+				
+				break;
+			}
+			
+			x += (sprites[SPR_STAGEIMAGE].w + LOCS_SPACING);
+		}
 	}
-	else if (justpushed(RIGHTKEY))
+#endif 
+	
+	// pad control
 	{
-		MoveSelection(RIGHT);
+		if (justpushed(LEFTKEY))
+		{
+			MoveSelection(LEFT);
+		}
+		else if (justpushed(RIGHTKEY))
+		{
+			MoveSelection(RIGHT);
+		}
+		
+		// when user picks a location return the new script to execute
+		button_down = button_down || buttondown();
 	}
 	
-	// when user picks a location return the new script to execute
-	button_down = buttondown();
 	if (button_down && !fLastButtonDown)
 	{
 		int scriptno;

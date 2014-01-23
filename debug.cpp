@@ -1,5 +1,6 @@
 
 #include "nx.h"
+#include <cassert>
 #include <stdarg.h>
 #include <string.h>
 
@@ -144,7 +145,7 @@ void DrawAttrPoints()
 	}
 }
 
-static void draw_pointlist(Object *o, SIFPointList *points)
+void draw_pointlist(Object *o, SIFPointList *points)
 {
 	int xoff = (o->x >> CSF);
 	int yoff = (o->y >> CSF);
@@ -180,8 +181,8 @@ void debug_draw(void)
 		const char *text = DebugList.StringAt(i);
 		if (!text) break;
 		
-		int x = (SCREEN_WIDTH - 8) - GetFontWidth(text, 0, true);
-		int y = 4 + (i * (GetFontHeight() + 1));
+		int x = (Graphics::SCREEN_WIDTH - 8) - GetFontWidth(text, 0, true);
+		int y = 14 + (i * (GetFontHeight() + 1));
 		font_draw_shaded(x, y, text, 0, &greenfont);
 	}
 }
@@ -195,7 +196,7 @@ void debug_clear()
 void c------------------------------() {}
 */
 
-extern char *object_names[];	// from autogen'd objnames.cpp
+extern const char *object_names[];	// from autogen'd objnames.cpp
 
 // given an object type returns the name of the object e.g. "OBJ_TOROKO"
 const char *DescribeObjectType(int type)
@@ -282,6 +283,18 @@ const char *strhex(int value)
 		return stprintf("0x%x", value);
 }
 
+const char *strhex(void const* value, size_t size)
+{
+    char *str = GetStaticStr();
+	if (size > 510)
+        size = 510;
+    size_t i, j;
+    for (i = j = 0; j < size; i+=2, j++)
+    {
+        sprintf(&str[i], "%02x", (unsigned int)(*(((unsigned char const*)value) + j)));
+    }
+    return str;
+}
 
 /*
 void c------------------------------() {}
@@ -318,16 +331,20 @@ uchar r, g, b;
 			break;
 			
 			case DM_XLINE:
-				FillRect(x, 0, x, SCREEN_HEIGHT, r, g, b);
+				FillRect(x, 0, x, Graphics::SCREEN_HEIGHT, r, g, b);
 			break;
 			
 			case DM_YLINE:
-				FillRect(0, y, SCREEN_WIDTH, y, r, g, b);
+				FillRect(0, y, Graphics::SCREEN_WIDTH, y, r, g, b);
 			break;
 			
 			case DM_BOX:
 				DrawRect(x, y, x2, y2, r, g, b);
 			break;
+                
+            case DM_ABS_BOX:
+                DrawRect(debugmarks[i].x, debugmarks[i].y, debugmarks[i].x2, debugmarks[i].y2, r, g, b);
+                break;
 		}
 	}
 	
@@ -385,6 +402,11 @@ void debugbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b)
 	AddDebugMark(x1, y1, x2, y2, DM_BOX, r, g, b);
 }
 
+void debug_absbox(int x1, int y1, int x2, int y2, uchar r, uchar g, uchar b)
+{
+	AddDebugMark(x1, y1, x2, y2, DM_ABS_BOX, r, g, b);
+}
+
 void debugtile(int x, int y, uchar r, uchar g, uchar b)
 {
 int x1, y1, x2, y2;
@@ -398,3 +420,21 @@ int x1, y1, x2, y2;
 	AddDebugMark(x1, y1, x2, y2, DM_BOX, r, g, b);
 }
 
+
+Uint32 debug_timer_b = 0;
+Uint32 debug_timer_l = 0;
+void debug_timer_begin() 
+{
+	Uint32 now = SDL_GetTicks();
+	debug("last frame %10d", now - debug_timer_b);
+	debug_timer_l = debug_timer_b = now;
+}
+
+void debug_timer_point(char const* msg)
+{
+	Uint32 now = SDL_GetTicks();
+
+	debug("%s %10d %10d", msg, now - debug_timer_l, now - debug_timer_b);
+
+	debug_timer_l = now;
+}

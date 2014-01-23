@@ -2,7 +2,7 @@
 #ifndef _NX_H
 #define _NX_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <ctype.h>
 //#include <sys/param.h>
@@ -36,8 +36,11 @@ class Object;
 
 // don't use this, use fileopen() instead.
 // some platforms are retarded and need special workarounds (read: WinCE)
-#pragma	GCC poison		fopen
-FILE *fileopen(const char *fname, const char *mode);
+//#pragma	GCC poison		fopen
+// FILE *fileopen(const char *fname, const char *mode);
+//FILE *fileopenRO(const char *fname);
+//FILE *fileopenRW(const char *fname, const char *mode);
+
 
 #include "trig.h"
 #include "autogen/sprites.h"
@@ -64,7 +67,7 @@ FILE *fileopen(const char *fname, const char *mode);
 #include "player.h"
 #include "p_arms.h"
 #include "replay.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 #include "sound/sound.h"
 

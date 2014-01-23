@@ -25,13 +25,13 @@ bool island_init(int parameter)
 	island.survives = parameter;
 	island.scene_length = (!island.survives) ? 900 : 750;
 	
-	island.scene_x = (SCREEN_WIDTH / 2) - (sprites[SPR_ISLAND_SCENE].w / 2);
-	island.scene_y = (SCREEN_HEIGHT / 2) - (sprites[SPR_ISLAND_SCENE].h / 2);
+	island.scene_x = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_ISLAND_SCENE].w / 2);
+	island.scene_y = (Graphics::SCREEN_HEIGHT / 2) - (sprites[SPR_ISLAND_SCENE].h / 2);
 	
 	island.trees_x = island.scene_x;
 	island.trees_y = (island.scene_y + sprites[SPR_ISLAND_SCENE].h) - sprites[SPR_ISLAND_TREES].h;
 	
-	island.x = (SCREEN_WIDTH / 2) - (sprites[SPR_ISLAND].w / 2);
+	island.x = (Graphics::SCREEN_WIDTH / 2) - (sprites[SPR_ISLAND].w / 2);
 	island.y = (island.scene_y - sprites[SPR_ISLAND].h) << CSF;
 	
 	return 0;

@@ -1,9 +1,16 @@
 
 #include "nx.h"
 #include <stdarg.h>
+#if !defined(WIN32)
 #include <unistd.h>
+#endif
 #include "graphics/safemode.h"
 #include "main.fdh"
+#include "vjoy.h"
+
+
+#include <exception>
+#include <stdexcept>
 
 const char *data_dir = "data";
 const char *stage_dir = "data/Stage";
@@ -15,10 +22,14 @@ static int fps_so_far = 0;
 static uint32_t fpstimer = 0;
 
 #define GAME_WAIT			(1000/GAME_FPS)	// sets framerate
-#define VISFLAGS			(SDL_APPACTIVE | SDL_APPINPUTFOCUS)
+
 int framecount = 0;
 bool freezeframe = false;
 int flipacceltime = 0;
+
+
+// On iOS it seems to a bad idea to return from main. The screen is left to be just black.
+// Make sure to have fatal() before every return. At least, it will make crash.
 
 int main(int argc, char *argv[])
 {
@@ -26,10 +37,18 @@ bool inhibit_loadfade = false;
 bool error = false;
 bool freshstart;
 	
+	
+	if (!setup_path(argc, argv))
+	{
+		fatal("failed to setup path");
+		return 1;
+	}
+	
 	SetLogFilename("debug.txt");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		staterr("ack, sdl_init failed: %s.", SDL_GetError());
+		fatal("sdl_init fail");
 		return 1;
 	}
 	atexit(SDL_Quit);
@@ -41,8 +60,8 @@ bool freshstart;
 	// so we know the initial screen resolution.
 	settings_load();
 	
-	if (Graphics::init(settings->resolution)) { staterr("Failed to initialize graphics."); return 1; }
-	if (font_init()) { staterr("Failed to load font."); return 1; }
+	if (Graphics::init(settings->resolution)) { fatal("Failed to initialize graphics."); return 1; }
+	if (font_init()) { fatal("Failed to load font."); return 1; }
 	
 	//speed_test();
 	//return 1;
@@ -54,6 +73,7 @@ bool freshstart;
 		{
 			Graphics::close();
 			font_close();
+			fatal("extract_main() error");
 			return 0;
 		}
 		else
@@ -64,10 +84,7 @@ bool freshstart;
 	}
 	#endif
 	
-	if (check_data_exists())
-	{
-		return 1;
-	}
+	if (check_data_exists()) { fatal("check_data_exists() error"); return 1; }
 	
 	//Graphics::ShowLoadingScreen();
 	if (sound_init()) { fatal("Failed to initialize sound."); return 1; }
@@ -77,7 +94,13 @@ bool freshstart;
 	if (textbox.Init()) { fatal("Failed to initialize textboxes."); return 1; }
 	if (Carets::init()) { fatal("Failed to initialize carets."); return 1; }
 	
-	if (game.init()) return 1;
+#ifdef CONFIG_USE_VJOY
+	VJoy::Init();
+#endif
+
+	//org_test_miniloop();
+
+	if (game.init()) { fatal("game.init() error"); return 1; }
 	game.setmode(GM_NORMAL);
 	// set null stage just to have something to do while we go to intro
 	game.switchstage.mapno = 0;
@@ -177,7 +200,7 @@ bool freshstart;
 		}
 		
 		// start the level
-		if (game.initlevel()) return 1;
+		if (game.initlevel()) { fatal("game.initlevel() error"); return 1; }
 		
 		if (freshstart)
 			weapon_introslide();
@@ -234,7 +257,7 @@ int32_t nexttick = 0;
 			nexttick = curtime + GAME_WAIT;
 			
 			// pause game if window minimized
-			if ((SDL_GetAppState() & VISFLAGS) != VISFLAGS)
+			if (!Graphics::WindowVisible())
 			{
 				AppMinimized();
 				nexttick = 0;
@@ -316,7 +339,7 @@ static int frameskip = 0;
 		{
 			char buf[1024];
 			sprintf(buf, "[] Tick %d", framecount++);
-			font_draw_shaded(4, (SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
+			font_draw_shaded(4, (Graphics::SCREEN_HEIGHT-GetFontHeight()-4), buf, 0, &greenfont);
 			can_tick = false;
 		}
 		else
@@ -328,6 +351,13 @@ static int frameskip = 0;
 		{
 			update_fps();
 		}
+
+		VJoy::DrawAll();
+		
+		// This will issue flush for old events.
+		// New events will be acquired from inside screen flip (there ui message
+		// pump) or on next cycle in input_poll()
+		VJoy::PreProcessInput();
 		
 		if (!flipacceltime)
 		{
@@ -371,7 +401,7 @@ void update_fps()
 	char fpstext[64];
 	sprintf(fpstext, "%d fps", fps);
 	
-	int x = (SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
+	int x = (Graphics::SCREEN_WIDTH - 4) - GetFontWidth(fpstext, 0, true);
 	font_draw_shaded(x, 4, fpstext, 0, &greenfont);
 }
 
@@ -413,7 +443,7 @@ void AppMinimized(void)
 	
 	for(;;)
 	{
-		if ((SDL_GetAppState() & VISFLAGS) == VISFLAGS)
+		if (Graphics::WindowVisible())
 		{
 			break;
 		}
@@ -434,6 +464,13 @@ void c------------------------------() {}
 static void fatal(const char *str)
 {
 	staterr("fatal: '%s'", str);
+	
+#ifdef IPHONE
+	// Crash an application on ios. This will not left user with blank screen
+	// and there will be stack trace in crash report. Using this stack trace it
+	// will be possible to find, where from fatal() was called.
+	abort();
+#endif
 	
 	if (!safemode::init())
 	{
@@ -532,34 +569,34 @@ void speed_test(void)
 
 void speed_test(void)
 {
-	SDL_Rect textrect;
-	SDL_Surface *vram = screen->GetSDLSurface();
-	int click = 0;
+// 	SDL_Rect textrect;
+// 	SDL_Surface *vram = screen->GetSDLSurface();
+// 	int click = 0;
 	
-	uint32_t end = 0;
-	fps = 0;
+// 	uint32_t end = 0;
+// 	fps = 0;
 	
-	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
-	int c = 0;
+// 	SDL_FillRect(vram, NULL, SDL_MapRGB(vram->format, 255, 0, 0));
+// 	int c = 0;
 	
-	game.running = true;
-	while(game.running)
-	{
-		//SDL_FillRect(vram, NULL, c ^= 255);
+// 	game.running = true;
+// 	while(game.running)
+// 	{
+// 		//SDL_FillRect(vram, NULL, c ^= 255);
 		
-		if (SDL_GetTicks() >= end)
-		{
-			stat("%d fps", fps);
-			fps = 0;
-			end = SDL_GetTicks() + 1000;
+// 		if (SDL_GetTicks() >= end)
+// 		{
+// 			stat("%d fps", fps);
+// 			fps = 0;
+// 			end = SDL_GetTicks() + 1000;
 			
-			if (++click > 3)
-				break;
-		}
+// 			if (++click > 3)
+// 				break;
+// 		}
 		
-		screen->Flip();
-		fps++;
-	}
+// 		screen->Flip();
+// 		fps++;
+// 	}
 }
 
 #endif
@@ -570,6 +607,10 @@ void org_test_miniloop(void)
 {
 uint32_t start = 0, curtime;
 uint32_t counter;
+
+const bool autochange = false;
+const uint32_t change_time = 500;
+uint32_t last_change = 0;
 
 	stat("Starting org test");
 	
@@ -600,11 +641,20 @@ uint32_t counter;
 				if (last_sdl_key != -1)
 					return;
 			}
+
+			if (autochange && (curtime - last_change) >= change_time)
+			{
+				last_change = curtime;
+				int newsong = random(1, 42);
+				music(newsong);
+			}
 		}
 	}
 }
 
+#if !defined(WIN32)
 void SDL_Delay(int ms)
 {
 	usleep(ms * 1000);
 }
+#endif

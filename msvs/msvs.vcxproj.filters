@@ -1,0 +1,707 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\caret.h" />
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\console.h" />
+    <ClInclude Include="..\debug.h" />
+    <ClInclude Include="..\dirnames.h" />
+    <ClInclude Include="..\floattext.h" />
+    <ClInclude Include="..\game.h" />
+    <ClInclude Include="..\input.h" />
+    <ClInclude Include="..\inventory.h" />
+    <ClInclude Include="..\map.h" />
+    <ClInclude Include="..\map_system.h" />
+    <ClInclude Include="..\maprecord.h" />
+    <ClInclude Include="..\nx.h" />
+    <ClInclude Include="..\object.h" />
+    <ClInclude Include="..\ObjManager.h" />
+    <ClInclude Include="..\p_arms.h" />
+    <ClInclude Include="..\player.h" />
+    <ClInclude Include="..\profile.h" />
+    <ClInclude Include="..\replay.h" />
+    <ClInclude Include="..\screeneffect.h" />
+    <ClInclude Include="..\settings.h" />
+    <ClInclude Include="..\slope.h" />
+    <ClInclude Include="..\stageboss.h" />
+    <ClInclude Include="..\stagedata.h" />
+    <ClInclude Include="..\statusbar.h" />
+    <ClInclude Include="..\trig.h" />
+    <ClInclude Include="..\tsc.h" />
+    <ClInclude Include="..\vararray.h" />
+    <ClInclude Include="..\ai\ai.h">
+      <Filter>ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\balrog_common.h">
+      <Filter>ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\IrregularBBox.h">
+      <Filter>ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\stdai.h">
+      <Filter>ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\almond\almond.h">
+      <Filter>ai\almond</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\balfrog.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\ballos.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\core.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\heavypress.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\ironhead.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\omega.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\sisters.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\undead_core.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\boss\x.h">
+      <Filter>ai\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\final_battle\doctor.h">
+      <Filter>ai\final_battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\weapons\weapons.h">
+      <Filter>ai\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ai\weapons\whimstar.h">
+      <Filter>ai\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\autogen\asdefs.h">
+      <Filter>autogen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\autogen\sprites.h">
+      <Filter>autogen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\basics.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\BList.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\bufio.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DBuffer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DString.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\FileBuffer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\InitList.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\llist.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\StringList.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SupportDefs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\endgame\credits.h">
+      <Filter>endgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\endgame\CredReader.h">
+      <Filter>endgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\endgame\island.h">
+      <Filter>endgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extract\fileio.h">
+      <Filter>extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\font.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\graphics.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\nxsurface.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\palette.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\safemode.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\sprites.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\tileset.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\intro\intro.h">
+      <Filter>intro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\intro\title.h">
+      <Filter>intro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pause\dialog.h">
+      <Filter>pause</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pause\message.h">
+      <Filter>pause</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pause\options.h">
+      <Filter>pause</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pause\pause.h">
+      <Filter>pause</Filter>
+    </ClInclude>
+    <ClInclude Include="..\siflib\sectSprites.h">
+      <Filter>siflib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\siflib\sectStringArray.h">
+      <Filter>siflib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\siflib\sif.h">
+      <Filter>siflib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\siflib\sifloader.h">
+      <Filter>siflib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\org.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\pxt.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\sound.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\sslib.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextBox\ItemImage.h">
+      <Filter>TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextBox\SaveSelect.h">
+      <Filter>TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextBox\StageSelect.h">
+      <Filter>TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextBox\TextBox.h">
+      <Filter>TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextBox\YesNoPrompt.h">
+      <Filter>TextBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tsc_cmdtbl.h" />
+    <ClInclude Include="..\common\misc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\IGestureObserver.hpp">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\platform.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vjoy.h" />
+    <ClInclude Include="..\nx_math.h" />
+    <ClInclude Include="..\graphics\hacks\hacks.hpp">
+      <Filter>graphics\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\hacks\hacks_internal.hpp">
+      <Filter>graphics\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\hacks\opengl\glfuncs.h">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\hacks\opengl\glfuncs_list.h">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\caret.cpp" />
+    <ClCompile Include="..\console.cpp" />
+    <ClCompile Include="..\debug.cpp" />
+    <ClCompile Include="..\floattext.cpp" />
+    <ClCompile Include="..\game.cpp" />
+    <ClCompile Include="..\input.cpp" />
+    <ClCompile Include="..\inventory.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\map.cpp" />
+    <ClCompile Include="..\map_system.cpp" />
+    <ClCompile Include="..\niku.cpp" />
+    <ClCompile Include="..\object.cpp" />
+    <ClCompile Include="..\ObjManager.cpp" />
+    <ClCompile Include="..\p_arms.cpp" />
+    <ClCompile Include="..\player.cpp" />
+    <ClCompile Include="..\playerstats.cpp" />
+    <ClCompile Include="..\profile.cpp" />
+    <ClCompile Include="..\replay.cpp" />
+    <ClCompile Include="..\screeneffect.cpp" />
+    <ClCompile Include="..\settings.cpp" />
+    <ClCompile Include="..\slope.cpp" />
+    <ClCompile Include="..\stageboss.cpp" />
+    <ClCompile Include="..\stagedata.cpp" />
+    <ClCompile Include="..\statusbar.cpp" />
+    <ClCompile Include="..\trig.cpp" />
+    <ClCompile Include="..\tsc.cpp" />
+    <ClCompile Include="..\ai\ai.cpp">
+      <Filter>ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\balrog_common.cpp">
+      <Filter>ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\IrregularBBox.cpp">
+      <Filter>ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\almond\almond.cpp">
+      <Filter>ai\almond</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\balfrog.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\ballos.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\core.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\heavypress.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\ironhead.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\omega.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\sisters.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\undead_core.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\boss\x.cpp">
+      <Filter>ai\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\egg\egg.cpp">
+      <Filter>ai\egg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\egg\egg2.cpp">
+      <Filter>ai\egg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\egg\igor.cpp">
+      <Filter>ai\egg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\balcony.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\doctor.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\doctor_common.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\doctor_frenzied.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\final_misc.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\misery.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\final_battle\sidekicks.cpp">
+      <Filter>ai\final_battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\first_cave\first_cave.cpp">
+      <Filter>ai\first_cave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\hell\ballos_misc.cpp">
+      <Filter>ai\hell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\hell\ballos_priest.cpp">
+      <Filter>ai\hell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\hell\hell.cpp">
+      <Filter>ai\hell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\last_cave\last_cave.cpp">
+      <Filter>ai\last_cave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\balrog_boss_missiles.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\critter_purple.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\gaudi.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\labyrinth_m.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\maze.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\maze\pooh_black.cpp">
+      <Filter>ai\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\balrog.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\curly.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\curly_ai.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\misery.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\npcguest.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\npcplayer.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\npc\npcregu.cpp">
+      <Filter>ai\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\oside\oside.cpp">
+      <Filter>ai\oside</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\plantation\plantation.cpp">
+      <Filter>ai\plantation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sand\curly_boss.cpp">
+      <Filter>ai\sand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sand\puppy.cpp">
+      <Filter>ai\sand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sand\sand.cpp">
+      <Filter>ai\sand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sand\toroko_frenzied.cpp">
+      <Filter>ai\sand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sym\smoke.cpp">
+      <Filter>ai\sym</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\sym\sym.cpp">
+      <Filter>ai\sym</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\village\balrog_boss_running.cpp">
+      <Filter>ai\village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\village\ma_pignon.cpp">
+      <Filter>ai\village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\village\village.cpp">
+      <Filter>ai\village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\blade.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\bubbler.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\fireball.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\missile.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\nemesis.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\polar_mgun.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\snake.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\spur.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\weapons.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weapons\whimstar.cpp">
+      <Filter>ai\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weed\balrog_boss_flying.cpp">
+      <Filter>ai\weed</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weed\frenzied_mimiga.cpp">
+      <Filter>ai\weed</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ai\weed\weed.cpp">
+      <Filter>ai\weed</Filter>
+    </ClCompile>
+    <ClCompile Include="..\autogen\AssignSprites.cpp">
+      <Filter>autogen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\autogen\objnames.cpp">
+      <Filter>autogen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\BList.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\bufio.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DBuffer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DString.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\FileBuffer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\InitList.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\misc.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\stat.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\StringList.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\endgame\credits.cpp">
+      <Filter>endgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\endgame\CredReader.cpp">
+      <Filter>endgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\endgame\island.cpp">
+      <Filter>endgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\endgame\misc.cpp">
+      <Filter>endgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extract\crc.cpp">
+      <Filter>extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extract\extract.cpp">
+      <Filter>extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extract\extractfiles.cpp">
+      <Filter>extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extract\extractpxt.cpp">
+      <Filter>extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extract\extractstages.cpp">
+      <Filter>extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\font.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\graphics.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\nxsurface.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\palette.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\safemode.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\sprites.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\tileset.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\intro\intro.cpp">
+      <Filter>intro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\intro\title.cpp">
+      <Filter>intro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pause\dialog.cpp">
+      <Filter>pause</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pause\message.cpp">
+      <Filter>pause</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pause\objects.cpp">
+      <Filter>pause</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pause\options.cpp">
+      <Filter>pause</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pause\pause.cpp">
+      <Filter>pause</Filter>
+    </ClCompile>
+    <ClCompile Include="..\siflib\sectSprites.cpp">
+      <Filter>siflib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\siflib\sectStringArray.cpp">
+      <Filter>siflib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\siflib\sif.cpp">
+      <Filter>siflib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\siflib\sifloader.cpp">
+      <Filter>siflib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\siflib\sifupgrade.cpp">
+      <Filter>siflib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\org.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\pxt.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\sound.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\sslib.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextBox\ItemImage.cpp">
+      <Filter>TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextBox\SaveSelect.cpp">
+      <Filter>TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextBox\StageSelect.cpp">
+      <Filter>TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextBox\TextBox.cpp">
+      <Filter>TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextBox\YesNoPrompt.cpp">
+      <Filter>TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\platform.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vjoy.cpp" />
+    <ClCompile Include="..\nx_math.cpp" />
+    <ClCompile Include="..\graphics\hacks\hacks.cpp">
+      <Filter>graphics\hacks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\hacks\opengl\hack_gl.cpp">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\hacks\opengl\glfuncs.c">
+      <Filter>graphics\hacks\opengl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ai">
+      <UniqueIdentifier>{a2b70be4-3bcf-4a10-a567-102fb0fc17ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\almond">
+      <UniqueIdentifier>{736fa621-78b4-4f0b-a121-80b4c697c1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\boss">
+      <UniqueIdentifier>{8bcf4a8e-7061-4b50-b49a-0e5f4d90a88c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\egg">
+      <UniqueIdentifier>{0df8dff2-cd1a-4295-9118-7198285a67ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\final_battle">
+      <UniqueIdentifier>{a24ed2c8-3b80-4837-8555-12c4da6196e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\first_cave">
+      <UniqueIdentifier>{8308dfe1-88b8-481a-994d-5722e493ed85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\hell">
+      <UniqueIdentifier>{01889aac-e494-4368-a676-8265edda9fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\last_cave">
+      <UniqueIdentifier>{aa469861-4b1f-4bb6-80c0-24be5fc5a5ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\maze">
+      <UniqueIdentifier>{cfc4eba1-e797-4701-a268-e89fe52db90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\npc">
+      <UniqueIdentifier>{fc69462a-14c0-4b4a-b530-62b17e10c268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\oside">
+      <UniqueIdentifier>{95b2d1aa-9533-4e64-980f-03532d6c57fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\plantation">
+      <UniqueIdentifier>{8690f45d-3694-43e9-967d-60acf861ffc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\sand">
+      <UniqueIdentifier>{e9dc7c44-41ff-44c9-b54d-af646c2a4176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\sym">
+      <UniqueIdentifier>{5cffd36c-b0e9-4bcd-a84c-3c57446e6ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\village">
+      <UniqueIdentifier>{445417c6-9690-4b7b-99d6-be24e8663510}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\weapons">
+      <UniqueIdentifier>{25c89124-5d7d-4730-ba6d-5912617ea103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ai\weed">
+      <UniqueIdentifier>{20bc63cc-224d-4ae8-8c16-e3ffcf0a2a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="autogen">
+      <UniqueIdentifier>{d2da41bd-5f52-4093-9ba2-17b12b9533ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{0a87ca1a-2ae2-4ee9-a476-0b6ef3a26ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="endgame">
+      <UniqueIdentifier>{72f5df01-aa7e-4b19-9bad-accb1da7bbc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extract">
+      <UniqueIdentifier>{7af910b7-f7fb-4802-8e46-f3e7cd69e57e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{8d6d5b7f-7fd3-422c-824e-a57b4f6b102a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="intro">
+      <UniqueIdentifier>{864979e4-4f46-4f4a-adf3-d4311a3c8034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pause">
+      <UniqueIdentifier>{5b190292-9952-462e-b6b1-631312690121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="siflib">
+      <UniqueIdentifier>{e01584bf-1268-4d74-9e5d-971cf316a329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{dc6d13ce-f417-4ddf-ba07-629c8acfe4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextBox">
+      <UniqueIdentifier>{16575333-ebf2-42ff-8f80-871cb9d01e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{9ef377d3-954a-401b-b7de-963238a3fd9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\hacks">
+      <UniqueIdentifier>{df7d9b39-2606-4719-88a2-cd2c33316753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\hacks\opengl">
+      <UniqueIdentifier>{4681be64-16d2-451d-ad1d-1ad50b950b7f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

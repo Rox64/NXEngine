@@ -11,6 +11,7 @@
 #include "game.h"
 #include "profile.h"
 #include "game.fdh"
+#include "vjoy.h"
 
 static struct TickFunctions
 {
@@ -152,6 +153,7 @@ bool Game::setmode(int newmode, int param, bool force)
 		tickfunctions[game.mode].OnExit();
 	
 	game.mode = newmode;
+    
 	
 	if (tickfunctions[game.mode].OnEnter)
 	{
@@ -162,6 +164,10 @@ bool Game::setmode(int newmode, int param, bool force)
 			return 1;
 		}
 	}
+    
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(newmode);
+#endif
 	
 	return 0;
 }
@@ -190,14 +196,18 @@ bool Game::pause(int pausemode, int param)
 	
 	if (!game.paused)
 		memset(inputs, 0, sizeof(inputs));
+
+#ifdef CONFIG_USE_VJOY
+    VJoy::ModeAware::gameModeChanged(pausemode);
+    if (!pausemode)
+        VJoy::ModeAware::gameModeChanged(game.mode);
+#endif
 	
 	return 0;
 }
 
 void Game::tick(void)
 {
-	debug_clear();
-	
 	if (game.paused)
 	{
 		tickfunctions[game.paused].OnTick();
@@ -214,8 +224,23 @@ void Game::tick(void)
 		tickfunctions[game.mode].OnTick();
 	}
 	
+    //::debug("mode %d,%d", game.mode, game.paused);
+    
 	DrawDebug();
+	
+	debug_clear();
+	//debug_timer_begin();
+
 	console.Draw();
+}
+
+
+GameModes getGamemode()
+{
+    if (game.paused)
+        return static_cast<GameModes>(game.paused);
+    
+    return static_cast<GameModes>(game.mode);
 }
 
 
@@ -373,7 +398,7 @@ extern int flipacceltime;
 		
 		// don't draw objects that are completely offscreen
 		// (+26 so floattext won't suddenly disappear on object near bottom of screen)
-		if (scr_x <= SCREEN_WIDTH && scr_y <= SCREEN_HEIGHT+26 && \
+		if (scr_x <= Graphics::SCREEN_WIDTH && scr_y <= Graphics::SCREEN_HEIGHT+26 && \
 			scr_x >= -sprites[o->sprite].w && scr_y >= -sprites[o->sprite].h)
 		{
 			if (nOnscreenObjects < MAX_OBJECTS-1)
@@ -423,7 +448,11 @@ extern int flipacceltime;
 	// draw all floattext (rising damage and XP amounts)
 	FloatText::DrawAll();
 	
-	if (game.debug.DrawBoundingBoxes) DrawBoundingBoxes();
+	if (game.debug.DrawBoundingBoxes) 
+	{
+		DrawBoundingBoxes();
+		DrawAttrPoints();
+	}
 	//if (game.debug.debugmode) DrawAttrPoints();
 }
 

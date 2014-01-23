@@ -1,0 +1,16 @@
+{
+	"folders":
+	[
+		{
+			"path": "./"
+		}
+	],
+
+    "settings":
+    {
+        "sublimeclang_options":
+        [
+            "-I${folder:${project_path:Makefile}}/../sdl/root/include/SDL2/"
+        ]
+    }
+}

@@ -25,7 +25,7 @@ void map_focus(Object *o, int spd);
 /* located in platform.cpp */
 
 //----------------------[referenced from tsc.cpp]--------------------//
-FILE *fileopen(const char *fname, const char *mode);
+//FILE *fileopen(const char *fname, const char *mode);
 
 
 /* located in player.cpp */

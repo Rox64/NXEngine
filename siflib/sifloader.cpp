@@ -5,6 +5,8 @@
 #include "sifloader.h"
 #include "sifloader.fdh"
 
+#include "../platform/platform.h"
+
 #define SIF_MAGICK	'SIF2'		// SIF magick and version denotation; first 4 bytes of file
 
 SIFLoader::SIFLoader()
@@ -59,7 +61,7 @@ uint32_t magick;
 	ClearIndex();
 	
 	if (fFP) fclose(fFP);
-	fp = fFP = fileopen(filename, "rb");
+	fp = fFP = fileopenRO(filename);
 	
 	if (!fp)
 	{
@@ -137,67 +139,67 @@ uint8_t *SIFLoader::FindSection(int type, int *length_out)
 void c------------------------------() {}
 */
 
-bool SIFLoader::BeginSave()
-{
-	fTotalDataAdded = 0;
-	if (fFP) { fclose(fFP); fFP = NULL; }
-	ClearIndex();
-	return 0;
-}
+// bool SIFLoader::BeginSave()
+// {
+// 	fTotalDataAdded = 0;
+// 	if (fFP) { fclose(fFP); fFP = NULL; }
+// 	ClearIndex();
+// 	return 0;
+// }
 
-bool SIFLoader::AddSection(int type, uint8_t *data, int datalen)
-{
-	SIFIndexEntry *entry = new SIFIndexEntry;
+// bool SIFLoader::AddSection(int type, uint8_t *data, int datalen)
+// {
+// 	SIFIndexEntry *entry = new SIFIndexEntry;
 	
-	entry->type = type;
-	entry->foffset = fTotalDataAdded;		// not including index tables or header, yet
-	entry->length = datalen;
-	entry->data = data;
+// 	entry->type = type;
+// 	entry->foffset = fTotalDataAdded;		// not including index tables or header, yet
+// 	entry->length = datalen;
+// 	entry->data = data;
 	
-	fTotalDataAdded += datalen;
-	fIndex.AddItem(entry);
-	return 0;
-}
+// 	fTotalDataAdded += datalen;
+// 	fIndex.AddItem(entry);
+// 	return 0;
+// }
 
-bool SIFLoader::EndSave(const char *filename)
-{
-FILE *fp;
+// bool SIFLoader::EndSave(const char *filename)
+// {
+// FILE *fp;
 
-	fp = fileopen(filename, "wb");
-	if (!fp)
-	{
-		stat("SIFLoader::EndSave: failed to open '%s' for writing", filename);
-		return 1;
-	}
+// 	fp = fileopen(filename, "wb");
+// 	if (!fp)
+// 	{
+// 		stat("SIFLoader::EndSave: failed to open '%s' for writing", filename);
+// 		return 1;
+// 	}
 	
-	// write header-header
-	fputl(SIF_MAGICK, fp);
-	fputc(fIndex.CountItems(), fp);
+// 	// write header-header
+// 	fputl(SIF_MAGICK, fp);
+// 	fputc(fIndex.CountItems(), fp);
 	
-	// compute fianl length of index table so we can write the correct foffsets
-	int indexlen = 5 + (fIndex.CountItems() * 9);
+// 	// compute fianl length of index table so we can write the correct foffsets
+// 	int indexlen = 5 + (fIndex.CountItems() * 9);
 	
-	// write index table
-	for(int i=0;;i++)
-	{
-		SIFIndexEntry *entry = (SIFIndexEntry *)fIndex.ItemAt(i);
-		if (!entry) break;
+// 	// write index table
+// 	for(int i=0;;i++)
+// 	{
+// 		SIFIndexEntry *entry = (SIFIndexEntry *)fIndex.ItemAt(i);
+// 		if (!entry) break;
 		
-		fputc(entry->type, fp);
-		fputl(entry->foffset + indexlen, fp);
-		fputl(entry->length, fp);
-	}
+// 		fputc(entry->type, fp);
+// 		fputl(entry->foffset + indexlen, fp);
+// 		fputl(entry->length, fp);
+// 	}
 	
-	// save actual section data
-	for(int i=0;;i++)
-	{
-		SIFIndexEntry *entry = (SIFIndexEntry *)fIndex.ItemAt(i);
-		if (!entry) break;
+// 	// save actual section data
+// 	for(int i=0;;i++)
+// 	{
+// 		SIFIndexEntry *entry = (SIFIndexEntry *)fIndex.ItemAt(i);
+// 		if (!entry) break;
 		
-		fwrite(entry->data, entry->length, 1, fp);
-	}
+// 		fwrite(entry->data, entry->length, 1, fp);
+// 	}
 	
-	fclose(fp);
-	return 0;
-}
+// 	fclose(fp);
+// 	return 0;
+// }
 

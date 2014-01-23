@@ -32,7 +32,7 @@ Profile profile;
 	if (game_save(&profile)) return 1;
 	if (profile_save(fname, &profile)) return 1;
 	
-	fp = fileopen(fname, "r+");
+	fp = fileopenCache(fname, "r+");
 	if (!fp)
 	{
 		staterr("begin_record: failed to open file %s", fname);
@@ -103,7 +103,7 @@ Profile profile;
 	if (profile_load(fname, &profile))
 		return 1;
 	
-	fp = fileopen(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		staterr("begin_playback: failed to open file %s", fname);
@@ -336,7 +336,7 @@ int tapepos;
 			play.termtimer--;
 			const char *str = ((play.termtimer % 40) >= 20) ? "> PLAYBACK TERMINATED <":">                     <";
 			
-			int y = (SCREEN_HEIGHT - 3) - (GetFontHeight() * 2);
+			int y = (Graphics::SCREEN_HEIGHT - 3) - (GetFontHeight() * 2);
 			font_draw_shaded(x, y, str, 0, &greenfont);
 		}
 		
@@ -355,7 +355,7 @@ int tapepos;
 	memset(&buf[1], ' ', TAPE_CHARS);
 	memset(&buf[1], '>', tapepos);
 	
-	int y = (SCREEN_HEIGHT - 3) - GetFontHeight();
+	int y = (Graphics::SCREEN_HEIGHT - 3) - GetFontHeight();
 	font_draw_shaded(x, y, buf, 0, &greenfont);
 	
 	const char *mode = ((play.elapsed_frames % 40) < 20) ? "PLAY" : "    ";
@@ -491,7 +491,7 @@ bool Replay::LoadHeader(const char *fname, ReplayHeader *hdr)
 {
 FILE *fp;
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		staterr("LoadHeader: can't open file '%s'", fname);
@@ -509,7 +509,7 @@ bool Replay::SaveHeader(const char *fname, ReplayHeader *hdr)
 {
 FILE *fp;
 
-	fp = fileopen(fname, "r+");
+	fp = fileopenCache(fname, "r+");
 	if (!fp)
 	{
 		staterr("SaveHeader: can't open file '%s'", fname);

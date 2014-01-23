@@ -1,5 +1,5 @@
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -7,6 +7,12 @@
 #include "../graphics/safemode.h"
 #include "../common/basics.h"
 #include "extractpxt.fdh"
+
+#include "fileio.h"
+
+#if defined(WIN32)
+#include <direct.h>
+#endif
 
 using safemode::moveto;
 using safemode::status;
@@ -160,8 +166,12 @@ int s, c, i;
 		sprintf(outfilename, "pxt/fx%02x.pxt", snd[s].id);
 		status("[ %s ]", outfilename);
 		
+#if defined(WIN32)
+		_mkdir("pxt");
+#else
 		mkdir("pxt", 0755);
-		FILE *fpo = fileopen(outfilename, "wb");
+#endif
+		FILE *fpo = fileopen(outfilename, "wb", ro_filesys_path);
 		if (!fpo)
 		{
 			status("failed to open %s", outfilename);

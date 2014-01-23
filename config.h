@@ -11,9 +11,22 @@
 
 // include the Doukutsu data-file extractor in the build
 // (it's needed only the first time the program is run).
-#define CONFIG_DATA_EXTRACTOR
+//#define CONFIG_DATA_EXTRACTOR
 
 // do image scaling in hardware via OpenGL
 //#define CONFIG_OPENGL
+
+// show virtual joystick
+#define CONFIG_USE_VJOY
+
+#define CONFIG_USE_TAPS
+
+#define CONFIG_FAST_TILEGRID
+
+#define CONFIG_BATCH_RENDERING
+
+
+#define CONFIG_ORG_MUSIC_THREADED
+
 
 #endif

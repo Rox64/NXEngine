@@ -83,7 +83,7 @@ int i;
 	if (o->state == 0 || (!X.initilized && o->state != STATE_X_APPEAR))
 	{
 		o->hp = 1;
-		o->x = -(SCREEN_WIDTH << CSF);
+		o->x = -(Graphics::SCREEN_WIDTH << CSF);
 		return;
 	}
 	

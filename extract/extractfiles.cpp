@@ -1,5 +1,5 @@
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -8,6 +8,12 @@
 #include "../common/basics.h"
 #include "../graphics/safemode.h"
 #include "extractfiles.fdh"
+
+#include "fileio.h"
+
+#if defined(WIN32)
+#include <direct.h>
+#endif
 
 #ifdef __MINGW32__
 	#include <io.h>
@@ -202,7 +208,7 @@ bool first_crc_failure = true;
 		// write out the file
 		createdir(outfilename);
 		
-		FILE *fp = fileopen(outfilename, "wb");
+		FILE *fp = fileopen(outfilename, "wb", ro_filesys_path);
 		if (!fp)
 		{
 			status("Failed to open '%s' for writing.", outfilename);
@@ -227,8 +233,8 @@ static void createdir(const char *fname)
 	{
 		*ptr = 0;
 		
-		#ifdef __MINGW32__
-			mkdir(dir);
+		#if defined(__MINGW32__) || defined(WIN32)
+			_mkdir(dir);
 		#else
 			mkdir(dir, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 		#endif

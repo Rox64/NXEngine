@@ -43,7 +43,7 @@ void ai_night_spirit(Object *o)
 		{
 			if (pdistly((TILE_H / 2) << CSF))
 			{
-				static const int distance = (SCREEN_HEIGHT << CSF);
+				static const int distance = (Graphics::SCREEN_HEIGHT << CSF);
 				o->y += (o->dir == RIGHT) ? distance : -distance;
 				
 				o->state = NS_SEEK_PLAYER;
@@ -111,7 +111,7 @@ void ai_night_spirit(Object *o)
 			o->yinertia += (o->y > o->ymark) ? -0x40 : 0x40;
 			LIMITY(0x400);
 			
-			if (abs(o->y - o->ymark) < (SCREEN_HEIGHT/2)<<CSF)
+			if (abs(o->y - o->ymark) < (Graphics::SCREEN_HEIGHT/2)<<CSF)
 			{
 				o->state = NS_GUARD_SET_POINT;
 			}
@@ -127,7 +127,7 @@ void ai_night_spirit(Object *o)
 			LIMITY(0x400);
 			
 			// and if player appears again...
-			if (pdistly(SCREEN_HEIGHT << CSF))
+			if (pdistly(Graphics::SCREEN_HEIGHT << CSF))
 			{	// ..jump out and fire immediately
 				o->state = NS_PREPARE_FIRE;
 				o->timer = 0;
@@ -145,10 +145,10 @@ void ai_night_spirit(Object *o)
 		if (o->blocku) o->yinertia = 0x200;
 		if (o->blockd) o->yinertia = -0x200;
 		
-		//debugHline(o->ymark - (SCREEN_HEIGHT<<CSF), 0, 255, 0);
+		//debugHline(o->ymark - (Graphics::SCREEN_HEIGHT<<CSF), 0, 255, 0);
 		
 		// avoid leaving designated area
-		if (abs(o->y - o->ymark) > SCREEN_HEIGHT<<CSF)
+		if (abs(o->y - o->ymark) > Graphics::SCREEN_HEIGHT<<CSF)
 		{
 			if (o->state != NS_FIRING)
 			{

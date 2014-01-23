@@ -31,23 +31,7 @@ enum Directions
 #define LOAD_GAME_FROM_MENU	1003	// load game (from title screen, include weapon slide)
 #define START_REPLAY		1004
 
-// game modes (changes *tickfunction)
-enum GameModes
-{
-	GM_NONE,			// default mode at startup & shutdown
-	GM_NORMAL,			// playing the game
-	GM_INVENTORY,		// in inventory screen
-	GM_MAP_SYSTEM,		// viewing Map System
-	GM_ISLAND,			// XX1 good-ending island-crash cutscene
-	GM_CREDITS,			// <CRE credits
-	GM_INTRO,			// intro
-	GM_TITLE,			// title screen
-	
-	GP_PAUSED,			// pausemode: Pause (use game.pause())
-	GP_OPTIONS,			// pausemode: Options (use game.pause())
-	
-	NUM_GAMEMODES
-};
+#include "game_modes.h"
 
 // note: this structure is memsetted at 0 at startup.
 // ensure it doesn't contain any non-POD types that would be harmed by this.

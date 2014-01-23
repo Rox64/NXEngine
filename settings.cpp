@@ -7,9 +7,10 @@
 #include "settings.h"
 #include "replay.h"
 #include "settings.fdh"
+#include "platform/platform.h"
 
 const char *setfilename = "settings.dat";
-const uint16_t SETTINGS_VERSION = 0x1602;		// serves as both a version and magic
+const uint16_t SETTINGS_VERSION = 0x1608;		// serves as both a version and magic
 
 Settings normal_settings;
 Settings replay_settings;
@@ -25,7 +26,7 @@ bool settings_load(Settings *setfile)
 		stat("No saved settings; using defaults.");
 		
 		memset(setfile, 0, sizeof(Settings));
-		setfile->resolution = 2;		// 640x480 Windowed, should be safe value
+		setfile->resolution = 3;		// 640x480 Windowed, should be safe value
 		setfile->last_save_slot = 0;
 		setfile->multisave = true;
 		
@@ -45,7 +46,25 @@ bool settings_load(Settings *setfile)
 		// down. This goes against established wisdom so if you want it back on,
 		// run "displayformat 1" in the console and restart.
 		setfile->displayformat = false;
+        
+        setfile->show_fps = true;
+        
+        
+        setfile->tap[Settings::Tap::EAll]           = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EMovies]        = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::ETitle]         = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::ESaveLoad]      = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EIngameDialog]  = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EInventory]     = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EPause]         = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EOptions]       = Settings::Tap::ETAP;
+        setfile->tap[Settings::Tap::EMapSystem]     = Settings::Tap::ETAP;
 		
+        setfile->vjoy_controls = VJoy::getPreset(0);
+        setfile->vjoy_current_preset = 0;
+        setfile->vjoy_show_mode = 0;
+        VJoy::setUpdated();
+        
 		return 1;
 	}
 	else
@@ -56,6 +75,8 @@ bool settings_load(Settings *setfile)
 		#else
 			input_set_mappings(settings->input_mappings);
 		#endif
+        
+        VJoy::setUpdated();
 	}
 	
 	return 0;
@@ -71,7 +92,7 @@ FILE *fp;
 
 	stat("Loading settings...");
 	
-	fp = fileopen(setfilename, "rb");
+	fp = fileopenRW(setfilename, "rb");
 	if (!fp)
 	{
 		stat("Couldn't open file %s.", setfilename);
@@ -99,7 +120,7 @@ FILE *fp;
 		setfile = &normal_settings;
 	
 	stat("Writing settings...");
-	fp = fileopen(setfilename, "wb");
+	fp = fileopenRW(setfilename, "wb");
 	if (!fp)
 	{
 		stat("Couldn't open file %s.", setfilename);

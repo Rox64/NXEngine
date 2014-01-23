@@ -5,7 +5,8 @@
 #include <time.h>
 
 #include "basics.h"
-#include "misc.fdh"
+
+#include "../platform/platform.h"
 
 #define MAXBUFSIZE		1024
 char logfilename[64] = { 0 };
@@ -14,15 +15,19 @@ void writelog(const char *buf, bool append_cr);
 
 void SetLogFilename(const char *fname)
 {
-	maxcpy(logfilename, fname, sizeof(logfilename));
+	strncpy(logfilename, fname, sizeof(logfilename));
 	remove(logfilename);
+    
+    FILE *fp;
+	fp = fileopenCache(logfilename, "w");
+    fclose(fp);
 }
 
 void writelog(const char *buf, bool append_cr)
 {
 FILE *fp;
 
-	fp = fileopen(logfilename, "a+");
+	fp = fileopenCache(logfilename, "a+");
 	if (fp)
 	{
 		fputs(buf, fp);

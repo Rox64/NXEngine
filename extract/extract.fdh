@@ -4,7 +4,7 @@
 /* located in platform.cpp */
 
 //----------------[referenced from extract/extract.cpp]--------------//
-FILE *fileopen(const char *fname, const char *mode);
+//FILE *fileopen(const char *fname, const char *mode);
 
 
 /* located in extract/extract.cpp */

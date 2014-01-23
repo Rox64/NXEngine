@@ -2,11 +2,12 @@
 #include "../nx.h"
 #include "dialog.h"
 #include "dialog.fdh"
+#include "../vjoy.h"
 using namespace Options;
 extern FocusStack optionstack;
 
-#define DLG_X		((SCREEN_WIDTH / 2) - 88)
-#define DLG_Y		((SCREEN_HEIGHT / 2) - 90)
+#define DLG_X		((Graphics::SCREEN_WIDTH / 2) - 88)
+#define DLG_Y		((Graphics::SCREEN_HEIGHT / 2) - 90)
 #define DLG_W		190
 #define DLG_H		180
 
@@ -28,6 +29,8 @@ Dialog::Dialog()
 	fNumShown = 0;
 	fRepeatTimer = 0;
 	
+    update_all = false;
+    
 	optionstack.AddItem(this);
 }
 
@@ -73,6 +76,7 @@ ODItem *Dialog::AddItem(const char *text, \
 	item->update = update;
 	item->id = id;
 	item->type = type;
+    item->parent = this;
 	
 	fItems.AddItem(item);
 	
@@ -138,7 +142,7 @@ char text[132];
 		
 		// ... ellipses if too long
 		int maxx = (rx - 4);
-		//FillRect(maxx, 0, maxx, SCREEN_HEIGHT, 0,255,0);
+		//FillRect(maxx, 0, maxx, Graphics::SCREEN_HEIGHT, 0,255,0);
 		for(;;)
 		{
 			int wd = GetFontWidth(text, 0);
@@ -170,34 +174,75 @@ void c------------------------------() {}
 
 void Dialog::RunInput()
 {
-	if (inputs[UPKEY] || inputs[DOWNKEY])
-	{
-		int dir = (inputs[DOWNKEY]) ? 1 : -1;
-		
-		if (!fRepeatTimer)
-		{
-			fRepeatTimer = (lastinputs[UPKEY] || lastinputs[DOWNKEY]) ? REPEAT_RATE : REPEAT_WAIT;
-			sound(SND_MENU_MOVE);
-			
-			int nitems = fItems.CountItems();
-			for(;;)
-			{
-				fCurSel += dir;
-				if (fCurSel < 0) fCurSel = (nitems - 1);
-							else fCurSel %= nitems;
-				
-				ODItem *item = ItemAt(fCurSel);
-				if (item && item->type != OD_SEPARATOR) break;
-			}
-		}
-		else fRepeatTimer--;
-	}
-	else fRepeatTimer = 0;
+    bool pushed_left = false;
+    bool pushed_rigth = false;
+    
+    // tap control
+    {
+        int x = fTextX;
+        int y = (fCoords.y + 18);
+        
+        for (int i = 0;; ++i, y += GetFontHeight())
+        {
+            ODItem *item = (ODItem *)fItems.ItemAt(i);
+            if (!item) break;
+            if (OD_SEPARATOR == item->type) continue;
+            
+            RectI r = RectI(x - 30, y, fCoords.w - 35, GetFontHeight());
+            
+            debug_absbox(r.x, r.y, r.x + r.w, r.y + r.h, 255, 255, 255);
+            if (VJoy::ModeAware::wasTap(r))
+            {
+                if (fCurSel == i)
+                {
+                    pushed_rigth = true;
+                }
+                else
+                {
+                    fCurSel = i;
+                    sound(SND_MENU_MOVE);
+                }
+            }
+            
+            
+        }
+    }
+
+    // pad control
+    {
+        if (inputs[UPKEY] || inputs[DOWNKEY])
+        {
+            int dir = (inputs[DOWNKEY]) ? 1 : -1;
+            
+            if (!fRepeatTimer)
+            {
+                fRepeatTimer = (lastinputs[UPKEY] || lastinputs[DOWNKEY]) ? REPEAT_RATE : REPEAT_WAIT;
+                sound(SND_MENU_MOVE);
+                
+                int nitems = fItems.CountItems();
+                for(;;)
+                {
+                    fCurSel += dir;
+                    if (fCurSel < 0) fCurSel = (nitems - 1);
+                                else fCurSel %= nitems;
+                    
+                    ODItem *item = ItemAt(fCurSel);
+                    if (item && item->type != OD_SEPARATOR) break;
+                }
+            }
+            else fRepeatTimer--;
+        }
+        else
+            fRepeatTimer = 0;
+        
+        pushed_left = pushed_left || justpushed(LEFTKEY);
+        pushed_rigth = pushed_rigth || (!pushed_left && (buttonjustpushed() || justpushed(RIGHTKEY)));
+    }
+
 	
-	
-	if (buttonjustpushed() || justpushed(RIGHTKEY) || justpushed(LEFTKEY))
+	if (pushed_left || pushed_rigth)
 	{
-		int dir = (!inputs[LEFTKEY] || buttonjustpushed() || justpushed(RIGHTKEY)) ? 1 : -1;
+		int dir = (pushed_rigth) ? 1 : -1;
 		
 		ODItem *item = ItemAt(fCurSel);
 		if (item)
@@ -220,6 +265,9 @@ void Dialog::RunInput()
 			}
 		}
 	}
+    
+    if (update_all)
+        UpdateAllItems();
 	
 	/*if (justpushed(ESCKEY))
 	{
@@ -264,6 +312,10 @@ void Dialog::Clear()
 	fCurSel = 0;
 }
 
-
+void Dialog::UpdateAllItems()
+{
+    Refresh();
+    update_all = false;
+}
 
 

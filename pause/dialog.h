@@ -6,7 +6,7 @@
 #include "options.h"
 namespace Options {
 
-class ODItem;
+struct ODItem;
 
 enum OD_TYPES
 {
@@ -41,6 +41,8 @@ public:
 	int GetSelection() { return fCurSel; }
 	void ShowFull() { fNumShown = 99; }
 	
+    void UpdateAllItems();
+    
 	void (*onclear)();
 	void (*ondismiss)();
 	
@@ -55,6 +57,8 @@ private:
 	struct { int x, y, w, h; } fCoords;
 	int fTextX;
 	bool fDismissOnFocus;
+    
+    bool update_all;
 };
 
 
@@ -65,6 +69,8 @@ struct ODItem
 	char righttext[64];
 	char raligntext[32];
 	int type, id;
+    
+    Dialog* parent;
 	
 	void (*update)(ODItem *item);
 	void (*activate)(ODItem *item, int dir);

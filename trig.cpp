@@ -57,8 +57,8 @@ static char firsttime = 1;
 	
 	x1 = mouse.x;
 	y1 = mouse.y;
-	x2 = SCREEN_WIDTH/2;
-	y2 = SCREEN_HEIGHT/2;
+	x2 = Graphics::SCREEN_WIDTH/2;
+	y2 = Graphics::SCREEN_HEIGHT/2;
 	
 	angle = GetAngle(x1, y1, x2, y2);
 	

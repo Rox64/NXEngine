@@ -193,7 +193,8 @@ void HandlePlayer_am(void)
 	//debug("xinertia: %s", strhex(player->xinertia));
 	//debug("yinertia: %s", strhex(player->yinertia));
 	//debug("booststate: %d", player->booststate);
-	//debug("y: %d", player->y>>CSF);
+	//debug("x: %d %d", player->x, player->x>>CSF);
+	//debug("y: %d %d", player->y, player->y>>CSF);
 	//debug("riding %x", player->riding);
 	//debug("block: %d%d%d%d", player->blockl, player->blockr, player->blocku, player->blockd);
 	
@@ -324,6 +325,7 @@ int i;
 void PHandleAttributes(void)
 {
 static const Point pattrpoints[] = { {8, 8}, {8, 14} };
+static const Point hurt_bottom_attrpoint =   {8, 7};
 unsigned int attr;
 int tile;
 
@@ -435,6 +437,16 @@ int tile;
 	// add in the bottom pattrpoint, but don't let it set the "water" bit.
 	// only the top pattrpoint can set "water".
 	attr |= (player->GetAttributes(&pattrpoints[1], 1, &tile) & ~TA_WATER);
+
+	// If the tile has "hurt" bit, we recheck it with the the different bottom attrpoint.
+	// This fixes bottom spikes in water level, last cave... Standart bottom attrpoint
+	// allows intersection with spike only for 1 pixel, but origianl game allows 8 pixels 
+	// of safe intersection.
+	if (attr & TA_HURTS_PLAYER)
+	{
+		attr &= ~TA_HURTS_PLAYER;
+		attr |= (player->GetAttributes(&hurt_bottom_attrpoint, 1, &tile) & ~TA_WATER);
+	}
 	
 	if (attr & TA_HURTS_PLAYER)
 		hurtplayer(10);
@@ -1377,6 +1389,16 @@ void PDoRepel(void)
 	
 	// vertical repel doesn't happen normally, but if we get embedded in a
 	// block somehow, it can happen.
+	
+	// Update 2013.04.02: actually, it's quite easy to get embedded into the block.
+	// Jump of the block, descend 2 pixels, boost horyzontally into slope - you will 
+	// get inside the slope. Or, stand in front of 3 blocks high wall and try 
+	// to jump on this wall (easy to reproduce in Arthur's house). When only 
+	// 2-3 pixles left until the top of the wall - unpress jump button - Quote's legs
+	// will be insed the block (1-2 pixels). 
+	// To fix these problems I've enabled repel up. I've not seen any cases where 
+	// repel down would be needed.
+
 	/*
 	// do repel down
 	if (player->CheckAttribute(player->repel_u, player->nrepel_u, TA_SOLID_PLAYER))
@@ -1387,6 +1409,7 @@ void PDoRepel(void)
 			//debug("REPEL [down]");
 		}
 	}
+	*/
 	
 	// do repel up
 	if (player->CheckAttribute(player->repel_d, player->nrepel_d, TA_SOLID_PLAYER))
@@ -1397,7 +1420,6 @@ void PDoRepel(void)
 			//debug("REPEL [up]");
 		}
 	}
-	*/
 }
 
 /*

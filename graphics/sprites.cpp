@@ -22,6 +22,8 @@ static StringList sheetfiles;
 SIFSprite sprites[MAX_SPRITES];
 int num_sprites;
 
+static bool batch_draw_enabled = false;
+
 
 bool Sprites::Init()
 {
@@ -78,6 +80,10 @@ static void Sprites::LoadSheetIfNeeded(int sheetno)
 	}
 }
 
+void Sprites::draw_in_batch(bool enabled)
+{
+    batch_draw_enabled = enabled;
+}
 
 // master sprite drawing function
 static void Sprites::BlitSprite(int x, int y, int s, int frame, uint8_t dir, \
@@ -88,11 +94,22 @@ static void Sprites::BlitSprite(int x, int y, int s, int frame, uint8_t dir, \
 	dir %= sprites[s].ndirs;
 	SIFDir *sprdir = &sprites[s].frame[frame].dir[dir];
 	
-	DrawSurface(spritesheet[sprites[s].spritesheet], \
-				x, y, \
-				(sprdir->sheet_offset.x + xoff), \
-				(sprdir->sheet_offset.y + yoff), \
-				wd, ht);
+    if (batch_draw_enabled)
+    {
+        DrawBatchAdd(spritesheet[sprites[s].spritesheet], \
+                     x, y, \
+                     (sprdir->sheet_offset.x + xoff), \
+                     (sprdir->sheet_offset.y + yoff), \
+                     wd, ht);
+    }
+    else
+    {
+        DrawSurface(spritesheet[sprites[s].spritesheet], \
+                    x, y, \
+                    (sprdir->sheet_offset.x + xoff), \
+                    (sprdir->sheet_offset.y + yoff), \
+                    wd, ht);
+    }
 }
 
 /*
@@ -106,6 +123,11 @@ void Sprites::draw_sprite(int x, int y, int s, int frame, uint8_t dir)
 	BlitSprite(x, y, s, frame, dir, 0, 0, sprites[s].w, sprites[s].h);
 }
 
+RectI Sprites::get_sprite_rect(int x, int y, int s, int/* frame*/, uint8_t/* dir*/)
+{
+    return RectI(x, y, sprites[s].w, sprites[s].h);
+}
+
 // draw sprite "s", place it's draw point at [x,y] instead of it's upper-left corner.
 void Sprites::draw_sprite_at_dp(int x, int y, int s, int frame, uint8_t dir)
 {
@@ -113,7 +135,6 @@ void Sprites::draw_sprite_at_dp(int x, int y, int s, int frame, uint8_t dir)
 	y -= sprites[s].frame[frame].dir[dir].drawpoint.y;
 	BlitSprite(x, y, s, frame, dir, 0, 0, sprites[s].w, sprites[s].h);
 }
-
 
 // draw a portion of a sprite, such as a sprite in the middle of "teleporting".
 // only the area between clipy1 (inclusive) and clipy2 (exclusive) are visible.
@@ -184,14 +205,14 @@ NXSurface *Sprites::get_spritesheet(int sheetno)
 }
 
 // create an empty spritesheet of the given size and return it's index.
-int Sprites::create_spritesheet(int wd, int ht)
-{
-	if (num_spritesheets >= MAX_SPRITESHEETS)
-		return -1;
+// int Sprites::create_spritesheet(int wd, int ht)
+// {
+// 	if (num_spritesheets >= MAX_SPRITESHEETS)
+// 		return -1;
 	
-	spritesheet[num_spritesheets] = new NXSurface(wd, ht);
-	return num_spritesheets++;
-}
+// 	spritesheet[num_spritesheets] = new NXSurface(wd, ht);
+// 	return num_spritesheets++;
+// }
 
 // draw a sprite onto some surface other than the screen
 void Sprites::draw_sprite_to_surface(NXSurface *dst, int x, int y, int s, int frame, uint8_t dir)

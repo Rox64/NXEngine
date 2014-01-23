@@ -80,8 +80,8 @@ bool maxed_out;
 	{
 		#define BOSSBAR_W	198
 		// BOSS_X = 32 at normal resolution
-		#define BOSS_X		((SCREEN_WIDTH / 2) - (BOSSBAR_W / 2) - 29)
-		#define BOSS_Y		(SCREEN_HEIGHT-20)
+		#define BOSS_X		((Graphics::SCREEN_WIDTH / 2) - (BOSSBAR_W / 2) - 29)
+		#define BOSS_Y		(Graphics::SCREEN_HEIGHT-20)
 		draw_sprite(BOSS_X, BOSS_Y, SPR_TEXTBOX, 0, 0);
 		draw_sprite(BOSS_X, BOSS_Y+8, SPR_TEXTBOX, 2, 0);
 		draw_sprite(BOSS_X+8, BOSS_Y+4, SPR_BOSSHPICON, 0, 0);
@@ -99,6 +99,11 @@ bool maxed_out;
 	
 	if (player->hp)
 	{
+        Graphics::DrawBatchBegin(0);
+        Sprites::draw_in_batch(true);
+        
+        DrawAirLeft((Graphics::SCREEN_WIDTH/2) - (5*8), ((Graphics::SCREEN_HEIGHT)/2)-16);
+        
 		if (!player->hurt_flash_state)
 		{
 			if (!game.debug.god)
@@ -151,15 +156,19 @@ bool maxed_out;
 			// Level Number
 			DrawWeaponLevel(HEALTH_X + slide.lv_offset, XPBAR_Y, player->curWeapon);
 		}
-		
+        
 		// -- draw the weapon bar -----------------------------
+        // draw ammo, note we draw ammo of firstweapon NOT current weapon, for slide effect
+		DrawWeaponAmmo((AMMO_X + slide.wpn_offset + slide.ammo_offset), AMMO_Y, slide.firstWeapon);
+        
+        Graphics::DrawBatchEnd();
+
+        Graphics::DrawBatchBegin(0);
+        
 		// draw current weapon
 		if (player->curWeapon != WPN_NONE)
 			draw_sprite(CURWEAPON_X + slide.wpn_offset, WEAPONBAR_Y, SPR_ARMSICONS, slide.firstWeapon, 0);
-		
-		// draw ammo, note we draw ammo of firstweapon NOT current weapon, for slide effect
-		DrawWeaponAmmo((AMMO_X + slide.wpn_offset + slide.ammo_offset), AMMO_Y, slide.firstWeapon);
-		
+        
 		// draw other weapons
 		w = slide.firstWeapon;
 		x = STATUS_X + 64 + slide.wpn_offset + 1;
@@ -174,8 +183,10 @@ bool maxed_out;
 				x += 16;
 			}
 		}
-		
-		DrawAirLeft((SCREEN_WIDTH/2) - (5*8), ((SCREEN_HEIGHT)/2)-16);
+        
+        Graphics::DrawBatchEnd();
+        Sprites::draw_in_batch(false);
+        
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "../nx.h"
 #include "TextBox.h"
 #include "TextBox.fdh"
+#include "../vjoy.h"
 
 #define MAXLINELEN_FACE		26
 #define MAXLINELEN_NO_FACE	35
@@ -42,6 +43,10 @@ void TextBox::ResetState(void)
 {
 	//stat("TextBox::ResetState()");
 	
+    
+    if (fVisible != false)
+        VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ETextBox, false);
+    
 	fVisible = false;
 	fFlags = TB_DEFAULTS;
 	fFace = 0;
@@ -71,6 +76,9 @@ void TextBox::SetVisible(bool enable, uint8_t flags)
 	
 	if (enable && fVisible)
 		ClearText();
+    
+    if (fVisible != enable)
+        VJoy::ModeAware::specScreenChanged(VJoy::ModeAware::ETextBox, enable);
 	
 	fVisible = enable;
 	flags |= (fFlags & ~(TB_DRAW_AT_TOP | TB_NO_BORDER));
@@ -242,7 +250,7 @@ void TextBox::DrawTextBox()
 	
 	// set clipping region to inside of frame, so that text cannot
 	// overflow during scrolling, etc.
-	set_clip_rect(CONTENT_X, text_top, SCREEN_WIDTH, 48);
+	set_clip_rect(CONTENT_X, text_top, Graphics::SCREEN_WIDTH, 48);
 	
 	//SDL_FillRect(screen, &cliprect, SDL_MapRGB(screen->format,0,0,255));
 	

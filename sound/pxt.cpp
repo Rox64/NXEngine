@@ -6,37 +6,48 @@
 #include <math.h>			// for sin()
 #include <stdlib.h>
 #include <string.h>
-#include <endian.h>
+
+#if !defined(WIN32)
+# include <endian.h>
+#endif
 
 #include "../config.h"
 #include "pxt.h"
 #include "sslib.h"
+
+#include "../platform/platform.h"
+#include "../common/endian.h"
 
 #include "pxt.fdh"
 
 #define MODEL_SIZE			256
 #define PXCACHE_MAGICK		'PXC1'
 
-// gets the next byte from wave "wave", scales it by the waves volume, and places result in "out".
-// x * (y / z) = (x * y) / z
-#define GETWAVEBYTE(wave, out)	\
-{	\
-	if (wave->model_no != MOD_WHITE)	\
-	{		\
-		out = wave->model[(unsigned char)wave->phaseacc];	\
-	}		\
-	else	\
-	{	\
-		out = white[wave->white_ptr];		\
-		if (++wave->white_ptr >= WHITE_LEN) wave->white_ptr = 0;	\
-	}	\
-	out *= wave->volume;			\
-	out /= 64;	\
-}
 
 
 #define WHITE_LEN		22050
 int8_t white[WHITE_LEN];
+
+// gets the next byte from wave "wave", scales it by the waves volume, and places result in "out".
+// x * (y / z) = (x * y) / z
+inline void GETWAVEBYTE(stPXWave* wave, int& out)
+{
+    if (wave->model_no != MOD_WHITE)
+    {
+        // The next line is intentionally this long. I tried to overcome UB
+        // from conversion double->uchar. Now, UB is possible only if wave->phaseacc > UINT_MAX
+        unsigned char index = static_cast<unsigned char>(static_cast<unsigned int>(wave->phaseacc) % 256);
+        out = wave->model[index];
+    }
+    else
+    {
+        out = white[wave->white_ptr];
+        if (++wave->white_ptr >= WHITE_LEN) wave->white_ptr = 0;
+    }
+    out *= wave->volume;
+    out /= 64;
+}
+
 
 // the final sounds ready to play (after pxt_PrepareToPlay)
 static struct
@@ -268,7 +279,7 @@ char buf[80];
 	yratio = (double)ysize / (double)(127+127);
 	//lprintf("ratio = %.2f yratio = %.2f\n", ratio, yratio);
 	
-	DrawSDLLine(SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT, 18,18,18);
+	DrawSDLLine(Graphics::SCREEN_WIDTH/2, 0, Graphics::SCREEN_WIDTH/2, Graphics::SCREEN_HEIGHT, 18,18,18);
 	DrawSDLLine(xoff, centerline, xoff+wd, centerline, 255,0,0);
 	y = scale_sample(TOPAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);
 	y = scale_sample(BTMAMP); DrawSDLLine(xoff, y, xoff+wd, y, 68,68,68);
@@ -836,7 +847,7 @@ FILE *fp = NULL;
 			return 0;
 		}
 		
-		fp = fileopen(cache_name, "wb");
+		fp = fileopenCache(cache_name, "wb");
 		if (!fp)
 		{
 			staterr("LoadSoundFX: failed open: '%s'", cache_name);
@@ -898,7 +909,7 @@ int slot;
 uint32_t magick;
 stPXSound snd;
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenCache(fname, "rb");
 	if (!fp)
 	{
 		stat("LoadFXCache: audio cache %s not exist", fname);
@@ -1041,7 +1052,7 @@ int i, cc;
 
 #define BRACK		'{'		// my damn IDE is borking up the Function List if i put this inline
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenRO(fname);
 	if (!fp) { staterr("pxt_load: file '%s' not found.", fname); return 1; }
 	
 	//lprintf("pxt_load: reading %s...\n", fname);
@@ -1158,85 +1169,85 @@ uchar ch;
 }
 
 
-char pxt_save(const char *fname, stPXSound *snd)
-{
-FILE *fp;
-int i, j;
+// char pxt_save(const char *fname, stPXSound *snd)
+// {
+// FILE *fp;
+// int i, j;
 
-	fp = fileopen(fname, "wb");
-	if (!fp)
-	{
-		stat("save_pxt: unable to open '%s'", fname);
-		return 1;
-	}
+// 	fp = fileopenCache(fname, "wb");
+// 	if (!fp)
+// 	{
+// 		stat("save_pxt: unable to open '%s'", fname);
+// 		return 1;
+// 	}
 	
-	for(i=0;i<PXT_NO_CHANNELS;i++)
-	{
-		fprintf(fp, "use  :%d\r\n", snd->chan[i].enabled);
-		fprintf(fp, "size :%d\r\n", snd->chan[i].size_blocks);
+// 	for(i=0;i<PXT_NO_CHANNELS;i++)
+// 	{
+// 		fprintf(fp, "use  :%d\r\n", snd->chan[i].enabled);
+// 		fprintf(fp, "size :%d\r\n", snd->chan[i].size_blocks);
 		
-		SaveComponent(fp, "main", &snd->chan[i].main);
-		SaveComponent(fp, "pitch", &snd->chan[i].pitch);
-		SaveComponent(fp, "volume", &snd->chan[i].volume);
+// 		SaveComponent(fp, "main", &snd->chan[i].main);
+// 		SaveComponent(fp, "pitch", &snd->chan[i].pitch);
+// 		SaveComponent(fp, "volume", &snd->chan[i].volume);
 		
-		fprintf(fp, "initialY:%d\r\n", snd->chan[i].envelope.initial);
-		for(j=0;j<PXENV_NUM_VERTICES;j++)
-		{
-			SaveEnvVertice(fp, &snd->chan[i].envelope, j);
-		}
+// 		fprintf(fp, "initialY:%d\r\n", snd->chan[i].envelope.initial);
+// 		for(j=0;j<PXENV_NUM_VERTICES;j++)
+// 		{
+// 			SaveEnvVertice(fp, &snd->chan[i].envelope, j);
+// 		}
 		
-		fprintf(fp, "\r\n");
-	}
+// 		fprintf(fp, "\r\n");
+// 	}
 	
-	// save "machine-readable" section
-	for(i=0;i<PXT_NO_CHANNELS;i++)
-	{
-		fprintf(fp, "{");
+// 	// save "machine-readable" section
+// 	for(i=0;i<PXT_NO_CHANNELS;i++)
+// 	{
+// 		fprintf(fp, "{");
 		
-		fprintf(fp, "%d,%d,", snd->chan[i].enabled, snd->chan[i].size_blocks);
+// 		fprintf(fp, "%d,%d,", snd->chan[i].enabled, snd->chan[i].size_blocks);
 		
-		SaveComponentMachine(fp, &snd->chan[i].main, 1);
-		SaveComponentMachine(fp, &snd->chan[i].pitch, 1);
-		SaveComponentMachine(fp, &snd->chan[i].volume, 1);
+// 		SaveComponentMachine(fp, &snd->chan[i].main, 1);
+// 		SaveComponentMachine(fp, &snd->chan[i].pitch, 1);
+// 		SaveComponentMachine(fp, &snd->chan[i].volume, 1);
 		
-		fprintf(fp, "%d,", snd->chan[i].envelope.initial);
-		for(j=0;j<PXENV_NUM_VERTICES-1;j++)
-		{
-			fprintf(fp, "%d,%d,", snd->chan[i].envelope.time[j], snd->chan[i].envelope.val[j]);
-		}
-		fprintf(fp, "%d,%d", snd->chan[i].envelope.time[j], snd->chan[i].envelope.val[j]);
+// 		fprintf(fp, "%d,", snd->chan[i].envelope.initial);
+// 		for(j=0;j<PXENV_NUM_VERTICES-1;j++)
+// 		{
+// 			fprintf(fp, "%d,%d,", snd->chan[i].envelope.time[j], snd->chan[i].envelope.val[j]);
+// 		}
+// 		fprintf(fp, "%d,%d", snd->chan[i].envelope.time[j], snd->chan[i].envelope.val[j]);
 		
-		fprintf(fp, "},\r\n");
-	}
+// 		fprintf(fp, "},\r\n");
+// 	}
 	
-	// save "extended" section-- original PixTone seems really picky about
-	// trying to put anything it doesn't know about into the normal section
+// 	// save "extended" section-- original PixTone seems really picky about
+// 	// trying to put anything it doesn't know about into the normal section
 	
-	// machine readable pitch2
-	fprintf(fp, "\r\n-> {");
-	for(i=0;i<PXT_NO_CHANNELS;i++)
-	{
-		SaveComponentMachine(fp, &snd->chan[i].pitch2, (i+1<PXT_NO_CHANNELS));
-	}
-	fprintf(fp, "},\r\n");
+// 	// machine readable pitch2
+// 	fprintf(fp, "\r\n-> {");
+// 	for(i=0;i<PXT_NO_CHANNELS;i++)
+// 	{
+// 		SaveComponentMachine(fp, &snd->chan[i].pitch2, (i+1<PXT_NO_CHANNELS));
+// 	}
+// 	fprintf(fp, "},\r\n");
 	
-	// machine readable extra envelope vertices
-	fprintf(fp, "-> {255,0,255,0,255,0,255,0},\r\n");
+// 	// machine readable extra envelope vertices
+// 	fprintf(fp, "-> {255,0,255,0,255,0,255,0},\r\n");
 	
-	// human readable copy
-	fprintf(fp, "\r\n");
-	for(i=0;i<PXT_NO_CHANNELS;i++)
-	{
-		SaveComponent(fp, "pitch2", &snd->chan[i].pitch);
-		fprintf(fp, "dx      :255\r\n");
-		fprintf(fp, "dy      :0\r\n");
-		fprintf(fp, "\r\n");
-	}
+// 	// human readable copy
+// 	fprintf(fp, "\r\n");
+// 	for(i=0;i<PXT_NO_CHANNELS;i++)
+// 	{
+// 		SaveComponent(fp, "pitch2", &snd->chan[i].pitch);
+// 		fprintf(fp, "dx      :255\r\n");
+// 		fprintf(fp, "dy      :0\r\n");
+// 		fprintf(fp, "\r\n");
+// 	}
 	
-	fclose(fp);
-	stat("pxt save ok '%s'", fname);
-	return 0;
-}
+// 	fclose(fp);
+// 	stat("pxt save ok '%s'", fname);
+// 	return 0;
+// }
 
 
 static void SaveComponent(FILE *fp, const char *name, stPXWave *pxw)

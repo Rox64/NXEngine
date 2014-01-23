@@ -442,6 +442,6 @@ void ai_motion_wall(Object *o)		// the walls at the top and bottom of the arena
 	o->x -= (6 << CSF);
 	
 	if (o->x < (((19 * TILE_W) - 8) << CSF))
-		o->x += (SCREEN_WIDTH + 32) << CSF;
+		o->x += (Graphics::SCREEN_WIDTH + 32) << CSF;
 }
 

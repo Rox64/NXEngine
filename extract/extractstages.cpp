@@ -1,5 +1,5 @@
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -11,6 +11,10 @@
 #include "../stagedata.h"
 #include "../maprecord.h"
 #include "extractstages.fdh"
+
+#include "../platform/platform.h"
+
+#include "fileio.h"
 
 using safemode::moveto;
 using safemode::status;
@@ -94,7 +98,7 @@ int i;
 	}
 	
 	// write out
-	FILE *fpo = fileopen("stage.dat", "wb");
+	FILE *fpo = fileopen("stage.dat", "wb", ro_filesys_path);
 	if (!fpo)
 	{
 		status("failed to open stage.dat for writing");

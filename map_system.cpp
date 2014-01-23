@@ -4,6 +4,8 @@
 #include "map_system.h"
 #include "map_system.fdh"
 
+#include "vjoy.h"
+
 #define MS_EXPANDING		0
 #define MS_DISPLAYED		1
 #define MS_CONTRACTING		2
@@ -49,15 +51,15 @@ bool ms_init(int return_to_mode)
 	ms.sfc = new NXSurface(ms.w, ms.h);
 	ms.sfc->FillRect(0, 0, ms.w, ms.h, DK_BLUE);
 	
-	ms.x = (SCREEN_WIDTH / 2) - (ms.w / 2);
-	ms.y = (SCREEN_HEIGHT / 2) - (ms.h / 2);
+	ms.x = (Graphics::SCREEN_WIDTH / 2) - (ms.w / 2);
+	ms.y = (Graphics::SCREEN_HEIGHT / 2) - (ms.h / 2);
 	
 	// where will we put the dot?
 	ms.px = ms.x + ((player->x >> CSF) / TILE_W);
 	ms.py = ms.y + ((player->y >> CSF) / TILE_H);
 	
 	ms.bannertext = stages[game.curmap].stagename;
-	ms.textx = (SCREEN_WIDTH / 2) - (GetFontWidth(ms.bannertext, 0) / 2);
+	ms.textx = (Graphics::SCREEN_WIDTH / 2) - (GetFontWidth(ms.bannertext, 0) / 2);
 	ms.texty = BANNER_TOP+3;
 	
 	return 0;
@@ -108,6 +110,9 @@ void ms_tick(void)
 		if (++ms.timer & 8)
 			draw_sprite(ms.px, ms.py, SPR_MAP_PIXELS, 4);
 		
+        if (VJoy::ModeAware::wasTap())
+            ms.state = MS_CONTRACTING;
+        
 		// dismissal
 		if (ms.lastbuttondown)
 		{
@@ -145,10 +150,10 @@ int x1, y1, x2, y2;
 	int wd = (map.xsize * ms.expandframe) / EXPAND_LENGTH;
 	int ht = (map.ysize * ms.expandframe) / EXPAND_LENGTH;
 	
-	x1 = (SCREEN_WIDTH / 2)  - (wd / 2);
-	y1 = (SCREEN_HEIGHT / 2) - (ht / 2);
-	x2 = (SCREEN_WIDTH / 2)  + (wd / 2);
-	y2 = (SCREEN_HEIGHT / 2) + (ht / 2);
+	x1 = (Graphics::SCREEN_WIDTH / 2)  - (wd / 2);
+	y1 = (Graphics::SCREEN_HEIGHT / 2) - (ht / 2);
+	x2 = (Graphics::SCREEN_WIDTH / 2)  + (wd / 2);
+	y2 = (Graphics::SCREEN_HEIGHT / 2) + (ht / 2);
 	
 	FillRect(x1, y1, x2, y2, DK_BLUE);
 }
@@ -156,7 +161,7 @@ int x1, y1, x2, y2;
 
 static void draw_banner(void)
 {
-	FillRect(0, BANNER_TOP, SCREEN_WIDTH, BANNER_BTM, NXColor(0, 0, 0));
+	FillRect(0, BANNER_TOP, Graphics::SCREEN_WIDTH, BANNER_BTM, NXColor(0, 0, 0));
 	font_draw(ms.textx, ms.texty, ms.bannertext, 0);
 }
 
@@ -174,12 +179,20 @@ static void draw_row(int y)
 int x;
 
 	Graphics::SetDrawTarget(ms.sfc);
-	
+    
+    Graphics::DrawBatchBegin(map.xsize);
+	Sprites::draw_in_batch(true);
+    
+    
 	for(x=0;x<map.xsize;x++)
 	{
 		int tc = tilecode[map.tiles[x][y]];
 		draw_sprite(x, y, SPR_MAP_PIXELS, get_color(tc));
+        
 	}
+
+    Sprites::draw_in_batch(false);
+    Graphics::DrawBatchEnd();
 	
 	Graphics::SetDrawTarget(screen);
 }

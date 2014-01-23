@@ -1,0 +1,197 @@
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/libxcb.so.1.1.0
+   fun:xcb_wait_for_reply
+   fun:_XReply
+   fun:XQueryExtension
+   fun:XInitExtension
+   fun:XkbUseExtension
+   fun:XOpenDisplay
+   fun:X11_Available
+   fun:SDL_VideoInit
+   fun:SDL_InitSubSystem
+   fun:SDL_Init
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   fun:dri_destroy_context
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/mesa-libGL.so.1.2.0
+   fun:glXDestroyContext
+   fun:X11_GL_InitExtensions
+   fun:X11_GL_LoadLibrary
+   fun:SDL_GL_LoadLibrary
+   fun:SDL_CreateWindow
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   fun:dri_destroy_context
+   obj:/usr/lib/xorg/modules/dri/r600_dri.so
+   obj:/usr/lib/mesa-libGL.so.1.2.0
+   fun:glXDestroyContext
+   fun:X11_GL_InitExtensions
+   fun:X11_GL_LoadLibrary
+   fun:SDL_GL_LoadLibrary
+   fun:SDL_CreateWindow
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/libxcb.so.1.1.0
+   fun:xcb_wait_for_reply
+   obj:/usr/lib/mesa-libGL.so.1.2.0
+   fun:_ZL8run_tickv
+   fun:_Z8gameloopv
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/libX11.so.6.3.0
+   fun:_XFreeDisplayStructure
+   fun:XCloseDisplay
+   fun:X11_DeleteDevice
+   fun:SDL_VideoQuit
+   fun:SDL_QuitSubSystem
+   fun:SDL_Quit
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/libxcb.so.1.1.0
+   fun:xcb_wait_for_reply
+   obj:/usr/lib/mesa-libGL.so.1.2.0
+   fun:_Z17org_test_miniloopv
+   fun:main
+}
+
+
+
+
+# {
+#    <insert_a_suppression_name_here>
+#    Helgrind:Race
+#    fun:SDL_PauseAudioDevice
+#    fun:_Z6SSInitv
+#    fun:_Z10sound_initv
+#    fun:main
+# }
+# {
+#    <insert_a_suppression_name_here>
+#    Helgrind:Race
+#    fun:SDL_CloseAudioDevice
+#    fun:_Z7SSClosev
+#    fun:main
+# }
+# {
+#    <insert_a_suppression_name_here>
+#    Helgrind:Race
+#    fun:SDL_RunAudio
+#    fun:SDL_RunThread
+#    fun:RunThread
+#    obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+#    fun:start_thread
+#    fun:clone
+# }
+# {
+#    <insert_a_suppression_name_here>
+#    Helgrind:Race
+#    fun:SDL_PauseAudioDevice
+#    fun:_Z12AppMinimizedv
+#    fun:_Z8gameloopv
+#    fun:main
+# }
+
+
+
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN9NXSurface8FromFileEPKcbi
+   fun:_ZN7Tileset4LoadEi
+   fun:_Z10load_stagei
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_GetError
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN9NXSurface8FromFileEPKcbi
+   fun:_ZN7Tileset4LoadEi
+   fun:_Z10load_stagei
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_GetError
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN7SpritesL17LoadSheetIfNeededEi
+   fun:_ZN7Sprites15get_spritesheetEi
+   fun:_ZN8Graphics16CopySpriteToTileEiiii
+   fun:_Z13load_tileattrPKc
+   fun:_Z10load_stagei
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN7SpritesL17LoadSheetIfNeededEi
+   fun:_ZN7Sprites15get_spritesheetEi
+   fun:_ZN8Graphics16CopySpriteToTileEiiii
+   fun:_Z13load_tileattrPKc
+   fun:_Z10load_stagei
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN9NXSurface8FromFileEPKcbi
+   fun:_ZL20LoadBackdropIfNeededi.part.0
+   fun:_Z16map_set_backdropi
+   fun:_Z10load_stagei
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Helgrind:Race
+   fun:SDL_LoadBMP_RW
+   fun:_ZN9NXSurface9LoadImageEPKcbi
+   fun:_ZN7SpritesL17LoadSheetIfNeededEi
+   fun:_ZN7SpritesL10BlitSpriteEiiiihiiii
+   fun:_ZN7Sprites11draw_spriteEiiiih
+   fun:_Z9DrawScenev
+   fun:_Z16game_tick_normalv
+   fun:_Z10intro_tickv
+   fun:_ZN4Game4tickEv
+   fun:_ZL8run_tickv
+   fun:_Z8gameloopv
+   fun:main
+}

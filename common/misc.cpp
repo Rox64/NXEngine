@@ -8,7 +8,10 @@
 #include <ctype.h>
 
 #include "basics.h"
-#include "misc.fdh"
+
+#include "../platform/platform.h"
+
+char *GetStaticStr(void);
 
 void stat(const char *fmt, ...);
 
@@ -219,7 +222,8 @@ bool file_exists(const char *fname)
 {
 FILE *fp;
 
-	fp = fileopen(fname, "rb");
+	fp = fileopenRO(fname);
+	if (!fp) fp = fileopenRW(fname, "rb");
 	if (!fp) return 0;
 	fclose(fp);
 	return 1;
@@ -242,6 +246,12 @@ void c------------------------------() {}
 */
 
 static uint32_t seed = 0;
+
+uint32_t getrand()
+{
+	seed = (seed * 0x343FD) + 0x269EC3;
+	return seed;
+}
 
 // return a random number between min and max inclusive
 int random(int min, int max)
@@ -266,12 +276,6 @@ int range, val;
 	
 	val = getrand() % (range + 1);
 	return val + min;
-}
-
-uint32_t getrand()
-{
-	seed = (seed * 0x343FD) + 0x269EC3;
-	return seed;
 }
 
 void seedrand(uint32_t newseed)

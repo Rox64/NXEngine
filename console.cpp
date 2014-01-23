@@ -3,6 +3,11 @@
 #include <stdarg.h>
 #include "console.fdh"
 
+
+static void __map(StringList* args, int num);
+static void __posx(StringList* args, int num);
+static void __posy(StringList* args, int num);
+
 static CommandEntry commands[] =
 {
 	"god", __god, 0, 1,
@@ -33,6 +38,10 @@ static CommandEntry commands[] =
 	"cre", __cre, 0, 0,
 	"reset", __reset, 0, 0,
 	"fps", __fps, 0, 1,
+
+	"map", __map, 1, 2,
+	"posx", __posx, 1, 1,
+	"posy", __posy, 1, 1,
 	
 	"instant-quit", __set_iquit, 1, 1,
 	"no-quake-in-hell", __set_noquake, 1, 1,
@@ -230,7 +239,7 @@ void DebugConsole::Draw()
 
 void DebugConsole::DrawText(const char *text)
 {
-	font_draw_shaded(4, (SCREEN_HEIGHT - 16), text);
+	font_draw_shaded(4, (Graphics::SCREEN_HEIGHT - 16), text);
 }
 
 /*
@@ -916,6 +925,37 @@ static void __skip_intro(StringList *args, int num)
 	settings->skip_intro = num;
 	settings_save();
 	Respond("skip_intro: %s", settings->skip_intro ? "enabled":"disabled");
+}
+
+/*
+void c------------------------------() {}
+*/
+
+static void __map(StringList* args, int num)
+{
+	//game.flags[1341] = true;
+	game.switchstage.mapno = num;
+	// game.switchstage.playerx = 16;
+	// game.switchstage.playery = 16;
+
+	if (args->CountItems() == 2)
+		game.switchstage.eventonentry = atoi(args->StringAt(1));
+	else
+		game.switchstage.eventonentry = 0;
+
+	Respond("switch to map %d with event %d",
+		game.switchstage.mapno,
+		game.switchstage.eventonentry);
+}
+
+static void __posx(StringList* args, int num)
+{
+	player->x = num;
+}
+
+static void __posy(StringList* args, int num)
+{
+	player->y = num;
 }
 
 /*

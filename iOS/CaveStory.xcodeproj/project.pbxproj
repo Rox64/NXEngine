@@ -160,7 +160,6 @@
 		E91902E41661336300D0DB04 /* nx_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E91902E21661336200D0DB04 /* nx_math.cpp */; };
 		E974C8CD1641B9EF003009AB /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8C11641B98E003009AB /* libSDL2.a */; };
 		E974C8CE1641B9F2003009AB /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */; };
-		E974C8E81641CA07003009AB /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E974C8E71641C9F3003009AB /* libFreetype2.a */; };
 		E9A1FC85165A41A8007E5AE6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC84165A41A8007E5AE6 /* Icon.png */; };
 		E9A1FC87165A420B007E5AE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC86165A420B007E5AE6 /* Icon@2x.png */; };
 		E9A1FC89165A426F007E5AE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E9A1FC88165A426F007E5AE6 /* Icon-72.png */; };
@@ -188,13 +187,6 @@
 			remoteGlobalIDString = FD6526630DE8FCCB002AD96B;
 			remoteInfo = libSDL;
 		};
-		E974C8C21641B98E003009AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E974C8B61641B98D003009AB /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 006E982211955059001DE610;
-			remoteInfo = testsdl;
-		};
 		E974C8CB1641B9B9003009AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */;
@@ -215,20 +207,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = FD6526620DE8FCCB002AD96B;
 			remoteInfo = libSDL;
-		};
-		E974C8E61641C9F3003009AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6382B1B10FB0FC5100ECAC02;
-			remoteInfo = Freetype2;
-		};
-		E974C8E91641CA0F003009AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 6382B1B00FB0FC5100ECAC02;
-			remoteInfo = Freetype2;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -488,7 +466,6 @@
 		E91902E31661336200D0DB04 /* nx_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nx_math.h; path = ../../nx_math.h; sourceTree = "<group>"; };
 		E974C8B61641B98D003009AB /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "deps/SDL/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "deps/SDL_ttf/Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
-		E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype2.xcodeproj; path = deps/libfreetype/freetype2.xcodeproj; sourceTree = "<group>"; };
 		E9A1FC84165A41A8007E5AE6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		E9A1FC86165A420B007E5AE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		E9A1FC88165A426F007E5AE6 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../Icon-72.png"; sourceTree = "<group>"; };
@@ -524,7 +501,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E974C8E81641CA07003009AB /* libFreetype2.a in Frameworks */,
 				E974C8CE1641B9F2003009AB /* libSDL2_ttf.a in Frameworks */,
 				E974C8CD1641B9EF003009AB /* libSDL2.a in Frameworks */,
 				0560063E15EEBD1B00A7CCD5 /* QuartzCore.framework in Frameworks */,
@@ -1022,7 +998,6 @@
 		056D154915EEB8C700CFE45C = {
 			isa = PBXGroup;
 			children = (
-				E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */,
 				E974C8C41641B9B8003009AB /* SDL_ttf.xcodeproj */,
 				E974C8B61641B98D003009AB /* SDL.xcodeproj */,
 				056D156215EEB8C800CFE45C /* CaveStory */,
@@ -1085,7 +1060,6 @@
 			isa = PBXGroup;
 			children = (
 				E974C8C11641B98E003009AB /* libSDL2.a */,
-				E974C8C31641B98E003009AB /* testsdl.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1094,14 +1068,6 @@
 			isa = PBXGroup;
 			children = (
 				E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		E974C8E01641C9F2003009AB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E974C8E71641C9F3003009AB /* libFreetype2.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1184,7 +1150,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E974C8EA1641CA0F003009AB /* PBXTargetDependency */,
 				E974C8D21641B9FF003009AB /* PBXTargetDependency */,
 				E974C8D01641B9FB003009AB /* PBXTargetDependency */,
 			);
@@ -1214,10 +1179,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = E974C8E01641C9F2003009AB /* Products */;
-					ProjectRef = E974C8DF1641C9F2003009AB /* freetype2.xcodeproj */;
-				},
-				{
 					ProductGroup = E974C8B71641B98D003009AB /* Products */;
 					ProjectRef = E974C8B61641B98D003009AB /* SDL.xcodeproj */;
 				},
@@ -1241,25 +1202,11 @@
 			remoteRef = E974C8C01641B98E003009AB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E974C8C31641B98E003009AB /* testsdl.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = testsdl.app;
-			remoteRef = E974C8C21641B98E003009AB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		E974C8CC1641B9B9003009AB /* libSDL2_ttf.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libSDL2_ttf.a;
 			remoteRef = E974C8CB1641B9B9003009AB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E974C8E71641C9F3003009AB /* libFreetype2.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFreetype2.a;
-			remoteRef = E974C8E61641C9F3003009AB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1455,11 +1402,6 @@
 			isa = PBXTargetDependency;
 			name = libSDL;
 			targetProxy = E974C8D11641B9FF003009AB /* PBXContainerItemProxy */;
-		};
-		E974C8EA1641CA0F003009AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Freetype2;
-			targetProxy = E974C8E91641CA0F003009AB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -2,7 +2,7 @@
 
 echo "Downloading dependencies\n"
 
-hg clone -r 6ff02ff3cf06 http://hg.libsdl.org/SDL
+hg clone -r release-2.0.1 http://hg.libsdl.org/SDL
 hg clone -r 239 http://hg.libsdl.org/SDL_ttf
 git clone git://github.com/cdave1/freetype2-ios.git libfreetype
 

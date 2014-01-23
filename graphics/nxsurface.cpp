@@ -136,7 +136,7 @@ bool NXSurface::LoadImage(const char *pbm_name, bool use_colorkey, int use_displ
 		if (SDL_QueryTexture(tmptex, &format, &access, &wd, &ht)) goto error;
 		nxformat.format = format;
 		if (AllocNew(wd, ht, &nxformat)) goto error;
-		if (SDL_SetTextureBlendMode(tmptex, SDL_BLENDMODE_MOD))	goto error;
+		if (SDL_SetTextureBlendMode(tmptex, SDL_BLENDMODE_NONE))	goto error;
 		if (SDL_SetRenderTarget(renderer, fTexture)) goto error;
 		if (SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255)) goto error;
 		if (SDL_RenderClear(renderer)) goto error;
